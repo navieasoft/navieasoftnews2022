@@ -1,0 +1,62 @@
+@tailwind components;
+
+@layer components {
+  .details-page-top-add {
+    @apply bg-pink-50 py-5 mt-5;
+  }
+  .details-page-content-wrapper {
+    @apply m-5 lg:m-10 print:m-0 grid grid-cols-3 gap-5;
+  }
+  .news-details-wrapper {
+    @apply col-span-2 space-y-5 bg-gray-100 rounded-md shadow print:shadow-none;
+  }
+  .news-details-wrapper .news-details {
+    @apply flex flex-col px-5 pt-5 pb-14 print:p-0;
+  }
+  .news-details-wrapper .top-part {
+    @apply flex flex-col lg:flex-row gap-4 justify-between rounded-b-md shadow py-3 px-5 print:hidden;
+  }
+  .news-details-wrapper .top-part button {
+    @apply bg-white rounded py-1 px-2 space-x-2 font-medium;
+  }
+  .news-details-wrapper .top-part button svg {
+    @apply text-red-400;
+  }
+  .news-details-wrapper .top-part button:last-child {
+    @apply bg-blue-500 text-white;
+  }
+  .news-details-wrapper .top-part button:last-child svg {
+    @apply text-white;
+  }
+  .news-details-wrapper .social-icons {
+    @apply space-x-3 mt-3 print:hidden;
+  }
+  .news-details-wrapper .social-icons button {
+    @apply py-1 px-5 text-xl bg-gray-200 rounded-md;
+  }
+
+  .related-topic {
+    @apply bg-gray-100 py-3 px-7 rounded-md space-y-3 shadow mt-10 print:hidden;
+  }
+  .related-topic p {
+    @apply text-xl font-medium text-gray-600 mb-5;
+  }
+  .related-topic a {
+    @apply mr-3 rounded py-1 px-4 border bg-blue-100 text-lg text-gray-700 
+    border-blue-200 hover:border-blue-400;
+  }
+
+  .related-news-wrapper {
+    @apply grid grid-cols-3 gap-5;
+  }
+  .related-news-wrapper .news {
+    @apply bg-gray-100 rounded hover:shadow grid grid-cols-1;
+  }
+
+  .some-news {
+    @apply space-y-2 overflow-auto print:hidden;
+  }
+  .some-news .news {
+    @apply grid grid-cols-3 gap-4 bg-gray-100 rounded;
+  }
+}
