@@ -102,7 +102,7 @@ export async function passwordResetEmail(email, store, setError) {
 
 async function sentVarifyEmail(user, store, setError) {
   try {
-    await sendEmailVerification(user);
+    await sendEmailVerification(user, { url: "http://localhost:3000/" });
     store?.setAlert({
       msg: "An varification email sent to your email",
       type: "success",

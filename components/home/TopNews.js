@@ -39,7 +39,7 @@ const TopNews = () => {
           </a>
         </Link>
         <Link href={`/details?category=${news[1].category}&id=${news[1]._id}`}>
-          <a className='topnews_2 block'>
+          <a className='topnews_2 border-b md:border-b-0 block'>
             <h3>{news[1].heading}</h3>
           </a>
         </Link>

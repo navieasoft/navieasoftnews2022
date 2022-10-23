@@ -64,7 +64,7 @@ const OtherNews = () => {
     <div className='mx-5 lg:mx-10 mt-3 border-b'>
       <p>In Other News</p>
       <div className='other-news-container'>
-        <div className='col-span-2 lg:col-span-1'>
+        <div className='col-span-2 lg:col-span-1 border-b md:border-b-0 pb-3 md:pb-0'>
           <Link
             href={`/details?category=${data[0].category}&id=${data[0]._id}`}
           >
@@ -82,7 +82,7 @@ const OtherNews = () => {
           </Link>
         </div>
 
-        <div className='space-y-2 border-r pr-3 lg:border-r-0 lg:pr-0'>
+        <div className='space-y-2 md:border-r md:pr-3 lg:border-r-0 lg:pr-0 mt-3 md:mt-0'>
           {data.slice(1, 4).map((item, i, arr) => (
             <Link
               href={`/details?category=${item.category}&id=${item._id}`}
@@ -100,7 +100,7 @@ const OtherNews = () => {
           ))}
         </div>
 
-        <div className='space-y-5'>
+        <div className='space-y-5 mt-3 md:mt-0 pt-3 md:pt-0 border-t md:border-t-0'>
           {data.slice(4, data.length).map((item) => (
             <Link
               href={`/details?category=${item.category}&id=${item._id}`}
@@ -114,7 +114,9 @@ const OtherNews = () => {
                   src={item.img}
                   alt=''
                 />
-                <h3 className='col-span-2 text-left'>{item.heading}</h3>
+                <p className='col-span-2 text-left font-medium text-lg'>
+                  {item.heading}
+                </p>
               </a>
             </Link>
           ))}

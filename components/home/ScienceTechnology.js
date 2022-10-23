@@ -38,7 +38,7 @@ const ScienceTechnology = () => {
     <div className='mx-5 lg:mx-10 my-3'>
       <p>Science & Technology</p>
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-5 mt-4'>
-        <div className='grid grid-cols-2 gap-5 border-b pb-3 lg:border-b-0 lg:pb-0'>
+        <div className='md:grid grid-cols-2 gap-5 border-b pb-3 lg:border-b-0 lg:pb-0 space-y-4 md:space-y-0'>
           {data.slice(0, 2).map((item) => (
             <Link
               href={`/details?category=${item.category}&id=${item._id}`}
@@ -64,7 +64,7 @@ const ScienceTechnology = () => {
               href={`/details?category=${item.category}&id=${item._id}`}
               key={item._id}
             >
-              <a className='grid grid-cols-2 gap-5 link'>
+              <a className='grid grid-cols-1 md:grid-cols-2 gap-5 link'>
                 <div>
                   <h3>{item.heading}</h3>
                   <p className='text-justify'>{item.body.slice(0, 150)}...</p>

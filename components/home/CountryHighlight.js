@@ -42,7 +42,7 @@ const CountryHighlight = () => {
   ];
 
   return (
-    <div className='country-highlight-container'>
+    <div className='country-highlight-container mt-5'>
       <Link href={`/details?category=${data[0].category}&id=${data[0]._id}`}>
         <a className='first-highlight'>
           <div>

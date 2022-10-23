@@ -13,6 +13,7 @@ import {
 
 const LoginRegister = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [login, setLogin] = useState(true);
   const [error, setError] = useState("");
   const store = useStore();
@@ -32,18 +33,19 @@ const LoginRegister = () => {
     });
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     setError("");
+    setLoading(true);
     if (login) {
-      handleLogin(payload.email, payload.password, store, setError);
+      await handleLogin(payload.email, payload.password, store, setError);
     } else {
       if (payload.password !== payload.rePassword) {
         setError("Please check your password carefully");
       } else if (payload.password < 6) {
         setError("Password should be at least 6 charecters");
       } else {
-        handleRegister(
+        await handleRegister(
           payload.email,
           payload.password,
           payload.name,
@@ -52,6 +54,7 @@ const LoginRegister = () => {
         );
       }
     }
+    setLoading(false);
   }
 
   return (
@@ -127,7 +130,7 @@ const LoginRegister = () => {
           </p>
         )}
 
-        <button className='btn' type='submit'>
+        <button disabled={loading} className='btn' type='submit'>
           {login ? "Login" : "Register"}
         </button>
 

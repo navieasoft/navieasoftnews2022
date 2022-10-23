@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import LergeAdd from "../components/common/advertizer/LergeAdd";
 import SmallAdd from "../components/common/advertizer/SmallAd";
 import Divider from "../components/common/divider/Divider";
-import Header from "../components/common/header/Header";
 import Arts from "../components/home/Arts";
 import AtHome from "../components/home/AtHome";
 import BusinessHighlight from "../components/home/BusinessHighlight";
@@ -25,6 +24,7 @@ import TopNews from "../components/home/TopNews";
 import TopMenus from "../components/common/TopMenus";
 import TopPart from "../components/common/TopPart";
 import ScrollingHighlight from "../components/common/ScrollingHighlight";
+import MiddlePart from "../components/common/MiddlePart";
 
 const Home = () => {
   const [highlight, setHlight] = useState(false);
@@ -49,7 +49,7 @@ const Home = () => {
       >
         <TopPart page='home' />
       </div>
-      <Header />
+      <MiddlePart />
       <TopMenus />
       <ScrollingHighlight />
       <TopHighlight />
@@ -57,12 +57,11 @@ const Home = () => {
         <section className='col-span-3'>
           <TopNews />
           <DailyReportOfCountry />
-          <ExtraMenus />
           <CountryHighlight />
           <PoliticsHighligh />
           <BusinessHighlight />
         </section>
-        <section className='col-span-2 lg:col-span-1'>
+        <section className='hidden md:block col-span-2 lg:col-span-1'>
           <HotNews />
           <SmallAdd
             picture='/ad-1.png'

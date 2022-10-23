@@ -44,7 +44,7 @@ const Features = () => {
   return (
     <div className='mx-5 lg:mx-10 py-4 border-b'>
       <p>Features</p>
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-5 mt-4'>
+      <div className='grid grid-cols-1 lg:grid-cols-2 gap-5 mt-2 md:mt-4'>
         <Link href={`/details?category=${data[0].category}&id=${data[0]._id}`}>
           <a className='flex flex-col gap-3 text-center link'>
             <Image
@@ -61,13 +61,13 @@ const Features = () => {
           </a>
         </Link>
 
-        <div className='space-y-3 grid grid-cols-2 gap-x-6 gap-y-2 link'>
+        <div className='md:space-y-3 md:grid grid-cols-2 gap-x-6 gap-y-2 link'>
           {data.slice(1, data.length).map((item) => (
             <Link
               href={`/details?category=${item.category}&id=${item._id}`}
               key={item._id}
             >
-              <a className='flex flex-col'>
+              <a className='flex flex-col gap-y-1 py-3 md:py-0 border-t md:border-t-0'>
                 <Image
                   className='object-cover object-center'
                   width={200}

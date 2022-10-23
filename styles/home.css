@@ -2,7 +2,7 @@
 
 @layer components {
   .home-part_1 {
-    @apply grid grid-cols-5 lg:grid-cols-4 gap-5 px-5 lg:px-10 mt-3;
+    @apply md:grid grid-cols-5 lg:grid-cols-4 gap-5 px-5 xl:px-10 mt-3;
   }
 
   /* -----------------
@@ -18,7 +18,7 @@
     @apply hover:text-gray-500;
   }
   .topnews_3 {
-    @apply col-span-2 pr-5 lg:px-5 border-r lg:border-x cursor-pointer hover:text-gray-500 
+    @apply col-span-2 md:pr-5 lg:px-5 md:border-r lg:border-x cursor-pointer hover:text-gray-500 
     block;
   }
   .topnews_2 {
@@ -29,7 +29,7 @@
     daily-report- component
   ----------------------- */
   .daily-report-container {
-    @apply py-5 border-t flex justify-center lg:justify-between;
+    @apply py-5 border-y flex justify-center lg:justify-between;
   }
   .daily-report-container .item {
     @apply lg:border-r lg:pr-1 lg:mr-1;
@@ -39,7 +39,7 @@
   }
 
   .country-highlight-container .item {
-    @apply grid grid-cols-2 mt-4;
+    @apply md:grid grid-cols-2 mt-4;
   }
   .country-highlight-container .first-highlight {
     @apply grid grid-cols-1 lg:grid-cols-3 gap-y-5 lg:gap-5 border-b pb-4 cursor-pointer
@@ -47,7 +47,7 @@
   }
 
   .other-news-container {
-    @apply my-4 grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-8 text-justify;
+    @apply my-4 md:grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-8 text-justify;
   }
 
   .politics-business-highligh .first-item {
@@ -59,7 +59,7 @@
     hover:text-gray-500;
   }
   .politics-business-highligh .last-item {
-    @apply border-b pb-3 pl-4 cursor-pointer hover:text-gray-500;
+    @apply border-b pb-3 md:pl-4 cursor-pointer hover:text-gray-500;
   }
 
   .hot-news-container {

@@ -1,3 +1,5 @@
+import carusalSetting from "../../services/client/carusalSetting";
+import Carousel from "react-multi-carousel";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -43,18 +45,25 @@ const AtHome = () => {
 
   return (
     <div className='px-5 lg:px-10 my-4'>
-      <p>At Home</p>
-      <div className='grid grid-cols-5 gap-5 mt-4'>
+      <p className='mb-3'>At Home</p>
+      <Carousel
+        autoPlay={true}
+        infinite={true}
+        autoPlaySpeed={10000}
+        transitionDuration={0}
+        draggable
+        responsive={carusalSetting}
+      >
         {data.map((item) => (
           <Link
             href={`/details?category=${item.category}&id=${item._id}`}
             key={item._id}
           >
-            <a className='flex flex-col link'>
+            <a className='flex flex-col link mx-3'>
               <Image
                 className='object-cover object-center'
                 width={200}
-                height={100}
+                height={150}
                 src={item.img}
                 alt=''
               />
@@ -62,7 +71,7 @@ const AtHome = () => {
             </a>
           </Link>
         ))}
-      </div>
+      </Carousel>
     </div>
   );
 };

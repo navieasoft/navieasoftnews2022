@@ -94,7 +94,7 @@ const Footer = () => {
             </a>
           </Link>
         </div>
-        <section className='grid grid-cols-5 gap-5'>
+        <section className='grid grid-cols-2 md:grid-cols-5 gap-5'>
           <div className='flex flex-col items-start'>
             <p className='font-medium'>NEWS</p>
             {menus.news.map((menu, i) => (
@@ -127,7 +127,7 @@ const Footer = () => {
           </div>
         </section>
         <div className='footer-bottom-menu'>
-          <p>2022, The new york times company</p>
+          <p>2022, Navieasoft ltd ||</p>
           {footerMenus.map((menu, i) => (
             <button key={i}>{menu}</button>
           ))}

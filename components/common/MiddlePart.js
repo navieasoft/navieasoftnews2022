@@ -27,7 +27,7 @@ const MiddlePart = () => {
         </p>
         <p>Todays News</p>
       </div>
-      <div className='flex justify-center'>
+      <div className='hidden md:flex justify-center'>
         <Image
           className='object-contain'
           height={50}

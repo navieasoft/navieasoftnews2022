@@ -87,13 +87,15 @@ const TopTenNews = () => {
             <p className='col-span-2 font-medium'>
               {item.heading.slice(0, 60)} {item.heading.length > 60 && "..."}
             </p>
-            <Image
-              className='object-contain'
-              height={100}
-              width={100}
-              src={item.img}
-              alt='news image'
-            />
+            <div>
+              <Image
+                className='object-cover'
+                height={150}
+                width={150}
+                src={item.img}
+                alt='news image'
+              />
+            </div>
           </a>
         </Link>
       ))}

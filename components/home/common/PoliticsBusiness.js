@@ -23,7 +23,7 @@ const PoliticsBusiness = ({ data }) => {
           </div>
         </a>
       </Link>
-      <div className='grid grid-cols-2 lg:grid-cols-3 py-3'>
+      <div className='md:grid grid-cols-2 lg:grid-cols-3 py-3'>
         <Link href={`/details?category=${data[1].category}&id=${data[1]._id}`}>
           <a className='second-item'>
             <div className='col-span-2'>

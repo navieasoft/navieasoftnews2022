@@ -14,7 +14,6 @@ import { auth } from "../../services/client/firebase";
 
 const TopPart = ({ page }) => {
   const [activeCountry, setActiveCountry] = useState("");
-  const [showSideMenu, setShowSideMenu] = useState(false);
   const router = useRouter();
   const container = useRef();
   const store = useStore();
@@ -34,29 +33,10 @@ const TopPart = ({ page }) => {
     }
   }
 
-  useEffect(() => {
-    function hideOnScroll() {
-      if (window.scrollY > 100 && showSideMenu) setShowSideMenu(false);
-    }
-    function hideOnFoucusOut(e) {
-      if (!container?.current?.contains(e.target)) {
-        setShowSideMenu(false);
-      }
-    }
-    window.addEventListener("scroll", hideOnScroll);
-    window.addEventListener("click", (e) => hideOnFoucusOut(e));
-
-    return () => {
-      window.removeEventListener("scroll", hideOnScroll);
-      window.removeEventListener("click", hideOnFoucusOut);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   return (
     <div ref={container} className='header-top-part'>
       <div className='space-x-3 text-xl'>
-        <button onClick={() => setShowSideMenu((prev) => !prev)}>
+        <button onClick={() => store?.setShowSideMenu((prev) => !prev)}>
           <FontAwesomeIcon icon={faBars} />
         </button>
         <button>
@@ -64,7 +44,7 @@ const TopPart = ({ page }) => {
         </button>
       </div>
       {page === "home" ? (
-        <div className='flex justify-center'>
+        <div className='hidden md:flex justify-center'>
           <div className='space-x-3'>
             {country.map((c, i) => (
               <button
@@ -83,7 +63,7 @@ const TopPart = ({ page }) => {
         <div className='flex justify-center'>
           <div onClick={() => router.push("/")} className='cursor-pointer '>
             <Image
-              className='cursor-pointer'
+              className='cursor-pointer object-contain'
               width={200}
               height={30}
               src='/logo.png'
@@ -92,11 +72,23 @@ const TopPart = ({ page }) => {
           </div>
         </div>
       )}
+
+      <div className='flex justify-center md:hidden'>
+        <div onClick={() => router.push("/")} className='cursor-pointer '>
+          <Image
+            className='cursor-pointer object-contain'
+            width={200}
+            height={30}
+            src='/logo.png'
+            alt='logo'
+          />
+        </div>
+      </div>
+
       <div className='space-x-3 flex justify-end'>
         <button className='btn hidden lg:block'>Subscribe now</button>
         {store?.user ? (
           <div>
-            {/* <p>{store?.user.displayName}</p> */}
             <button onClick={logOut} className='py-1 px-3 rounded border'>
               Logout
             </button>
@@ -110,8 +102,6 @@ const TopPart = ({ page }) => {
           </button>
         )}
       </div>
-
-      {showSideMenu && <SideMenu />}
     </div>
   );
 };
