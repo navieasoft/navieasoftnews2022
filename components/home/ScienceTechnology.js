@@ -44,7 +44,7 @@ const ScienceTechnology = () => {
               href={`/details?category=${item.category}&id=${item._id}`}
               key={item._id}
             >
-              <a className='flex flex-col gap-y-2 link'>
+              <a className='flex flex-col gap-y-2 hover:text-gray-500'>
                 <Image
                   className='object-cover object-top'
                   width={200}
@@ -64,7 +64,7 @@ const ScienceTechnology = () => {
               href={`/details?category=${item.category}&id=${item._id}`}
               key={item._id}
             >
-              <a className='grid grid-cols-1 md:grid-cols-2 gap-5 link'>
+              <a className='grid grid-cols-1 md:grid-cols-2 gap-5 hover:text-gray-500'>
                 <div>
                   <h3>{item.heading}</h3>
                   <p className='text-justify'>{item.body.slice(0, 150)}...</p>

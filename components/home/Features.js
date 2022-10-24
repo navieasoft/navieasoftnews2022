@@ -46,7 +46,7 @@ const Features = () => {
       <p>Features</p>
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-5 mt-2 md:mt-4'>
         <Link href={`/details?category=${data[0].category}&id=${data[0]._id}`}>
-          <a className='flex flex-col gap-3 text-center link'>
+          <a className='flex flex-col gap-3 text-center hover:text-gray-500'>
             <Image
               className='object-contain'
               height={300}
@@ -61,7 +61,7 @@ const Features = () => {
           </a>
         </Link>
 
-        <div className='md:space-y-3 md:grid grid-cols-2 gap-x-6 gap-y-2 link'>
+        <div className='md:space-y-3 md:grid grid-cols-2 gap-x-6 gap-y-2 hover:text-gray-500'>
           {data.slice(1, data.length).map((item) => (
             <Link
               href={`/details?category=${item.category}&id=${item._id}`}

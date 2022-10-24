@@ -10,7 +10,7 @@ const GaneralPattern = ({ data, isCategory }) => {
           href={`/details?category=${item.category}&id=${item._id}`}
           key={item._id}
         >
-          <a className='flex flex-col gap-y-2 link py-4 border-t md:border-t-0'>
+          <a className='flex flex-col gap-y-2 hover:text-gray-500 py-4 border-t md:border-t-0'>
             {isCategory && <p className='font-medium'>{item.category}</p>}
             <Image
               className='object-cover object-top'

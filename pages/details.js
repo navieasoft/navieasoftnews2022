@@ -18,7 +18,7 @@ import {
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 import { useRouter } from "next/router";
-import { baseUrl, siteName } from "../services/client/basicData";
+import { basicData } from "../services/client/basicData";
 import LergeAdd from "../components/common/advertizer/LergeAdd";
 import TopMenus from "../components/common/TopMenus";
 import Link from "next/link";
@@ -27,13 +27,11 @@ import CategoryDetailsSideBar from "../components/common/CategoryDetailsSideBar"
 const Details = () => {
   const [linkCopy, setLinkCopied] = useState(false);
   const router = useRouter();
+  const { baseUrl, siteName } = basicData();
 
   function handleCopyLink() {
     setLinkCopied(true);
     navigator.clipboard.writeText(baseUrl + router.asPath);
-  }
-  function handlePrint() {
-    window.print();
   }
 
   const data = {
@@ -136,7 +134,7 @@ const Details = () => {
                   <FontAwesomeIcon icon={faLink} />
                   <span>{linkCopy ? "Copied!" : "Copy Link"}</span>
                 </button>
-                <button onClick={handlePrint}>
+                <button onClick={() => window.print()}>
                   <FontAwesomeIcon icon={faPrint} />
                   <span>Print</span>
                 </button>
@@ -242,7 +240,7 @@ const Details = () => {
                 ))}
               </div>
               <div className='flex justify-end mt-5'>
-                <button className='btn'>Load More</button>
+                <button className='btn btn-primary'>Load More</button>
               </div>
             </section>
             <LergeAdd picture={"/longadd.png"} />

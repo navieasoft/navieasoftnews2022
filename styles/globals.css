@@ -9,27 +9,24 @@
 }
 
 @layer utilities {
-  .link {
-    @apply hover:text-gray-500;
+  body {
+    @apply text-gray-800 bg-white;
   }
+
   a {
     @apply block;
   }
   input {
     @apply border rounded py-2 px-4 outline-none text-lg w-full hover:border-gray-400;
   }
-  form {
-    @apply space-y-3 w-2/6 mx-auto my-20 rounded shadow-md px-10 py-5 flex flex-col 
-    items-center bg-white z-50;
-  }
 }
 
 @layer components {
-  .btn {
+  .custom-btn {
     @apply rounded py-1 px-4 bg-purple-600 uppercase font-semibold hover:bg-purple-800
     text-white shadow shadow-purple-100 hover:shadow-md hover:shadow-purple-200;
   }
-  .btn:disabled {
+  .custom-btn:disabled {
     @apply cursor-not-allowed bg-gray-400;
   }
 
@@ -37,7 +34,7 @@
     @apply px-10 grid grid-cols-1 my-4 cursor-pointer;
   }
   .goto-top-container {
-    @apply bg-purple-600 text-white justify-center items-center shadow-md 
+    @apply justify-center items-center shadow-md 
     rounded-full h-12 w-12 text-xl fixed z-50 bottom-10 right-5 cursor-pointer;
   }
 
@@ -54,6 +51,16 @@
     @apply fixed bottom-5 right-2 text-white py-2 px-6 rounded-md 
     shadow z-50 font-medium;
   }
+
+  .login-registation {
+    @apply space-y-3 mx-5 md:w-2/3 lg:w-2/6 md:mx-auto my-20 rounded shadow-md px-10 py-5 flex flex-col 
+    items-center bg-white z-50 relative;
+  }
+
+  .close-btn {
+    @apply absolute top-2 right-3 h-10 w-10 flex justify-center items-center text-left
+    bg-gray-100 rounded-full font-medium cursor-pointer;
+  }
 }
 
 .goto-top-container {
@@ -62,7 +69,7 @@
 .alert-container {
   animation: Alert 250ms ease-out;
 }
-.login-form {
+.login-registation {
   animation: LoginForm 250ms ease-out;
 }
 

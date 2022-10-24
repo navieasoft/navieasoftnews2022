@@ -86,7 +86,7 @@ const TopPart = ({ page }) => {
       </div>
 
       <div className='space-x-3 flex justify-end'>
-        <button className='btn hidden lg:block'>Subscribe now</button>
+        <button className='custom-btn hidden lg:block'>Subscribe now</button>
         {store?.user ? (
           <div>
             <button onClick={logOut} className='py-1 px-3 rounded border'>

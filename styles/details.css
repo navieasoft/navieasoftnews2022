@@ -1,4 +1,11 @@
 @tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .scroll {
+    @apply scrollbar-thumb-transparent scrollbar-track-transparent scrollbar-thin;
+  }
+}
 
 @layer components {
   .details-page-top-add {
@@ -54,9 +61,19 @@
   }
 
   .some-news {
-    @apply space-y-2 overflow-auto print:hidden;
+    @apply space-y-2 overflow-auto print:hidden scroll;
+  }
+  .some-news:hover {
+    @apply scrollbar-thumb-gray-400;
   }
   .some-news .news {
     @apply grid grid-cols-3 gap-4 bg-gray-100 rounded;
   }
+}
+
+.scroll::-webkit-scrollbar-thumb {
+  border-radius: 7px;
+}
+.scroll::-webkit-scrollbar-track {
+  border-radius: 7px;
 }

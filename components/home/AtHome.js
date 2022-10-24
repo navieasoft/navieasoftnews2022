@@ -59,7 +59,7 @@ const AtHome = () => {
             href={`/details?category=${item.category}&id=${item._id}`}
             key={item._id}
           >
-            <a className='flex flex-col link mx-3'>
+            <a className='flex flex-col hover:text-gray-500 mx-3'>
               <Image
                 className='object-cover object-center'
                 width={200}

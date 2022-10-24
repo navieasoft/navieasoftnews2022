@@ -2,49 +2,26 @@ import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
+import { mainMenus } from "../../services/client/menus";
 
 const TopMenus = () => {
   const [showSub, setShowSub] = useState(-1);
   const container = useRef(null);
+  const menus = mainMenus();
 
   useEffect(() => {
     function hideDropdown(e) {
-      // if(container.current.con)
+      if (!container.current?.contains(e.target)) {
+        setShowSub(-1);
+      }
     }
     window.addEventListener("click", (e) => hideDropdown(e));
+
+    return () => {
+      window.removeEventListener("click", hideDropdown);
+    };
   }, []);
 
-  const menus = [
-    {
-      name: "World",
-      subs: [
-        "Asia",
-        "Europe",
-        "Noth Amerika",
-        "South Amerika",
-        "Afrika",
-        "Australia",
-      ],
-    },
-    {
-      name: "US",
-      subs: ["Alaska", "Arizona", "Arkansas", "California", "Colorado"],
-    },
-    { name: "Politics", subs: ["International", "Bangladesh"] },
-    { name: "N.Y" },
-    { name: "Business" },
-    { name: "Tech" },
-    { name: "Science" },
-    { name: "Health" },
-    { name: "Sports" },
-    { name: "Arts" },
-    { name: "Books" },
-    { name: "Style" },
-    { name: "Food" },
-    { name: "Travel" },
-    { name: "Magazine", subs: ["Science", "Technology", "Story", "History"] },
-    { name: "Real EState" },
-  ];
   return (
     <div ref={container} className='header-main-menus'>
       {menus.map((menu, i) => (

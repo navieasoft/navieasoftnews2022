@@ -1,5 +1,5 @@
 import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { faClose, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import useStore from "../context/useStore";
@@ -65,8 +65,14 @@ const LoginRegister = () => {
       <form
         onClick={(e) => e.stopPropagation()}
         onSubmit={(e) => handleSubmit(e)}
-        className='login-form'
+        className='login-registation'
       >
+        <div
+          onClick={() => store?.setShowLoginRegister(false)}
+          className='close-btn'
+        >
+          <FontAwesomeIcon icon={faClose} />
+        </div>
         <h3 className='mb-5'>Please {login ? "Login" : "Register"}</h3>
 
         {!login && (
@@ -136,7 +142,7 @@ const LoginRegister = () => {
 
         <p>----------Or---------</p>
 
-        <div className='flex gap-5'>
+        <div className='flex flex-wrap justify-center gap-5'>
           <button
             onClick={() => googleLogin(setError, store)}
             type='button'

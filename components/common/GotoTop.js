@@ -21,7 +21,9 @@ const GotoTop = () => {
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       className={`goto-top-container ${showTop ? "flex" : "hidden"}`}
     >
-      <FontAwesomeIcon icon={faArrowUp} />
+      <button className='btn btn-primary'>
+        <FontAwesomeIcon icon={faArrowUp} />
+      </button>
     </div>
   );
 };

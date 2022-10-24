@@ -1,4 +1,11 @@
 @tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .scroll {
+    @apply scrollbar-thumb-transparent scrollbar-track-transparent scrollbar-thin;
+  }
+}
 
 @layer components {
   .header-top-part {
@@ -47,14 +54,13 @@
   }
 
   .side-menu-container {
-    @apply fixed top-0 left-0 bg-white shadow-lg z-50 pt-12 h-screen overflow-auto;
+    @apply fixed top-0 left-0 bg-white shadow-lg z-50 pt-12 h-screen overflow-auto scroll;
+  }
+  .side-menu-container:hover {
+    @apply scrollbar-thumb-gray-400;
   }
   .side-menu-container a {
     @apply pr-24 pl-6 hover:bg-gray-100 py-2 border-b block;
-  }
-  .side-menu-container .close-btn {
-    @apply absolute top-2 right-3 h-10 w-10 flex justify-center items-center text-left
-    bg-gray-100 rounded-full font-medium cursor-pointer;
   }
 }
 
@@ -66,6 +72,9 @@
 .hideSideMenu {
   display: none;
   animation: HideSideMenu 0.5s ease-in-out;
+}
+.scroll::-webkit-scrollbar-thumb {
+  border-radius: 7px;
 }
 @keyframes ShowSideMenu {
   0% {

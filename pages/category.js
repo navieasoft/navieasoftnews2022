@@ -191,7 +191,7 @@ const category = () => {
             ))}
           </div>
           <div className='flex justify-end mt-5 mr-5'>
-            <button className='btn'>See More</button>
+            <button className='btn btn-primary'>See More</button>
           </div>
         </section>
 

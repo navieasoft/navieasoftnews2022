@@ -1,0 +1,118 @@
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .scroll {
+    @apply scrollbar-thumb-transparent scrollbar-track-transparent scrollbar-thin;
+  }
+}
+
+@layer components {
+  /* header */
+  .dashboard-header {
+    @apply bg-white py-2 border-b-2 flex justify-between px-5 sticky top-0;
+  }
+  .dashboard-header .site-name {
+    @apply cursor-pointer text-purple-500;
+  }
+
+  /* side bar */
+  .side-bar-container {
+    @apply w-[200px];
+  }
+  .side-bar-wrapper {
+    @apply fixed top-12 left-0 w-[200px] shadow bg-white h-full;
+  }
+  .side-bar-container .main-side-menu {
+    @apply py-2 w-full text-left pl-5 font-medium hover:bg-gray-100 border-l-2 
+    border-white flex justify-between pr-2 items-center;
+  }
+  .side-bar-container .main-side-menu > div {
+    @apply flex gap-3 items-center;
+  }
+  .side-bar-container a.highlight {
+    @apply bg-gray-100 border-purple-500;
+  }
+  .side-bar-container .sub-side-menu {
+    @apply py-2 w-full text-left pl-7 font-medium bg-slate-50 hover:bg-gray-100 
+    flex gap-3 items-center;
+  }
+  .side-bar-container a svg {
+    @apply text-purple-500;
+  }
+
+  /* site info */
+  .site-info-container {
+    @apply h-fit mt-10 space-y-10 mb-5;
+  }
+  .site-info-container .item {
+    @apply rounded shadow-md px-5 py-7 bg-gray-100;
+  }
+  .site-info-container .item p {
+    @apply font-medium text-center mb-3 underline underline-offset-4;
+  }
+
+  /* headline */
+  .headline-container {
+    @apply w-3/4 mx-auto my-10 bg-gray-100 shadow-md rounded-md relative;
+  }
+  .headline-container textarea {
+    @apply w-full h-full focus:outline-none px-5 pb-5 pt-10 rounded-md text-xl resize-none;
+  }
+
+  /* menus */
+  .dashboard-menus-container {
+    @apply flex justify-around w-full my-10;
+  }
+  .dashboard-menus-container .item {
+    @apply bg-gray-100 shadow rounded-md w-2/6 h-[500px] overflow-auto scroll;
+  }
+  .dashboard-menus-container .item:hover {
+    @apply scrollbar-thumb-gray-400;
+  }
+  .dashboard-menus-container .item header {
+    @apply flex justify-between py-2 px-3 text-lg font-medium border-b-2 items-center 
+    sticky top-0 bg-gray-50;
+  }
+  .dashboard-menus-container .item header button {
+    @apply bg-gray-200 h-10 w-10 rounded-full flex justify-center items-center;
+  }
+
+  .dashboard-menus-container .menus-wrapper .menu {
+    @apply py-2 px-5 border-b text-lg flex justify-between hover:bg-gray-50;
+  }
+  .dashboard-menus-container .menus-wrapper .sub-menu {
+    @apply py-2 px-5 text-lg hover:bg-gray-50;
+  }
+
+  /* news page */
+  .create-news-container {
+    @apply grid grid-cols-4 gap-5 flex-grow my-5;
+  }
+  .create-news-container .news-area {
+    @apply rounded-md shadow-md col-span-3;
+  }
+  .create-news-container textarea {
+    @apply resize-none w-full p-5 text-lg focus:outline-none bg-gray-100;
+  }
+
+  /* main page */
+}
+
+.side-bar-container {
+  min-height: calc(100vh - 3rem);
+}
+.hide-sub {
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0, 1, 0, 1);
+}
+.show-sub {
+  border-bottom-width: 1px;
+  height: auto;
+  max-height: 9999px;
+  transition: all 0.5s cubic-bezier(1, 0, 1, 0);
+}
+.scroll::-webkit-scrollbar-thumb {
+  border-radius: 7px;
+}

@@ -11,6 +11,7 @@ import "../styles/globals.css";
 import "../styles/details.css";
 import "../styles/header.css";
 import "../styles/home.css";
+import "../styles/dashboard.css";
 import SideMenu from "../components/common/SideMenu";
 
 function Layout({ Component, pageProps }) {
@@ -22,7 +23,8 @@ function Layout({ Component, pageProps }) {
     <div>
       <Component {...pageProps} />
       <GotoTop />
-      {!noFooter.includes(router.pathname) && <Footer />}
+      {!noFooter.includes(router.pathname) &&
+        !router.pathname.includes("/admin") && <Footer />}
       {store?.showLoginRegister && <LoginRegister />}
       <SideMenu />
       {store?.alert.msg && <Alert />}

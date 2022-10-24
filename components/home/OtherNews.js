@@ -68,7 +68,7 @@ const OtherNews = () => {
           <Link
             href={`/details?category=${data[0].category}&id=${data[0]._id}`}
           >
-            <a className='flex flex-col gap-3 link'>
+            <a className='flex flex-col gap-3 hover:text-gray-500'>
               <Image
                 className='object-cover object-center'
                 height={200}
@@ -89,7 +89,7 @@ const OtherNews = () => {
               key={item._id}
             >
               <a
-                className={`link block ${
+                className={`hover:text-gray-500 block ${
                   arr.length - 1 !== i ? "border-b pb-2" : ""
                 }`}
               >
@@ -106,7 +106,7 @@ const OtherNews = () => {
               href={`/details?category=${item.category}&id=${item._id}`}
               key={item._id}
             >
-              <a className='grid grid-cols-3 gap-4 items-center link'>
+              <a className='grid grid-cols-3 gap-4 items-center hover:text-gray-500'>
                 <Image
                   className='object-cover object-center '
                   height={100}
