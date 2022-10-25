@@ -67,7 +67,7 @@ const Footer = () => {
     ],
   };
   const footerMenus = [
-    "Contack Us",
+    "Contact Us",
     "Advertise",
     "Work with us",
     "Privacy Policy",

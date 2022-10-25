@@ -16,19 +16,25 @@ const Header = () => {
         <div className='text-lg lg:hidden'>
           <FontAwesomeIcon icon={faBars} />
         </div>
-        <Link href='/admin'>
-          <h3 className='site-name'>{siteName}</h3>
+        <Link href='/'>
+          <a>
+            <h3>{siteName}</h3>
+          </a>
         </Link>
       </div>
       <div className='flex gap-3'>
-        <Image
-          className='rounded-full'
-          width={30}
-          height={30}
-          src={store?.user?.photoURL}
-          alt=''
-        />
-        <p>{store?.user?.displayName}</p>
+        {store?.user && (
+          <>
+            <Image
+              className='rounded-full'
+              width={30}
+              height={30}
+              src={store?.user?.photoURL}
+              alt=''
+            />
+            <p>{store?.user?.displayName}</p>
+          </>
+        )}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Header from "../../components/admin/common/header";
-import SideBar from "../../components/admin/common/SideBar";
+import Header from "../../../components/admin/common/header";
+import SideBar from "../../../components/admin/common/SideBar";
 
 const Siteinfo = () => {
   const [info, setInfo] = useState({
@@ -50,8 +50,8 @@ const Siteinfo = () => {
               onChange={(e) => handleChange(e)}
             />
           </div>
-          <div className='flex items-center justify-center'>
-            <button className='btn'>Save Changes</button>
+          <div className='col-span-3 flex justify-end'>
+            <button className='btn btn-primary'>Save Changes</button>
           </div>
         </div>
       </div>
