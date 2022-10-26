@@ -37,7 +37,7 @@ export async function deleteSubCategoryMenu(req, res, categoryMenus) {
       },
       { $pull: { subs: req.body.value } }
     );
-    console.log(result);
+
     if (result.modifiedCount > 0) {
       res.status(200).send({
         message: "Sub Category menu deleted successfully",

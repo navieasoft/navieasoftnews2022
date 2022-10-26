@@ -112,7 +112,7 @@
   }
   .footer-modal {
     @apply absolute top-14 left-0 w-full px-3 py-5 bg-white flex flex-col items-center 
-    gap-3 rounded shadow;
+    gap-3 rounded shadow z-40;
   }
 
   /* news page */

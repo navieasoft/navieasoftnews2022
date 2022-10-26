@@ -1,74 +1,47 @@
 import { faAdd, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../../components/admin/common/header";
 import SideBar from "../../../components/admin/common/SideBar";
 import FooterModal from "../../../components/admin/menu/FooterModal";
+import useStore from "../../../components/context/useStore";
 
 const Footer = () => {
-  const [showAdd, setShowAdd] = useState({ category: "", id: "" });
-  const menus = {
-    news: [
-      "Home Page",
-      "World",
-      "U.S",
-      "Coronavirous",
-      "Politics",
-      "Election Results",
-      "New York",
-      "Business",
-      "Tech",
-      "Science",
-    ],
-    opinion: [
-      "Home Page",
-      "World",
-      "U.S",
-      "Coronavirous",
-      "Politics",
-      "Election Results",
-      "New York",
-      "Business",
-      "Tech",
-      "Science",
-    ],
-    arts: [
-      "Home Page",
-      "World",
-      "U.S",
-      "Coronavirous",
-      "Politics",
-      "Election Results",
-      "New York",
-      "Business",
-      "Tech",
-      "Science",
-    ],
-    living: [
-      "Home Page",
-      "World",
-      "U.S",
-      "Coronavirous",
-      "Politics",
-      "Election Results",
-      "New York",
-      "Business",
-      "Tech",
-      "Science",
-    ],
-    more: [
-      "Home Page",
-      "World",
-      "U.S",
-      "Coronavirous",
-      "Politics",
-      "Election Results",
-      "New York",
-      "Business",
-      "Tech",
-      "Science",
-    ],
-  };
+  const [showAdd, setShowAdd] = useState("");
+  const [menus, setMenus] = useState(null);
+  const [update, setUpdate] = useState(false);
+  const store = useStore();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("http://localhost:3000/api/menus/footermenus");
+        const result = await res.json();
+        setMenus(result);
+      } catch (error) {
+        store.setError(true);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [update]);
+
+  async function deleteFooterMenu(title, value) {
+    try {
+      const res = await fetch("http://localhost:3000/api/menus/footermenus", {
+        headers: {
+          "content-type": "application/json",
+        },
+        method: "DELETE",
+        body: JSON.stringify({ title, value }),
+      });
+      const result = await res.json();
+      if (!res.ok) throw { message: result.message };
+      store?.setAlert({ msg: result.message, type: "success" });
+      setUpdate((prev) => !prev);
+    } catch (error) {
+      store?.setAlert({ msg: error.message, type: "error" });
+    }
+  }
 
   return (
     <div className='bg-gray-50'>
@@ -81,24 +54,29 @@ const Footer = () => {
             <div className='item relative'>
               <header>
                 <p>NEWS</p>
-                <button
-                  onClick={() => setShowAdd({ category: "NEWS", id: "" })}
-                  className='add-btn'
-                >
+                <button onClick={() => setShowAdd("NEWS")} className='add-btn'>
                   <FontAwesomeIcon icon={faAdd} />
                 </button>
               </header>
-              {menus.news.map((menu, i) => (
-                <div className='flex justify-between py-2 border-b' key={i}>
-                  <p>{menu}</p>
-                  <button className='w-5'>
-                    <FontAwesomeIcon icon={faTrash} />
-                  </button>
-                </div>
-              ))}
+              {menus &&
+                menus.NEWS.map((menu, i) => (
+                  <div className='flex justify-between py-2 border-b' key={i}>
+                    <p>{menu}</p>
+                    <button
+                      onClick={() => deleteFooterMenu("NEWS", menu)}
+                      className='w-5'
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                  </div>
+                ))}
 
-              {showAdd.category === "NEWS" && (
-                <FooterModal close={setShowAdd} title='NEWS' />
+              {showAdd === "NEWS" && (
+                <FooterModal
+                  setUpdate={setUpdate}
+                  close={setShowAdd}
+                  title='NEWS'
+                />
               )}
             </div>
 
@@ -106,45 +84,58 @@ const Footer = () => {
               <header>
                 <p>OPINION</p>
                 <button
-                  onClick={() => setShowAdd({ category: "OPINION", id: "" })}
+                  onClick={() => setShowAdd("OPINION")}
                   className='add-btn'
                 >
                   <FontAwesomeIcon icon={faAdd} />
                 </button>
               </header>
-              {menus.opinion.map((menu, i) => (
-                <div className='flex justify-between py-2 border-b' key={i}>
-                  <p>{menu}</p>
-                  <button className='w-5'>
-                    <FontAwesomeIcon icon={faTrash} />
-                  </button>
-                </div>
-              ))}
-              {showAdd.category === "OPINION" && (
-                <FooterModal close={setShowAdd} title='OPINION' />
+              {menus &&
+                menus.OPINION.map((menu, i) => (
+                  <div className='flex justify-between py-2 border-b' key={i}>
+                    <p>{menu}</p>
+                    <button
+                      onClick={() => deleteFooterMenu("OPINION", menu)}
+                      className='w-5'
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                  </div>
+                ))}
+              {showAdd === "OPINION" && (
+                <FooterModal
+                  setUpdate={setUpdate}
+                  close={setShowAdd}
+                  title='OPINION'
+                />
               )}
             </div>
 
             <div className='item relative'>
               <header>
                 <p>ARTS</p>
-                <button
-                  onClick={() => setShowAdd({ category: "ARTS", id: "" })}
-                  className='add-btn'
-                >
+                <button onClick={() => setShowAdd("ARTS")} className='add-btn'>
                   <FontAwesomeIcon icon={faAdd} />
                 </button>
               </header>
-              {menus.arts.map((menu, i) => (
-                <div className='flex justify-between py-2 border-b' key={i}>
-                  <p>{menu}</p>
-                  <button className='w-5'>
-                    <FontAwesomeIcon icon={faTrash} />
-                  </button>
-                </div>
-              ))}
-              {showAdd.category === "ARTS" && (
-                <FooterModal close={setShowAdd} title='ARTS' />
+              {menus &&
+                menus.ARTS.map((menu, i) => (
+                  <div className='flex justify-between py-2 border-b' key={i}>
+                    <p>{menu}</p>
+                    <button
+                      onClick={() => deleteFooterMenu("ARTS", menu)}
+                      className='w-5'
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                  </div>
+                ))}
+              {showAdd === "ARTS" && (
+                <FooterModal
+                  setUpdate={setUpdate}
+                  close={setShowAdd}
+                  title='ARTS'
+                />
               )}
             </div>
 
@@ -152,45 +143,58 @@ const Footer = () => {
               <header>
                 <p>LIVING</p>
                 <button
-                  onClick={() => setShowAdd({ category: "LIVING", id: "" })}
+                  onClick={() => setShowAdd("LIVING")}
                   className='add-btn'
                 >
                   <FontAwesomeIcon icon={faAdd} />
                 </button>
               </header>
-              {menus.living.map((menu, i) => (
-                <div className='flex justify-between py-2 border-b' key={i}>
-                  <p>{menu}</p>
-                  <button className='w-5'>
-                    <FontAwesomeIcon icon={faTrash} />
-                  </button>
-                </div>
-              ))}
-              {showAdd.category === "LIVING" && (
-                <FooterModal close={setShowAdd} title='LIVING' />
+              {menus &&
+                menus.LIVING.map((menu, i) => (
+                  <div className='flex justify-between py-2 border-b' key={i}>
+                    <p>{menu}</p>
+                    <button
+                      onClick={() => deleteFooterMenu("LIVING", menu)}
+                      className='w-5'
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                  </div>
+                ))}
+              {showAdd === "LIVING" && (
+                <FooterModal
+                  setUpdate={setUpdate}
+                  close={setShowAdd}
+                  title='LIVING'
+                />
               )}
             </div>
 
             <div className='item relative'>
               <header>
                 <p>MORE</p>
-                <button
-                  onClick={() => setShowAdd({ category: "MORE", id: "" })}
-                  className='add-btn'
-                >
+                <button onClick={() => setShowAdd("MORE")} className='add-btn'>
                   <FontAwesomeIcon icon={faAdd} />
                 </button>
               </header>
-              {menus.more.map((menu, i) => (
-                <div className='flex justify-between py-2 border-b' key={i}>
-                  <p>{menu}</p>
-                  <button className='w-5'>
-                    <FontAwesomeIcon icon={faTrash} />
-                  </button>
-                </div>
-              ))}
-              {showAdd.category === "MORE" && (
-                <FooterModal close={setShowAdd} title='MORE' />
+              {menus &&
+                menus.MORE.map((menu, i) => (
+                  <div className='flex justify-between py-2 border-b' key={i}>
+                    <p>{menu}</p>
+                    <button
+                      onClick={() => deleteFooterMenu("MORE", menu)}
+                      className='w-5'
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                  </div>
+                ))}
+              {showAdd === "MORE" && (
+                <FooterModal
+                  setUpdate={setUpdate}
+                  close={setShowAdd}
+                  title='MORE'
+                />
               )}
             </div>
           </div>
