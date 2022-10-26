@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import Header from "../../../components/admin/common/header";
 import SideBar from "../../../components/admin/common/SideBar";
-import { mainMenus } from "../../../services/client/menus";
+import { category } from "../../../services/client/menus";
 
 const UpdateNews = () => {
   const [subs, setSubs] = useState([]);
   const [news, setNews] = useState({});
-  const Category = mainMenus();
 
   function handleCategory(e) {
     const sub = Category.find((item) => item.name === e.target.value);
@@ -66,7 +65,7 @@ const UpdateNews = () => {
                   onChange={(e) => handleCategory(e)}
                 >
                   <option value=''></option>
-                  {Category.map((item, i) => (
+                  {category.map((item, i) => (
                     <option key={i} value={item.name}>
                       {item.name}
                     </option>

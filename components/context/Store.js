@@ -6,6 +6,7 @@ const Store = () => {
   const [showLoginRegister, setShowLoginRegister] = useState(false);
   const [showSideMenu, setShowSideMenu] = useState(false);
   const [showSideBar, setShowSideBar] = useState(false);
+  const [error, setError] = useState(false);
   const [user, setUser] = useState(null);
   const [alert, setAlert] = useState({ msg: "", type: "" });
 
@@ -31,6 +32,8 @@ const Store = () => {
     setShowSideMenu,
     showSideBar,
     setShowSideBar,
+    error,
+    setError,
   };
 };
 

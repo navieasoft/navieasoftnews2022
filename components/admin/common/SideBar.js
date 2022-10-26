@@ -48,12 +48,12 @@ const SideBar = () => {
       icon: faListAlt,
       txt: "Menus",
       url: "#",
-      highlight: ["/admin/menus/category", "/admin/menus/footer"],
+      highlight: ["/admin/menus", "/admin/menus/footer"],
       subs: [
         {
           icon: faClipboardList,
           txt: "Category Menus",
-          url: "/admin/menus/category",
+          url: "/admin/menus",
         },
         {
           icon: faBarsStaggered,

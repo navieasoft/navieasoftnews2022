@@ -2,12 +2,11 @@ import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
-import { mainMenus } from "../../services/client/menus";
+import { category } from "../../services/client/menus";
 
 const TopMenus = () => {
   const [showSub, setShowSub] = useState(-1);
   const container = useRef(null);
-  const menus = mainMenus();
 
   useEffect(() => {
     function hideDropdown(e) {
@@ -24,7 +23,7 @@ const TopMenus = () => {
 
   return (
     <div ref={container} className='header-main-menus'>
-      {menus.map((menu, i) => (
+      {category.map((menu, i) => (
         <div
           onMouseEnter={() => setShowSub(i)}
           className='main-menu-wrapper'

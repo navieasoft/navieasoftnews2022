@@ -1,13 +1,24 @@
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
+import useStore from "../../context/useStore";
 
-const MenuModal = ({ closeModal, openModal, title, action }) => {
+const MenuModal = (props) => {
+  const { closeModal, openModal, title, action, setUpdate, categoryId } = props;
+  const [loading, setLoading] = useState(false);
   const input = useRef(null);
+  const store = useStore();
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
+    setLoading(true);
     e.preventDefault();
-    action(value);
+    if (title === "Add") {
+      await action(input.current?.value, store);
+    } else {
+      await action(input.current?.value, store, categoryId);
+    }
+    setUpdate((prev) => !prev);
+    setLoading(false);
   }
 
   return (
@@ -19,16 +30,12 @@ const MenuModal = ({ closeModal, openModal, title, action }) => {
 
         <div>
           <p className='text-center mb-3'>{title} Category Menu</p>
-          <input
-            type='text'
-            ref={input}
-            onChange={(e) => handleChange(e)}
-            name='main'
-            placeholder='Type here'
-          />
+          <input required type='text' ref={input} placeholder='Type here' />
         </div>
         <div className='flex justify-center'>
-          <button className='btn btn-primary'>Save</button>
+          <button disabled={loading} className='btn btn-primary'>
+            Save
+          </button>
         </div>
       </form>
     </div>
