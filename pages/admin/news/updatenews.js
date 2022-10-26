@@ -36,13 +36,11 @@ const UpdateNews = () => {
     <div className='bg-gray-50'>
       <Header />
       <div className='flex gap-5'>
-        <div className='w-[200px]'>
-          <SideBar />
-        </div>
+        <SideBar />
 
         <section className='create-news-container'>
           <form onSubmit={(e) => handleSubmit(e)} className='news-area'>
-            <div className='col-span-3'>
+            <div className='md:col-span-2 lg:col-span-3'>
               <textarea
                 onChange={(e) => handleChange(e)}
                 name='heading'
@@ -54,7 +52,7 @@ const UpdateNews = () => {
                 onChange={(e) => handleChange(e)}
                 name='body'
                 required
-                rows='15'
+                rows='20'
                 placeholder='Write the news body'
               />
             </div>
@@ -84,6 +82,15 @@ const UpdateNews = () => {
                       {sub}
                     </option>
                   ))}
+                </select>
+              </div>
+
+              <div className='space-y-2'>
+                <label htmlFor='newsType'>News type:</label>
+                <select name='newsType' onChange={(e) => handleChange(e)}>
+                  <option value='genaral news'>genaral news</option>
+                  <option value='hot news'>hot news</option>
+                  <option value='top news'>top news</option>
                 </select>
               </div>
 

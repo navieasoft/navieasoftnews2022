@@ -13,7 +13,10 @@ const Header = () => {
   return (
     <div className='dashboard-header'>
       <div className='flex gap-5'>
-        <div className='text-lg lg:hidden'>
+        <div
+          onClick={() => store?.setShowSideBar((prev) => !prev)}
+          className='text-lg lg:hidden'
+        >
           <FontAwesomeIcon icon={faBars} />
         </div>
         <Link href='/'>

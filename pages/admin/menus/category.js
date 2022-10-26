@@ -17,6 +17,7 @@ import { mainMenus } from "../../../services/client/menus";
 const MainMenus = () => {
   const [showDeleteBtn, setShowDeleteBtn] = useState(-1);
   const [updateMenu, setUpdateMenu] = useState(false);
+  const [showCollaps, setShowCollaps] = useState(-1);
   const [addMenu, setAddMenu] = useState(false);
   const [showControl, setShowControl] = useState(-1);
   const [addSub, setAddSub] = useState(false);
@@ -52,19 +53,33 @@ const MainMenus = () => {
             </button>
           </header>
           <div className='menus-wrapper'>
-            {Category.map((item, i) => (
-              <div className='collapse relative' key={i}>
-                <input className='w-[90%]' type='checkbox' />
-                <div className='collapse-title item'>
+            {Category.map((item, index) => (
+              <div
+                onClick={() => setShowControl(-1)}
+                className='relative'
+                key={index}
+              >
+                <div className=' item'>
                   <p>{item.name}</p>
 
                   <div className='flex gap-3 items-center text-gray-500'>
-                    {item.subs && <FontAwesomeIcon icon={faAngleDown} />}
+                    {item.subs && (
+                      <button
+                        onClick={() =>
+                          setShowCollaps((prev) => {
+                            if (prev === index) return -1;
+                            else return index;
+                          })
+                        }
+                      >
+                        <FontAwesomeIcon icon={faAngleDown} />
+                      </button>
+                    )}
                     <button
                       className='w-5'
-                      onClick={() => {
-                        if (showControl === i) setShowControl(-1);
-                        else setShowControl(i);
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowControl(index);
                       }}
                     >
                       <FontAwesomeIcon icon={faEllipsisVertical} />
@@ -73,7 +88,7 @@ const MainMenus = () => {
 
                   <div
                     className={`control-wrapper ${
-                      showControl === i ? "block" : "hidden"
+                      showControl === index ? "block" : "hidden"
                     }`}
                   >
                     <button onClick={() => handleDeleteCategory("id")}>
@@ -86,7 +101,11 @@ const MainMenus = () => {
                   </div>
                 </div>
                 {item.subs && (
-                  <div className='collapse-content px-0 bg-slate-50'>
+                  <div
+                    className={`accordion ${
+                      showCollaps === index ? "show" : ""
+                    }`}
+                  >
                     {item.subs.map((sub, i) => (
                       <div
                         onMouseEnter={() => setShowDeleteBtn(i)}

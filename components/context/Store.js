@@ -5,6 +5,7 @@ import { auth } from "../../services/client/firebase";
 const Store = () => {
   const [showLoginRegister, setShowLoginRegister] = useState(false);
   const [showSideMenu, setShowSideMenu] = useState(false);
+  const [showSideBar, setShowSideBar] = useState(false);
   const [user, setUser] = useState(null);
   const [alert, setAlert] = useState({ msg: "", type: "" });
 
@@ -28,6 +29,8 @@ const Store = () => {
     setAlert,
     showSideMenu,
     setShowSideMenu,
+    showSideBar,
+    setShowSideBar,
   };
 };
 

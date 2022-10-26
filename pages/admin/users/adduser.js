@@ -27,9 +27,7 @@ const Adduser = () => {
     <div className='bg-gray-50'>
       <Header />
       <div className='flex gap-5 overflow-auto'>
-        <div className='w-[200px]'>
-          <SideBar />
-        </div>
+        <SideBar />
         <div className='add-user-container'>
           <form onSubmit={(e) => onSubmit(e)}>
             <h3>Add a user</h3>
@@ -53,6 +51,13 @@ const Adduser = () => {
               required
               type='password'
               placeholder='Give a password'
+            />
+            <input
+              onChange={(e) => handleChange(e)}
+              name='designation'
+              required
+              type='text'
+              placeholder='Give a designation'
             />
             <input
               onChange={(e) => handleChange(e)}

@@ -123,7 +123,11 @@ const SideBar = () => {
   ];
 
   return (
-    <div className='side-bar-container'>
+    <div
+      className={`side-bar-container lg:block ${
+        store.showSideBar ? "block" : "hidden"
+      }`}
+    >
       <div className='side-bar-wrapper'>
         <div className='py-3 border-t flex justify-center items-center gap-4'>
           {store?.user && (

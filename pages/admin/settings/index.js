@@ -23,7 +23,7 @@ const Siteinfo = () => {
   }
 
   return (
-    <div className='bg-gray-50'>
+    <div className='bg-gray-50 min-h-screen'>
       <Header />
       <div className='flex gap-5'>
         <SideBar />

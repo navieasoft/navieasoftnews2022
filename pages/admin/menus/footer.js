@@ -75,7 +75,7 @@ const Footer = () => {
       <Header />
       <div className='flex gap-5'>
         <SideBar />
-        <div className='w-3/4 mx-auto'>
+        <div className='w-full mx-5 lg:w-3/4 lg:mx-auto'>
           <h3 className='text-center my-5'>Footer Menus</h3>
           <div className='dashboard-footer-menu-wrapper'>
             <div className='item relative'>

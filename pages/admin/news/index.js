@@ -120,9 +120,7 @@ const Allnews = () => {
     <div className='bg-gray-50'>
       <Header />
       <div className='flex gap-5 overflow-auto'>
-        <div className='w-[200px]'>
-          <SideBar />
-        </div>
+        <SideBar />
 
         <div className='allnews-container'>
           <table>

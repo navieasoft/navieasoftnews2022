@@ -15,9 +15,7 @@ const AllUser = () => {
     <div className='bg-gray-50'>
       <Header />
       <div className='flex gap-5 overflow-auto'>
-        <div className='w-[200px]'>
-          <SideBar />
-        </div>
+        <SideBar />
         <div className='alluser-container'>
           <table>
             <thead>

@@ -13,11 +13,11 @@ const Breakingnews = () => {
   ];
 
   return (
-    <div className='bg-gray-50 overflow-auto'>
+    <div className='bg-gray-50 min-h-screen'>
       <Header />
       <div className='flex gap-5'>
         <SideBar />
-        <div className='w-3/4 mx-auto'>
+        <div className='w-full mx-5 lg:w-3/4 lg:mx-auto'>
           <div className='breaking-news-container'>
             <h3 className='text-center my-2 underline underline-offset-8'>
               Currently Showing These News
