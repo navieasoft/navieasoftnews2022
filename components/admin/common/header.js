@@ -3,12 +3,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { basicData } from "../../../services/client/basicData";
 import useStore from "../../context/useStore";
 
 const Header = () => {
   const store = useStore();
-  const { siteName } = basicData();
 
   return (
     <div className='dashboard-header'>
@@ -21,7 +19,7 @@ const Header = () => {
         </div>
         <Link href='/'>
           <a>
-            <h3>{siteName}</h3>
+            <h3>{store?.siteInfo?.name || ""}</h3>
           </a>
         </Link>
       </div>

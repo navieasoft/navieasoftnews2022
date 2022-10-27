@@ -134,7 +134,7 @@ const CategoryDetailsSideBar = ({ page }) => {
   ];
 
   return (
-    <section>
+    <section className='hidden md:block'>
       <SmallAdd picture='/ad-1.png' link='https://iqbalhossen-c5422.web.app/' />
 
       {/* latest news */}

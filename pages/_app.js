@@ -13,6 +13,7 @@ import "../styles/header.css";
 import "../styles/home.css";
 import "../styles/dashboard.css";
 import SideMenu from "../components/common/SideMenu";
+import Head from "next/head";
 
 function Layout({ Component, pageProps }) {
   const router = useRouter();
@@ -21,6 +22,9 @@ function Layout({ Component, pageProps }) {
 
   return (
     <div>
+      <Head>
+        <title>{store?.siteInfo?.name}</title>
+      </Head>
       <Component {...pageProps} />
       <GotoTop />
       {!noFooter.includes(router.pathname) &&

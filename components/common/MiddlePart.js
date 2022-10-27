@@ -1,9 +1,11 @@
+/* eslint-disable @next/next/no-img-element */
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Image from "next/image";
 import React from "react";
+import useStore from "../context/useStore";
 
 const MiddlePart = () => {
+  const { siteInfo } = useStore();
   const days = [
     "Sunday",
     "Monday",
@@ -28,11 +30,9 @@ const MiddlePart = () => {
         <p>Todays News</p>
       </div>
       <div className='hidden md:flex justify-center'>
-        <Image
-          className='object-contain'
-          height={50}
-          width={300}
-          src='/logo.png'
+        <img
+          className='object-contain h-12'
+          src={`/${siteInfo?.logo}`}
           alt='logo'
         />
       </div>

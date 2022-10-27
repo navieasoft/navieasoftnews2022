@@ -1,71 +1,34 @@
-import Image from "next/image";
+/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import useStore from "../../context/useStore";
 import Divider from "../divider/Divider";
 
 const Footer = () => {
-  const menus = {
-    news: [
-      "Home Page",
-      "World",
-      "U.S",
-      "Coronavirous",
-      "Politics",
-      "Election Results",
-      "New York",
-      "Business",
-      "Tech",
-      "Science",
-    ],
-    opinion: [
-      "Home Page",
-      "World",
-      "U.S",
-      "Coronavirous",
-      "Politics",
-      "Election Results",
-      "New York",
-      "Business",
-      "Tech",
-      "Science",
-    ],
-    arts: [
-      "Home Page",
-      "World",
-      "U.S",
-      "Coronavirous",
-      "Politics",
-      "Election Results",
-      "New York",
-      "Business",
-      "Tech",
-      "Science",
-    ],
-    living: [
-      "Home Page",
-      "World",
-      "U.S",
-      "Coronavirous",
-      "Politics",
-      "Election Results",
-      "New York",
-      "Business",
-      "Tech",
-      "Science",
-    ],
-    more: [
-      "Home Page",
-      "World",
-      "U.S",
-      "Coronavirous",
-      "Politics",
-      "Election Results",
-      "New York",
-      "Business",
-      "Tech",
-      "Science",
-    ],
-  };
+  const [menus, setMenus] = useState(null);
+  const store = useStore();
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    (async () => {
+      try {
+        const res = await fetch("http://localhost:3000/api/menus/footermenus", {
+          signal,
+        });
+        const result = await res.json();
+        setMenus(result);
+      } catch (error) {
+        store.setError(true);
+      }
+    })();
+
+    return () => {
+      controller.abort();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const footerMenus = [
     "Contact Us",
     "Advertise",
@@ -84,11 +47,9 @@ const Footer = () => {
         <div className='flex justify-start mb-5'>
           <Link href='/'>
             <a>
-              <Image
-                className='object-contain'
-                height={50}
-                width={400}
-                src='/logo.png'
+              <img
+                className='object-contain h-12'
+                src={`/${store?.siteInfo?.logo}`}
                 alt='logo'
               />
             </a>
@@ -97,33 +58,28 @@ const Footer = () => {
         <section className='grid grid-cols-2 md:grid-cols-5 gap-5'>
           <div className='flex flex-col items-start'>
             <p className='font-medium'>NEWS</p>
-            {menus.news.map((menu, i) => (
-              <button key={i}>{menu}</button>
-            ))}
+            {menus &&
+              menus.NEWS.map((menu, i) => <button key={i}>{menu}</button>)}
           </div>
           <div className='flex flex-col items-start'>
             <p className='font-medium'>OPINION</p>
-            {menus.opinion.map((menu, i) => (
-              <button key={i}>{menu}</button>
-            ))}
+            {menus &&
+              menus.OPINION.map((menu, i) => <button key={i}>{menu}</button>)}
           </div>
           <div className='flex flex-col items-start'>
             <p className='font-medium'>ARTS</p>
-            {menus.arts.map((menu, i) => (
-              <button key={i}>{menu}</button>
-            ))}
+            {menus &&
+              menus.ARTS.map((menu, i) => <button key={i}>{menu}</button>)}
           </div>
           <div className='flex flex-col items-start'>
             <p className='font-medium'>LIVING</p>
-            {menus.living.map((menu, i) => (
-              <button key={i}>{menu}</button>
-            ))}
+            {menus &&
+              menus.LIVING.map((menu, i) => <button key={i}>{menu}</button>)}
           </div>
           <div className='flex flex-col items-start'>
             <p className='font-medium'>MORE</p>
-            {menus.more.map((menu, i) => (
-              <button key={i}>{menu}</button>
-            ))}
+            {menus &&
+              menus.MORE.map((menu, i) => <button key={i}>{menu}</button>)}
           </div>
         </section>
         <div className='footer-bottom-menu'>

@@ -13,15 +13,22 @@ const Footer = () => {
   const store = useStore();
 
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
     (async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/menus/footermenus");
+        const res = await fetch("http://localhost:3000/api/menus/footermenus", {
+          signal,
+        });
         const result = await res.json();
         setMenus(result);
       } catch (error) {
         store.setError(true);
       }
     })();
+    return () => {
+      controller.abort();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [update]);
 

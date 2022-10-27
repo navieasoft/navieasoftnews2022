@@ -14,7 +14,7 @@
     @apply grid grid-cols-2 gap-5 rounded bg-gray-100 hover:shadow-lg;
   }
   .category-wrapper .third-item {
-    @apply grid grid-cols-3 lg:grid-cols-4 gap-5 mt-10 mb-5;
+    @apply grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-10 mb-5;
   }
   .category-wrapper .third-item .news {
     @apply flex flex-col rounded bg-gray-100 hover:shadow-lg pb-5;

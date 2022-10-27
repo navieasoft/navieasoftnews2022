@@ -2,9 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import LergeAdd from "../components/common/advertizer/LergeAdd";
-import SmallAdd from "../components/common/advertizer/SmallAd";
+import Breakingnews from "../components/common/BreakingNews";
 import CategoryDetailsSideBar from "../components/common/CategoryDetailsSideBar";
-import ScrollingHighlight from "../components/common/ScrollingHighlight";
 import TopMenus from "../components/common/TopMenus";
 import TopPart from "../components/common/TopPart";
 
@@ -129,10 +128,10 @@ const category = () => {
     <div>
       <TopPart page='details' />
       <TopMenus />
-      <ScrollingHighlight />
+      <Breakingnews />
       <LergeAdd picture={"/longadd.png"} />
       <section className='category-wrapper'>
-        <section className='col-span-2'>
+        <section className='col-span-3 md:col-span-2'>
           <Link href={`details?category=${data[0].category}&id=${data[0]._id}`}>
             <a className='first-item'>
               <Image

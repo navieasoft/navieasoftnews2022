@@ -26,8 +26,9 @@
 
 @layer components {
   .custom-btn {
-    @apply rounded py-1 px-4 bg-purple-600 uppercase font-semibold hover:bg-purple-800
-    text-white shadow shadow-purple-100 hover:shadow-md hover:shadow-purple-200;
+    @apply rounded py-1.5 px-2 lg:px-4 bg-purple-600 uppercase font-semibold hover:bg-purple-800
+    text-white shadow shadow-purple-100 hover:shadow-md hover:shadow-purple-200
+    text-sm lg:text-base;
   }
   .custom-btn:disabled {
     @apply cursor-not-allowed bg-gray-400;

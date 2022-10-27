@@ -23,7 +23,7 @@ import TopHighlight from "../components/home/TopHighLight";
 import TopNews from "../components/home/TopNews";
 import TopMenus from "../components/common/TopMenus";
 import TopPart from "../components/common/TopPart";
-import ScrollingHighlight from "../components/common/ScrollingHighlight";
+import Breakingnews from "../components/common/BreakingNews";
 import MiddlePart from "../components/common/MiddlePart";
 
 const Home = () => {
@@ -51,7 +51,7 @@ const Home = () => {
       </div>
       <MiddlePart />
       <TopMenus />
-      <ScrollingHighlight />
+      <Breakingnews />
       <TopHighlight />
       <section className='home-part_1'>
         <section className='col-span-3'>

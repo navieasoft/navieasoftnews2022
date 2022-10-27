@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+/* eslint-disable @next/next/no-img-element */
+import React, { useRef, useState } from "react";
 import {
   faAngleDown,
   faBars,
@@ -60,13 +61,11 @@ const TopPart = ({ page }) => {
           </div>
         </div>
       ) : (
-        <div className='flex justify-center'>
+        <div className='hidden md:flex justify-center'>
           <div onClick={() => router.push("/")} className='cursor-pointer '>
-            <Image
-              className='cursor-pointer object-contain'
-              width={200}
-              height={30}
-              src='/logo.png'
+            <img
+              className='cursor-pointer object-contain h-10'
+              src={`/${store?.siteInfo?.logo}`}
               alt='logo'
             />
           </div>
@@ -75,18 +74,16 @@ const TopPart = ({ page }) => {
 
       <div className='flex justify-center md:hidden'>
         <div onClick={() => router.push("/")} className='cursor-pointer '>
-          <Image
+          <img
             className='cursor-pointer object-contain'
-            width={200}
-            height={30}
-            src='/logo.png'
+            src={`/${store?.siteInfo?.logo}`}
             alt='logo'
           />
         </div>
       </div>
 
-      <div className='space-x-3 flex justify-end'>
-        <button className='custom-btn hidden lg:block'>Subscribe now</button>
+      <div className='space-x-3 flex justify-end items-center'>
+        <button className='custom-btn hidden md:block'>Subscribe now</button>
         {store?.user ? (
           <div>
             <button onClick={logOut} className='py-1 px-3 rounded border'>

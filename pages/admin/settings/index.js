@@ -1,19 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../../components/admin/common/header";
 import SideBar from "../../../components/admin/common/SideBar";
+import useStore from "../../../components/context/useStore";
 
 const Siteinfo = () => {
+  const [loading, setLoading] = useState(true);
   const [info, setInfo] = useState({
     name: "",
     logo: "",
     favicon: "",
   });
+  const store = useStore();
+  const existedInfo = store?.siteInfo;
 
   function handleChange(e) {
     const name = e.target.name;
     if (name !== "name") {
       setInfo((prev) => {
-        return { ...prev, [name]: e.target.files };
+        return { ...prev, [name]: e.target.files[0] };
       });
     } else {
       setInfo((prev) => {
@@ -21,13 +25,45 @@ const Siteinfo = () => {
       });
     }
   }
+  useEffect(() => {
+    if (info.name || info.logo || info.favicon) {
+      setLoading(false);
+    } else setLoading(true);
+  }, [info]);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("name", info.name || existedInfo?.name);
+    if (info.logo) {
+      formData.append("logo", info.logo);
+      formData.append("existedLogo", existedInfo?.logo);
+    } else {
+      formData.append("logo", existedInfo?.logo);
+    }
+    formData.append("favicon", info.favicon || existedInfo?.favicon);
+    try {
+      const res = await fetch("http://localhost:3000/api/settings", {
+        method: "POST",
+        body: formData,
+      });
+      const result = await res.json();
+      if (!res.ok) throw { message: result.message };
+      store.setUpdate((prev) => !prev);
+      store?.setAlert({ msg: result.message, type: "success" });
+    } catch (error) {
+      store?.setAlert({ msg: error.message, type: "error" });
+    }
+    setLoading(false);
+  }
 
   return (
     <div className='bg-gray-50 min-h-screen'>
       <Header />
       <div className='flex gap-5'>
         <SideBar />
-        <div className='site-info-container'>
+        <form onSubmit={(e) => handleSubmit(e)} className='site-info-container'>
           <div className='item'>
             <p>Site name</p>
             <input
@@ -40,20 +76,28 @@ const Siteinfo = () => {
           </div>
           <div className='item'>
             <p>Logo of your site</p>
-            <input type='file' name='logo' onChange={(e) => handleChange(e)} />
+            <input
+              type='file'
+              accept='image/*'
+              name='logo'
+              onChange={(e) => handleChange(e)}
+            />
           </div>
           <div className='item'>
             <p>Favicon of your site</p>
             <input
               type='file'
               name='favicon'
+              accept='image/*'
               onChange={(e) => handleChange(e)}
             />
           </div>
           <div className='col-span-3 flex justify-end'>
-            <button className='btn btn-primary'>Save Changes</button>
+            <button disabled={loading} className='btn btn-primary'>
+              Save Changes
+            </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

@@ -3,8 +3,6 @@ import { faEdit, faLink, faPrint } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import React, { useState } from "react";
-import SmallAdd from "../components/common/advertizer/SmallAd";
-import ScrollingHighlight from "../components/common/ScrollingHighlight";
 import TopPart from "../components/common/TopPart";
 import {
   EmailShareButton,
@@ -23,6 +21,7 @@ import LergeAdd from "../components/common/advertizer/LergeAdd";
 import TopMenus from "../components/common/TopMenus";
 import Link from "next/link";
 import CategoryDetailsSideBar from "../components/common/CategoryDetailsSideBar";
+import Breakingnews from "../components/common/BreakingNews";
 
 const Details = () => {
   const [linkCopy, setLinkCopied] = useState(false);
@@ -116,12 +115,12 @@ const Details = () => {
     <div className='mb-10'>
       <TopPart page='details' />
       <TopMenus />
-      <ScrollingHighlight />
+      <Breakingnews />
 
       <LergeAdd picture={"/longadd.png"} />
 
       <section className='details-page-content-wrapper'>
-        <section className='col-span-2 print:col-span-3'>
+        <section className='col-span-3 md:col-span-2 print:col-span-3'>
           <section className='news-details-wrapper'>
             {/* top part */}
             <div className='top-part'>

@@ -42,7 +42,7 @@
 
   /* site info */
   .site-info-container {
-    @apply my-5 lg:grid grid-cols-3 gap-5 w-3/4 mx-auto space-y-5;
+    @apply my-5 lg:grid grid-cols-3 gap-5 w-3/4 mx-auto items-center;
   }
   .site-info-container .item {
     @apply rounded shadow-md px-5 py-7 bg-gray-100 h-32;
