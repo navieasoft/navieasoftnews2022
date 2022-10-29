@@ -6,9 +6,6 @@
   h3 {
     @apply text-xl font-medium;
   }
-}
-
-@layer utilities {
   body {
     @apply text-gray-800 bg-white;
   }
@@ -32,6 +29,9 @@
   }
   .custom-btn:disabled {
     @apply cursor-not-allowed bg-gray-400;
+  }
+  button:disabled {
+    @apply cursor-not-allowed;
   }
 
   .advertise-slot a {

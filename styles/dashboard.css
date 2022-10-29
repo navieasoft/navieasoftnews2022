@@ -160,9 +160,16 @@
   .add-user-container {
     @apply w-full mx-5 lg:w-3/4 lg:mx-auto my-5;
   }
+  .alluser-container {
+    @apply relative;
+  }
   .add-user-container form {
     @apply w-full md:w-3/6 flex flex-col items-center gap-y-5 mx-auto bg-gray-100 rounded-md 
     shadow px-5 py-7;
+  }
+  .update-user-container {
+    @apply absolute top-16 left-2/4 -translate-x-2/4 bg-white rounded shadow px-7 py-10
+    space-y-4;
   }
 
   /* dasboard page */
