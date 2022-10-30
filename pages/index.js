@@ -7,7 +7,6 @@ import AtHome from "../components/home/AtHome";
 import BusinessHighlight from "../components/home/BusinessHighlight";
 import CountryHighlight from "../components/home/CountryHighlight";
 import DailyReportOfCountry from "../components/home/DailyReportOfCountry";
-import ExtraMenus from "../components/home/ExtraMenus";
 import Features from "../components/home/Features";
 import Living from "../components/home/Living";
 import MostPopular from "../components/home/MostPopular";
@@ -19,12 +18,12 @@ import ScienceTechnology from "../components/home/ScienceTechnology";
 import HotNews from "../components/home/sideSection/HotNews";
 import OthersNews from "../components/home/sideSection/OthersNews";
 import TopTenNews from "../components/home/sideSection/TopTenNews";
-import TopHighlight from "../components/home/TopHighLight";
 import TopNews from "../components/home/TopNews";
 import TopMenus from "../components/common/TopMenus";
 import TopPart from "../components/common/TopPart";
 import Breakingnews from "../components/common/BreakingNews";
 import MiddlePart from "../components/common/MiddlePart";
+import TopHighlight from "../components/home/TopHighLight";
 
 const Home = () => {
   const [highlight, setHlight] = useState(false);
