@@ -35,7 +35,9 @@ const MainMenus = () => {
     const signal = controller.signal;
     (async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/menus", { signal });
+        const res = await fetch("https://newsportal-tau.vercel.app/api/menus", {
+          signal,
+        });
         const result = await res.json();
         setMenus(result);
       } catch (error) {

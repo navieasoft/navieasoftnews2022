@@ -25,7 +25,7 @@ const AddNews = () => {
     (async () => {
       try {
         const res = await fetch(
-          `http://localhost:3000/api/news?id=${router.query?.id}`,
+          `https://newsportal-tau.vercel.app/api/news?id=${router.query?.id}`,
           {
             signal,
           }
@@ -88,7 +88,7 @@ const AddNews = () => {
   async function updateNews(formData) {
     try {
       const res = await fetch(
-        `http://localhost:3000/api/news?id=${router.query.id}`,
+        `https://newsportal-tau.vercel.app/api/news?id=${router.query.id}`,
         {
           method: "PUT",
           body: formData,

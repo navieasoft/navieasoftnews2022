@@ -17,13 +17,16 @@ const Breakingnews = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/api/news/breakingnews", {
-        headers: {
-          "content-type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify({ value: input.current?.value }),
-      });
+      const res = await fetch(
+        "https://newsportal-tau.vercel.app/api/news/breakingnews",
+        {
+          headers: {
+            "content-type": "application/json",
+          },
+          method: "POST",
+          body: JSON.stringify({ value: input.current?.value }),
+        }
+      );
       const result = await res.json();
       if (!res.ok) throw { message: result.message };
       store?.setAlert({ msg: result.message, type: "success" });
@@ -37,13 +40,16 @@ const Breakingnews = () => {
   async function deleteBreakingNews(value) {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/api/news/breakingnews", {
-        headers: {
-          "content-type": "application/json",
-        },
-        method: "DELETE",
-        body: JSON.stringify({ value }),
-      });
+      const res = await fetch(
+        "https://newsportal-tau.vercel.app/api/news/breakingnews",
+        {
+          headers: {
+            "content-type": "application/json",
+          },
+          method: "DELETE",
+          body: JSON.stringify({ value }),
+        }
+      );
       const result = await res.json();
       if (!res.ok) throw { message: result.message };
       store?.setAlert({ msg: result.message, type: "success" });
@@ -59,9 +65,12 @@ const Breakingnews = () => {
     const signal = controller.signal;
     (async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/news/breakingnews", {
-          signal,
-        });
+        const res = await fetch(
+          "https://newsportal-tau.vercel.app/api/news/breakingnews",
+          {
+            signal,
+          }
+        );
         const result = await res.json();
         setNews(result);
       } catch (error) {

@@ -22,7 +22,7 @@ const Store = () => {
         setUser(user);
         try {
           const res = await fetch(
-            `http://localhost:3000/api/user?uid=${user.uid}`
+            `https://newsportal-tau.vercel.app/api/user?uid=${user.uid}`
           );
           if (res.ok) {
             const { designation } = res.json();
@@ -41,11 +41,13 @@ const Store = () => {
   useEffect(() => {
     (async function () {
       try {
-        const res = await fetch("https://geolocation-db.com/json");
+        const res = await fetch(
+          `https://geolocation-db.com/json/${process.env.NEXT_PUBLIC_IP_ADDRESS}`
+        );
         if (res.ok) {
           const result = await res.json();
           setIpAddress(result.IPv4);
-          await fetch("http://localhost:3000/api/news/dashboard", {
+          await fetch("https://newsportal-tau.vercel.app/api/news/dashboard", {
             headers: {
               "content-type": "application/json",
             },
@@ -68,9 +70,12 @@ const Store = () => {
     //fetch siteinfo and settings;
     (async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/settings", {
-          signal,
-        });
+        const res = await fetch(
+          "https://newsportal-tau.vercel.app/api/settings",
+          {
+            signal,
+          }
+        );
         const result = await res.json();
         setSiteInfo(result);
       } catch (error) {}
@@ -79,7 +84,9 @@ const Store = () => {
     //fetch category menus;
     (async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/menus", { signal });
+        const res = await fetch("https://newsportal-tau.vercel.app/api/menus", {
+          signal,
+        });
         const result = await res.json();
         setCategoryMenu(result);
       } catch (error) {

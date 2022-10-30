@@ -12,13 +12,16 @@ const FooterModal = ({ close, title, setUpdate }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/api/menus/footermenus", {
-        headers: {
-          "content-type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify({ title, value: input.current?.value }),
-      });
+      const res = await fetch(
+        "https://newsportal-tau.vercel.app/api/menus/footermenus",
+        {
+          headers: {
+            "content-type": "application/json",
+          },
+          method: "POST",
+          body: JSON.stringify({ title, value: input.current?.value }),
+        }
+      );
       const result = await res.json();
       if (!res.ok) throw { message: result.message };
       store?.setAlert({ msg: result.message, type: "success" });

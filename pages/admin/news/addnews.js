@@ -46,7 +46,7 @@ const AddNews = () => {
 
   async function postNews(formData) {
     try {
-      const res = await fetch("http://localhost:3000/api/news", {
+      const res = await fetch("https://newsportal-tau.vercel.app/api/news", {
         method: "POST",
         body: formData,
       });

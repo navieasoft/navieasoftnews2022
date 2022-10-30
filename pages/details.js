@@ -33,7 +33,9 @@ const Details = () => {
 
   function handleCopyLink() {
     setLinkCopied(true);
-    navigator.clipboard.writeText("http://localhost:3000/" + router.asPath);
+    navigator.clipboard.writeText(
+      "https://newsportal-tau.vercel.app/" + router.asPath
+    );
   }
 
   useEffect(() => {
@@ -43,7 +45,7 @@ const Details = () => {
     (async () => {
       try {
         const res = await fetch(
-          `http://localhost:3000/api/news?id=${router.query?.id}`,
+          `https://newsportal-tau.vercel.app/api/news?id=${router.query?.id}`,
           {
             signal,
           }
@@ -56,7 +58,7 @@ const Details = () => {
           if (ipAdress) {
             try {
               await fetch(
-                `http://localhost:3000/api/news/dashboard?id=${router.query.id}&news=true`,
+                `https://newsportal-tau.vercel.app/api/news/dashboard?id=${router.query.id}&news=true`,
                 {
                   headers: {
                     "content-type": "application/json",

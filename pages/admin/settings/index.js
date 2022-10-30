@@ -44,10 +44,13 @@ const Siteinfo = () => {
     }
     formData.append("favicon", info.favicon || existedInfo?.favicon);
     try {
-      const res = await fetch("http://localhost:3000/api/settings", {
-        method: "POST",
-        body: formData,
-      });
+      const res = await fetch(
+        "https://newsportal-tau.vercel.app/api/settings",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
       const result = await res.json();
       if (!res.ok) throw { message: result.message };
       store.setUpdate((prev) => !prev);

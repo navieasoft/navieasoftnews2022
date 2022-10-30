@@ -39,19 +39,22 @@ const Admin = () => {
       const firstDayOfYear = `${new Date(date.getFullYear(), 0, 1)}`;
 
       try {
-        const res = await fetch("http://localhost:3000/api/news/dashboard", {
-          headers: {
-            "content-type": "application/json",
-          },
-          method: "POST",
-          body: JSON.stringify({
-            today,
-            yesterday,
-            firstDayOfMonth,
-            firstDayOfYear,
-          }),
-          signal,
-        });
+        const res = await fetch(
+          "https://newsportal-tau.vercel.app/api/news/dashboard",
+          {
+            headers: {
+              "content-type": "application/json",
+            },
+            method: "POST",
+            body: JSON.stringify({
+              today,
+              yesterday,
+              firstDayOfMonth,
+              firstDayOfYear,
+            }),
+            signal,
+          }
+        );
         const result = await res.json();
         setNews(result.someNews);
         setPostReport((prev) => {
