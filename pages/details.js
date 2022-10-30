@@ -23,10 +23,11 @@ import Link from "next/link";
 import CategoryDetailsSideBar from "../components/common/CategoryDetailsSideBar";
 import Breakingnews from "../components/common/BreakingNews";
 import useStore from "../components/context/useStore";
+import Spinner from "../components/common/Spinner";
 
 const Details = () => {
   const [linkCopy, setLinkCopied] = useState(false);
-  const { setError, siteInfo } = useStore();
+  const { setError, siteInfo, ipAdress } = useStore();
   const [news, setNews] = useState(null);
   const router = useRouter();
 
@@ -38,6 +39,7 @@ const Details = () => {
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
+    //get the news;
     (async () => {
       try {
         const res = await fetch(
@@ -49,6 +51,27 @@ const Details = () => {
         if (res.ok) {
           const result = await res.json();
           setNews(result);
+
+          //update news views;
+          if (ipAdress) {
+            try {
+              await fetch(
+                `http://localhost:3000/api/news/dashboard?id=${router.query.id}&news=true`,
+                {
+                  headers: {
+                    "content-type": "application/json",
+                  },
+                  method: "PUT",
+                  body: JSON.stringify({
+                    views: ipAdress,
+                  }),
+                }
+              );
+            } catch (error) {
+              console.log(error.message);
+              throw { message: "There was an error" };
+            }
+          }
         } else throw { message: "No data found" };
       } catch (error) {
         router.push("/404");
@@ -128,7 +151,7 @@ const Details = () => {
   ];
 
   if (!news) {
-    return <p>Loading...</p>;
+    return <p>Loading</p>;
   }
 
   return (

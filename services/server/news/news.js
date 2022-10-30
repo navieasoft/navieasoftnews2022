@@ -65,7 +65,6 @@ export async function updateNews(req, res, news) {
     req.body.raletedTopic = JSON.parse(req.body.raletedTopic);
     const existedImg = req.body.existedImg;
     delete req.body.existedImg;
-
     const result = await news.updateOne(
       { _id: ObjectId(req.query.id) },
       {

@@ -9,6 +9,7 @@ const Store = () => {
   const [showSideMenu, setShowSideMenu] = useState(false);
   const [categoryMenu, setCategoryMenu] = useState(null);
   const [showSideBar, setShowSideBar] = useState(false);
+  const [ipAdress, setIpAddress] = useState(null);
   const [siteInfo, setSiteInfo] = useState(null);
   const [loading, setLoading] = useState(false);
   const [update, setUpdate] = useState(false);
@@ -35,6 +36,30 @@ const Store = () => {
       }
     });
     return unsub();
+  }, []);
+
+  useEffect(() => {
+    (async function () {
+      try {
+        const res = await fetch("https://geolocation-db.com/json");
+        if (res.ok) {
+          const result = await res.json();
+          setIpAddress(result.IPv4);
+          await fetch("http://localhost:3000/api/news/dashboard", {
+            headers: {
+              "content-type": "application/json",
+            },
+            method: "PUT",
+            body: JSON.stringify({
+              ipAdress: result.IPv4,
+              date: `${new Date()}`,
+            }),
+          });
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    })();
   }, []);
 
   useEffect(() => {
@@ -87,6 +112,7 @@ const Store = () => {
     userDesignation,
     loading,
     setLoading,
+    ipAdress,
   };
 };
 
