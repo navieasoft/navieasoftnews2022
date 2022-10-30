@@ -1,4 +1,3 @@
-import StoreProvider from "../components/context/storeProvider";
 import LoginRegister from "../components/common/LoginRegister";
 import Footer from "../components/common/footer/Footer";
 import useStore from "../components/context/useStore";
@@ -15,6 +14,7 @@ import "../styles/dashboard.css";
 import SideMenu from "../components/common/SideMenu";
 import Head from "next/head";
 import Spinner from "../components/common/Spinner";
+import StoreProvider from "../components/context/StoreProvider";
 
 function Layout({ Component, pageProps }) {
   const router = useRouter();
