@@ -8,7 +8,7 @@ const TopHighLight = () => {
       _id: 1,
       img: "/dummy3.png",
       category: "highlight",
-      heading: "Listen to the 'This American Life'",
+      heading: "Listen to the 'This American Life' American",
       body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     },
     {
