@@ -14,8 +14,9 @@ const AllUser = () => {
   const [showControl, setShowControl] = useState(-1);
   const [loading, setLoading] = useState(false);
   const [update, setUpdate] = useState(false);
-  const { setError, setAlert } = useStore();
+  const store = useStore();
   const [users, setUsers] = useState(null);
+  const [page, setPage] = useState(1);
   const [uid, setUid] = useState("");
   const updatedRole = useRef(null);
 
@@ -24,11 +25,17 @@ const AllUser = () => {
     const signal = controller.signal;
     (async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/user", { signal });
-        const result = await res.json();
-        setUsers(result);
+        const res = await fetch(
+          `http://localhost:3000/api/user?page=${page.toString()}`,
+          { signal }
+        );
+        if (res.ok) {
+          const result = await res.json();
+          setUsers(result);
+        } else throw { message: "There was an error" };
       } catch (error) {
-        setError(true);
+        store.setAlert({ message: error.message, type: "error" });
+        store.setError(true);
       }
     })();
 
@@ -36,19 +43,29 @@ const AllUser = () => {
       controller.abort();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [update]);
+  }, [update, page]);
 
-  // async function filterUser(value) {
-  //   try {
-  //     const res = await fetch(
-  //       `http://localhost:3000/api/user?designation=${value}`
-  //     );
-  //     const result = await res.json();
-  //     console.log(result);
-  //   } catch (error) {
-  //     setError(true);
-  //   }
-  // }
+  async function filterUser(value) {
+    store.setLoading(true);
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/user?page=${page.toString()}`
+      );
+      if (res.ok) {
+        const result = await res.json();
+        if (value) {
+          const filtered = result?.filter(
+            (item) => (item.customClaims?.designation || "user") === value
+          );
+          setUsers(filtered);
+        } else setUsers(result);
+      } else throw { message: "There was an error" };
+    } catch (error) {
+      store.setAlert({ message: error.message, type: "error" });
+      store.setError(true);
+    }
+    store.setLoading(false);
+  }
 
   async function updateUser(uid, title, value) {
     setLoading(true);
@@ -65,10 +82,10 @@ const AllUser = () => {
       });
       const result = await res.json();
       if (!res.ok) throw { message: result.message };
-      setAlert({ msg: result.message, type: "success" });
+      store.setAlert({ msg: result.message, type: "success" });
       setUpdate((prev) => !prev);
     } catch (error) {
-      setAlert({ msg: error.message, type: "error" });
+      store.setAlert({ msg: error.message, type: "error" });
     }
     setLoading(false);
   }
@@ -83,10 +100,10 @@ const AllUser = () => {
         });
         const result = await res.json();
         if (!res.ok) throw { message: result.message };
-        setAlert({ msg: result.message, type: "success" });
+        store.setAlert({ msg: result.message, type: "success" });
         setUpdate((prev) => !prev);
       } catch (error) {
-        setAlert({ msg: error.message, type: "error" });
+        store.setAlert({ msg: error.message, type: "error" });
       }
       setLoading(false);
     }
@@ -106,7 +123,7 @@ const AllUser = () => {
                 <th>Designation</th>
                 <th>
                   <select
-                    // onChange={(e) => filterUser(e.target.value)}
+                    onChange={(e) => filterUser(e.target.value)}
                     className='text-gray-700'
                   >
                     <option value=''>filter</option>
@@ -119,6 +136,7 @@ const AllUser = () => {
             </thead>
             <tbody>
               {users &&
+                users.length &&
                 users.map((item, i) => (
                   <tr
                     onClick={() => {
@@ -176,9 +194,21 @@ const AllUser = () => {
             </tbody>
           </table>
           <div className='btn-group flex justify-end my-3 mx-4'>
-            <button className='btn'>«</button>
+            <button
+              disabled={page === 1}
+              onClick={() => setPage((prev) => prev - 1)}
+              className='btn'
+            >
+              «
+            </button>
             <button className='btn'>Page 1</button>
-            <button className='btn'>»</button>
+            <button
+              disabled={page < 20}
+              onClick={() => setPage((prev) => prev + 1)}
+              className='btn'
+            >
+              »
+            </button>
           </div>
           <div
             className={`update-user-container ${

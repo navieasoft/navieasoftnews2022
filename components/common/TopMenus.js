@@ -2,28 +2,14 @@ import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
-import { category } from "../../services/client/menus";
 import useStore from "../context/useStore";
 
 const TopMenus = () => {
   const [showSub, setShowSub] = useState(-1);
-  const [menus, setMenus] = useState(null);
   const container = useRef(null);
-  const store = useStore();
+  const { categoryMenu } = useStore();
 
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-    (async () => {
-      try {
-        const res = await fetch("http://localhost:3000/api/menus", { signal });
-        const result = await res.json();
-        setMenus(result);
-      } catch (error) {
-        store.setError(true);
-      }
-    })();
-
     function hideDropdown(e) {
       if (!container.current?.contains(e.target)) {
         setShowSub(-1);
@@ -32,15 +18,14 @@ const TopMenus = () => {
     window.addEventListener("click", (e) => hideDropdown(e));
     return () => {
       window.removeEventListener("click", hideDropdown);
-      controller.abort();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <div ref={container} className='header-main-menus'>
-      {menus &&
-        menus.map((menu, i) => (
+      {categoryMenu &&
+        categoryMenu.map((menu, i) => (
           <div
             onMouseEnter={() => setShowSub(i)}
             className='main-menu-wrapper'

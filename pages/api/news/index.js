@@ -1,4 +1,16 @@
 import { dbConnection } from "../../../services/server/mongodb";
+import {
+  deleteNews,
+  getNews,
+  postNews,
+  updateNews,
+} from "../../../services/server/news/news";
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
 export default async function handler(req, res) {
   const { database } = await dbConnection();
@@ -10,15 +22,19 @@ export default async function handler(req, res) {
     const news = database.collection("news");
     switch (req.method) {
       case "GET":
-        // getBreakingNews(req, res, breakingNews);
+        getNews(req, res, news);
         break;
 
       case "POST":
-        // postBreakingNews(req, res, breakingNews);
+        postNews(req, res, news);
+        break;
+
+      case "PUT":
+        updateNews(req, res, news);
         break;
 
       case "DELETE":
-        // deleteBreakingNews(req, res, breakingNews);
+        deleteNews(req, res, news);
         break;
 
       default:

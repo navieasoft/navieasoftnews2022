@@ -1,8 +1,9 @@
+/* eslint-disable @next/next/no-img-element */
 import { faClock, faEnvelope } from "@fortawesome/free-regular-svg-icons";
 import { faEdit, faLink, faPrint } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TopPart from "../components/common/TopPart";
 import {
   EmailShareButton,
@@ -16,35 +17,50 @@ import {
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 import { useRouter } from "next/router";
-import { basicData } from "../services/client/basicData";
 import LergeAdd from "../components/common/advertizer/LergeAdd";
 import TopMenus from "../components/common/TopMenus";
 import Link from "next/link";
 import CategoryDetailsSideBar from "../components/common/CategoryDetailsSideBar";
 import Breakingnews from "../components/common/BreakingNews";
+import useStore from "../components/context/useStore";
 
 const Details = () => {
   const [linkCopy, setLinkCopied] = useState(false);
+  const { setError, siteInfo } = useStore();
+  const [news, setNews] = useState(null);
   const router = useRouter();
-  const { baseUrl, siteName } = basicData();
 
   function handleCopyLink() {
     setLinkCopied(true);
-    navigator.clipboard.writeText(baseUrl + router.asPath);
+    navigator.clipboard.writeText("http://localhost:3000/" + router.asPath);
   }
 
-  const data = {
-    _id: 1,
-    img: "/dummy6.png",
-    editor: "Online Reporter",
-    editor_name: "Asraful",
-    related_topic: ["Asia", "Bangladesh", "Dhaka"],
-    imgCaption:
-      "People sheltering in a subway station in Kyiv after a series of early-morning attacks. Brendan Hoffman for The New York Times",
-    heading:
-      "Listen to the 'This American Life' Listen to the 'This American Life' Listen to the 'This American Life' Listen to the 'This American Life'",
-    body: "Lorem1 ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem1 ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem1 ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem1 ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-  };
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    (async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:3000/api/news?id=${router.query?.id}`,
+          {
+            signal,
+          }
+        );
+        if (res.ok) {
+          const result = await res.json();
+          setNews(result);
+        } else throw { message: "No data found" };
+      } catch (error) {
+        router.push("/404");
+        setError(true);
+      }
+    })();
+    return () => {
+      controller.abort();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.query.id]);
+
   const relatedNews = [
     {
       _id: 1,
@@ -111,6 +127,10 @@ const Details = () => {
     },
   ];
 
+  if (!news) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <div className='mb-10'>
       <TopPart page='details' />
@@ -149,28 +169,21 @@ const Details = () => {
 
             {/* news details */}
             <div className='news-details'>
-              <h3>{data.heading}</h3>
+              <h3>{news.headline}</h3>
               <p className='text-lg my-5 space-x-2'>
                 <FontAwesomeIcon className='text-gray-600' icon={faEdit} />
-                <span>{data.editor}</span>
+                <span>Online Reporter</span>
               </p>
-              <Image
+              <img
                 className='object-contain'
-                width={900}
-                height={300}
-                src={data.img}
+                src={`/assets/${news.mainImg}`}
                 alt='news image'
               />
-              <div className='w-3/4 mx-auto'>
-                <p className='text-center text-sm text-gray-500'>
-                  {data.imgCaption}
-                </p>
-              </div>
 
-              <p className='text-justify mt-10 text-xl'>{data.body}</p>
+              <p className='text-justify mt-10 text-xl'>{news.body}</p>
 
               <p className='mt-10 text-xl'>
-                {siteName}/{data.editor_name}
+                {siteInfo?.name}/{news.editor_name}
               </p>
 
               <div className='social-icons'>
@@ -206,7 +219,7 @@ const Details = () => {
             <div className='related-topic'>
               <p>Realated Topic, You can visit.</p>
               <div className='flex'>
-                {data.related_topic.map((tp, i) => (
+                {news.raletedTopic.map((tp, i) => (
                   <Link href={`/category?q=${tp}`} key={i}>
                     <a>{tp}</a>
                   </Link>

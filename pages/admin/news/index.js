@@ -1,120 +1,66 @@
 import {
-  faAngleLeft,
   faEdit,
-  faEllipsis,
   faEllipsisVertical,
   faEye,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../../components/admin/common/header";
 import SideBar from "../../../components/admin/common/SideBar";
+import useStore from "../../../components/context/useStore";
 
 const Allnews = () => {
+  const [loading, setLoading] = useState(false);
   const [showMenu, setShowMenu] = useState(-1);
+  const [update, setUpdate] = useState(false);
+  const { setError, setAlert } = useStore();
+  const [news, setNews] = useState(null);
+  const [page, setPage] = useState(0);
   const router = useRouter();
 
-  function handleDelete(id) {
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    (async () => {
+      try {
+        const res = await fetch(`http://localhost:3000/api/news?page=${page}`, {
+          signal,
+        });
+        const result = await res.json();
+        setNews(result);
+      } catch (error) {
+        setError(true);
+      }
+    })();
+    return () => {
+      controller.abort();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [update, page]);
+
+  async function handleDelete(id, option) {
     const confirm = window.confirm("Are you sure to delete?");
     if (confirm) {
-      console.log("deleted");
+      setLoading(true);
+      const formData = new FormData();
+      formData.append("images", JSON.stringify(option));
+      try {
+        const res = await fetch(`http://localhost:3000/api/news?id=${id}`, {
+          method: "DELETE",
+          body: formData,
+        });
+        const result = await res.json();
+        if (!res.ok) throw { message: result.message };
+        setAlert({ msg: result.message, type: "success" });
+        setUpdate((prev) => !prev);
+      } catch (error) {
+        setAlert({ msg: error.message, type: "error" });
+      }
+      setLoading(false);
     }
   }
-
-  const data = [
-    {
-      _id: 1,
-      mainImg: "/topnews.png",
-      category: "World News",
-      editorName: "Ahmed kader",
-      subCategory: "Asia",
-      date: "18 october, 2022 12:18",
-      headline: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 2,
-      mainImg: "/topnews.png",
-      category: "U.S News",
-      subCategory: "Asia",
-      date: "18 october, 2022 12:18",
-      editorName: "Ahmed kader",
-      headline: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 3,
-      mainImg: "/topnews.png",
-      category: "Politics",
-      subCategory: "Asia",
-      date: "18 october, 2022 12:18",
-      editorName: "Ahmed kader",
-      headline: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 4,
-      mainImg: "/topnews.png",
-      category: "New York",
-      subCategory: "Asia",
-      date: "18 october, 2022 12:18",
-      editorName: "Ahmed kader",
-      headline: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 5,
-      mainImg: "/topnews.png",
-      category: "Business",
-      subCategory: "Asia",
-      date: "18 october, 2022 12:18",
-      editorName: "Ahmed kader",
-      headline: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 6,
-      mainImg: "/topnews.png",
-      category: "Technology",
-      subCategory: "Asia",
-      date: "18 october, 2022 12:18",
-      editorName: "Ahmed kader",
-      headline: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 7,
-      mainImg: "/topnews.png",
-      category: "Science",
-      subCategory: "Asia",
-      date: "18 october, 2022 12:18",
-      editorName: "Ahmed kader",
-      headline: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 8,
-      mainImg: "/topnews.png",
-      category: "sports",
-      subCategory: "Asia",
-      date: "18 october, 2022 12:18",
-      editorName: "Ahmed kader",
-      headline: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 9,
-      mainImg: "/topnews.png",
-      category: "Health",
-      subCategory: "Asia",
-      date: "18 october, 2022 12:18",
-      editorName: "Ahmed kader",
-      headline: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-  ];
 
   return (
     <div className='bg-gray-50'>
@@ -134,47 +80,80 @@ const Allnews = () => {
               </tr>
             </thead>
             <tbody>
-              {data.map((news, i) => (
-                <tr key={i}>
-                  <td>
-                    {news.headline.slice(0, 200)}{" "}
-                    {news.headline.length > 200 && "..."}
-                  </td>
-                  <td>{news.category}</td>
-                  <td>{news.editorName}</td>
-                  <td>{news.date}</td>
-                  <td className='space-x-2 relative'>
-                    <button onClick={() => setShowMenu(i)} className='w-5'>
-                      <FontAwesomeIcon icon={faEllipsisVertical} />
-                    </button>
-                    <div
-                      className={`controll-menus ${
-                        showMenu === i ? "block" : "hidden"
-                      }`}
+              {news && news.length ? (
+                news?.map((news, i) => (
+                  <tr onClick={() => setShowMenu(-1)} key={i}>
+                    <td style={{ textAlign: "left" }}>
+                      {news.headline.slice(0, 200)}{" "}
+                      {news.headline.length > 200 && "..."}
+                    </td>
+                    <td>{news.category}</td>
+                    <td>{news.editorName}</td>
+                    <td>{news.date}</td>
+                    <td
+                      onClick={(e) => e.stopPropagation()}
+                      className='space-x-2 relative'
                     >
-                      <button
-                        onClick={() =>
-                          router.push("/admin/news/updatenews?id=id")
-                        }
+                      <button onClick={() => setShowMenu(i)} className='w-5'>
+                        <FontAwesomeIcon icon={faEllipsisVertical} />
+                      </button>
+                      <div
+                        className={`controll-menus ${
+                          showMenu === i ? "block" : "hidden"
+                        }`}
                       >
-                        <FontAwesomeIcon icon={faEdit} />
-                      </button>
-                      <button onClick={() => router.push("/details?id=id")}>
-                        <FontAwesomeIcon icon={faEye} />
-                      </button>
-                      <button onClick={() => handleDelete("id")}>
-                        <FontAwesomeIcon icon={faTrash} />
-                      </button>
-                    </div>
-                  </td>
+                        <button
+                          onClick={() =>
+                            router.push(`/admin/news/updatenews?id=${news._id}`)
+                          }
+                        >
+                          <FontAwesomeIcon icon={faEdit} />
+                        </button>
+                        <button
+                          onClick={() => router.push(`/details?id=${news._id}`)}
+                        >
+                          <FontAwesomeIcon icon={faEye} />
+                        </button>
+                        <button
+                          disabled={loading}
+                          onClick={() =>
+                            handleDelete(news._id, {
+                              mainImg: news.mainImg,
+                              featureImg1: news.featureImg1,
+                              featureImg2: news.featureImg2,
+                              featureImg3: news.featureImg3,
+                            })
+                          }
+                        >
+                          <FontAwesomeIcon icon={faTrash} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td className='w-full'>No data found</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
           <div className='btn-group flex justify-end my-3 mx-4'>
-            <button className='btn'>«</button>
-            <button className='btn'>Page 1</button>
-            <button className='btn'>»</button>
+            <button
+              disabled={page === 0}
+              onClick={() => setPage((prev) => prev - 1)}
+              className='btn'
+            >
+              «
+            </button>
+            <button className='btn'>Page {page + 1}</button>
+            <button
+              disabled={page < 20}
+              onClick={() => setPage((prev) => prev + 1)}
+              className='btn'
+            >
+              »
+            </button>
           </div>
         </div>
       </div>

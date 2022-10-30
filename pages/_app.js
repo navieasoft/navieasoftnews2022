@@ -14,6 +14,7 @@ import "../styles/home.css";
 import "../styles/dashboard.css";
 import SideMenu from "../components/common/SideMenu";
 import Head from "next/head";
+import Spinner from "../components/common/Spinner";
 
 function Layout({ Component, pageProps }) {
   const router = useRouter();
@@ -32,6 +33,7 @@ function Layout({ Component, pageProps }) {
       {store?.showLoginRegister && <LoginRegister />}
       <SideMenu />
       {store?.alert.msg && <Alert />}
+      {store?.loading && <Spinner />}
     </div>
   );
 }

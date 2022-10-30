@@ -4,18 +4,32 @@ import { auth } from "../../services/client/firebase";
 
 const Store = () => {
   const [showLoginRegister, setShowLoginRegister] = useState(false);
+  const [userDesignation, setUserDesignation] = useState("user");
+  const [alert, setAlert] = useState({ msg: "", type: "" });
   const [showSideMenu, setShowSideMenu] = useState(false);
+  const [categoryMenu, setCategoryMenu] = useState(null);
   const [showSideBar, setShowSideBar] = useState(false);
   const [siteInfo, setSiteInfo] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [update, setUpdate] = useState(false);
   const [error, setError] = useState(false);
   const [user, setUser] = useState(null);
-  const [alert, setAlert] = useState({ msg: "", type: "" });
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => {
+    const unsub = onAuthStateChanged(auth, async (user) => {
       if (user && user.emailVerified) {
         setUser(user);
+        try {
+          const res = await fetch(
+            `http://localhost:3000/api/user?uid=${user.uid}`
+          );
+          if (res.ok) {
+            const { designation } = res.json();
+            setUserDesignation(designation || "user");
+          }
+        } catch (error) {
+          setUserDesignation("user");
+        }
       } else {
         setUser(null);
       }
@@ -26,6 +40,7 @@ const Store = () => {
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
+    //fetch siteinfo and settings;
     (async () => {
       try {
         const res = await fetch("http://localhost:3000/api/settings", {
@@ -34,7 +49,19 @@ const Store = () => {
         const result = await res.json();
         setSiteInfo(result);
       } catch (error) {}
-    })();
+    })(); //till;
+
+    //fetch category menus;
+    (async () => {
+      try {
+        const res = await fetch("http://localhost:3000/api/menus", { signal });
+        const result = await res.json();
+        setCategoryMenu(result);
+      } catch (error) {
+        setError(true);
+      }
+    })(); // till;
+
     return () => {
       controller.abort();
     };
@@ -56,6 +83,10 @@ const Store = () => {
     setError,
     siteInfo,
     setUpdate,
+    categoryMenu,
+    userDesignation,
+    loading,
+    setLoading,
   };
 };
 

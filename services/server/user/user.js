@@ -2,7 +2,7 @@ import { errorHandler } from "../errorhandler";
 import { firebaseServerInit } from "../firebase";
 import admin from "firebase-admin";
 
-if (!admin.app.length) firebaseServerInit();
+firebaseServerInit();
 
 export async function addUser(req, res) {
   try {
@@ -27,14 +27,14 @@ export async function getUser(req, res) {
   try {
     if (req.query.uid) {
       const user = await admin.auth().getUser(req.query.uid);
-      res.send({ role: user.customClaims?.role || "user" });
+      res.send({ designation: user.customClaims?.role || "user" });
     } else if (req.query.designation) {
       const userlist = await admin
         .auth()
         .getUsers([{ customClaims: { designation: req.query.designation } }]);
       res.status(200).send(userlist);
     } else {
-      const userlist = await admin.auth().listUsers();
+      const userlist = await admin.auth().listUsers(20, req.query.page || "1");
       res.status(200).send(userlist.users);
     }
   } catch (err) {
