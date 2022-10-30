@@ -23,7 +23,7 @@ import TopMenus from "../components/common/TopMenus";
 import TopPart from "../components/common/TopPart";
 import Breakingnews from "../components/common/BreakingNews";
 import MiddlePart from "../components/common/MiddlePart";
-import TopHighlight from "../components/home/TopHighLight";
+import TopHighLight from "../components/home/TopHighLight";
 
 const Home = () => {
   const [highlight, setHlight] = useState(false);
@@ -51,7 +51,7 @@ const Home = () => {
       <MiddlePart />
       <TopMenus />
       <Breakingnews />
-      <TopHighlight />
+      <TopHighLight />
       <section className='home-part_1'>
         <section className='col-span-3'>
           <TopNews />

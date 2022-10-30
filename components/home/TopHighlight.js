@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const TopHighlight = () => {
+const TopHighLight = () => {
   const data = [
     {
       _id: 1,
@@ -53,4 +53,4 @@ const TopHighlight = () => {
   );
 };
 
-export default TopHighlight;
+export default TopHighLight;
