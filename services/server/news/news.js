@@ -28,21 +28,24 @@ export async function postNews(req, res, news) {
     errorHandler(res, { msg: err.message, status: err.status });
   }
 }
+
 export async function getNews(req, res, news) {
   try {
     const page = parseInt(req.query.page + "0" || "0");
-    let result;
     if (req.query.id) {
-      result = await news.findOne({ _id: ObjectId(req.query.id) });
+      const result = await news.findOne({ _id: ObjectId(req.query.id) });
+      if (result) res.send(result);
+      else throw { message: "no data found" };
     } else {
-      result = await news
+      const result = await news
         .find({})
-        .sort({ created_at: -1 })
+        .sort({ created_at: 1 })
         .skip(page)
         .limit(20)
         .toArray();
+
+      res.send(result);
     }
-    res.send(result);
   } catch (err) {
     errorHandler(res, { msg: err.message, status: err.status });
   }

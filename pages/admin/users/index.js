@@ -26,7 +26,7 @@ const AllUser = () => {
     (async () => {
       try {
         const res = await fetch(
-          `https://newsportal-tau.vercel.app/api/user?page=${page.toString()}`,
+          `http://localhost:3000/api/user?page=${page.toString()}`,
           { signal }
         );
         if (res.ok) {
@@ -49,7 +49,7 @@ const AllUser = () => {
     store.setLoading(true);
     try {
       const res = await fetch(
-        `https://newsportal-tau.vercel.app/api/user?page=${page.toString()}`
+        `http://localhost:3000/api/user?page=${page.toString()}`
       );
       if (res.ok) {
         const result = await res.json();
@@ -70,19 +70,16 @@ const AllUser = () => {
   async function updateUser(uid, title, value) {
     setLoading(true);
     try {
-      const res = await fetch(
-        `https://newsportal-tau.vercel.app/api/user?title=${title}`,
-        {
-          headers: {
-            "content-type": "application/json",
-          },
-          method: "PUT",
-          body: JSON.stringify({
-            uid,
-            [title]: value,
-          }),
-        }
-      );
+      const res = await fetch(`http://localhost:3000/api/user?title=${title}`, {
+        headers: {
+          "content-type": "application/json",
+        },
+        method: "PUT",
+        body: JSON.stringify({
+          uid,
+          [title]: value,
+        }),
+      });
       const result = await res.json();
       if (!res.ok) throw { message: result.message };
       store.setAlert({ msg: result.message, type: "success" });
@@ -98,12 +95,9 @@ const AllUser = () => {
     if (confirm) {
       setLoading(true);
       try {
-        const res = await fetch(
-          `https://newsportal-tau.vercel.app/api/user?uid=${uid}`,
-          {
-            method: "DELETE",
-          }
-        );
+        const res = await fetch(`http://localhost:3000/api/user?uid=${uid}`, {
+          method: "DELETE",
+        });
         const result = await res.json();
         if (!res.ok) throw { message: result.message };
         store.setAlert({ msg: result.message, type: "success" });

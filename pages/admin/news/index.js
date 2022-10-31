@@ -25,12 +25,9 @@ const Allnews = () => {
     const signal = controller.signal;
     (async () => {
       try {
-        const res = await fetch(
-          `https://newsportal-tau.vercel.app/api/news?page=${page}`,
-          {
-            signal,
-          }
-        );
+        const res = await fetch(`http://localhost:3000/api/news?page=${page}`, {
+          signal,
+        });
         const result = await res.json();
         setNews(result);
       } catch (error) {
@@ -50,13 +47,10 @@ const Allnews = () => {
       const formData = new FormData();
       formData.append("images", JSON.stringify(option));
       try {
-        const res = await fetch(
-          `https://newsportal-tau.vercel.app/api/news?id=${id}`,
-          {
-            method: "DELETE",
-            body: formData,
-          }
-        );
+        const res = await fetch(`http://localhost:3000/api/news?id=${id}`, {
+          method: "DELETE",
+          body: formData,
+        });
         const result = await res.json();
         if (!res.ok) throw { message: result.message };
         setAlert({ msg: result.message, type: "success" });

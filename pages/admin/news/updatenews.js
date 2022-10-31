@@ -25,7 +25,7 @@ const AddNews = () => {
     (async () => {
       try {
         const res = await fetch(
-          `https://newsportal-tau.vercel.app/api/news?id=${router.query?.id}`,
+          `http://localhost:3000/api/news?id=${router.query?.id}`,
           {
             signal,
           }
@@ -88,7 +88,7 @@ const AddNews = () => {
   async function updateNews(formData) {
     try {
       const res = await fetch(
-        `https://newsportal-tau.vercel.app/api/news?id=${router.query.id}`,
+        `http://localhost:3000/api/news?id=${router.query.id}`,
         {
           method: "PUT",
           body: formData,
@@ -163,7 +163,7 @@ const AddNews = () => {
 
               <div className='space-y-2'>
                 <label htmlFor='newsType'>News type:</label>
-                <select required {...register("newsType")}>
+                <select {...register("newsType")}>
                   <option value=''>select</option>
                   {newsType.map((item, i) => (
                     <option
@@ -180,7 +180,7 @@ const AddNews = () => {
               <div className='space-y-2'>
                 <label htmlFor='topic'>Related Topic:</label>
                 <input
-                  defaultValue={news?.raletedTopic.join(" | ")}
+                  defaultValue={news?.raletedTopic?.join(" | ")}
                   {...register("raletedTopic")}
                   type='text'
                   placeholder='Type a | b | c'

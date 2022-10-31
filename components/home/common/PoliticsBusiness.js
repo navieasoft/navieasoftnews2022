@@ -1,6 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React from "react";
 
 const PoliticsBusiness = ({ data }) => {
@@ -9,15 +9,13 @@ const PoliticsBusiness = ({ data }) => {
       <Link href={`/details?category=${data[0].category}&id=${data[0]._id}`}>
         <a className='first-item'>
           <div>
-            <h3 className='text-xl font-medium mb-3'>{data[0].heading}</h3>
+            <h3 className='text-xl font-medium mb-3'>{data[0].headline}</h3>
             <p className='text-justify'>{data[0].body.slice(0, 300)}...</p>
           </div>
           <div className='lg:col-span-2 flex justify-center lg:justify-end'>
-            <Image
-              className='object-cover object-top'
-              width={500}
-              height={250}
-              src={data[0].img}
+            <img
+              className='object-cover object-top h-64 w-full'
+              src={`/assets/${data[0].mainImg}`}
               alt='news image'
             />
           </div>
@@ -27,15 +25,13 @@ const PoliticsBusiness = ({ data }) => {
         <Link href={`/details?category=${data[1].category}&id=${data[1]._id}`}>
           <a className='second-item'>
             <div className='col-span-2'>
-              <h3 className='text-xl font-medium mb-3'>{data[1].heading}</h3>
+              <h3 className='text-xl font-medium mb-3'>{data[1].headline}</h3>
               <p className='text-justify'>{data[1].body.slice(0, 300)}...</p>
             </div>
             <div className='hidden lg:flex justify-center'>
-              <Image
-                width={300}
-                className='object-cover object-center'
-                height={100}
-                src={data[1].img}
+              <img
+                className='object-cover object-center h-full w-full'
+                src={`/assets/${data[1].mainImg}`}
                 alt='news image'
               />
             </div>
@@ -43,7 +39,7 @@ const PoliticsBusiness = ({ data }) => {
         </Link>
         <Link href={`/details?category=${data[2].category}&id=${data[2]._id}`}>
           <a className='last-item'>
-            <h3>{data[2].heading}</h3>
+            <h3>{data[2].headline}</h3>
             <p className='text-justify'>{data[2].body.slice(0, 200)}...</p>
           </a>
         </Link>

@@ -24,9 +24,13 @@ import TopPart from "../components/common/TopPart";
 import Breakingnews from "../components/common/BreakingNews";
 import MiddlePart from "../components/common/MiddlePart";
 import TopHighlight from "../components/home/TopHighlight";
+import useStore from "../components/context/useStore";
 
 const Home = () => {
+  const [otherNews, setOtherNews] = useState(null);
   const [highlight, setHlight] = useState(false);
+  const [data, setData] = useState(null);
+  const store = useStore();
 
   useEffect(() => {
     let unsub = false;
@@ -37,6 +41,30 @@ const Home = () => {
       });
     }
     return () => (unsub = true);
+  }, []);
+
+  useEffect(() => {
+    (async function () {
+      try {
+        const res = await fetch("http://localhost:3000/api/news/home");
+        const result = await res.json();
+        if (res.ok) {
+          setData(result);
+        } else throw result;
+      } catch (error) {
+        store.setError(true);
+      }
+    })();
+    (async function () {
+      const res = await fetch(
+        "http://localhost:3000/api/news/home?otherNews=true"
+      );
+      const result = await res.json();
+      if (res.ok) {
+        setOtherNews(result);
+      } else throw result;
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -51,27 +79,29 @@ const Home = () => {
       <MiddlePart />
       <TopMenus />
       <Breakingnews />
-      <TopHighlight />
+      <TopHighlight data={data?.hotNews?.slice(0, 3) || null} />
       <section className='home-part_1'>
         <section className='col-span-3'>
-          <TopNews />
+          <TopNews data={data?.topNews || null} />
           <DailyReportOfCountry />
-          <CountryHighlight />
-          <PoliticsHighligh />
-          <BusinessHighlight />
+          <CountryHighlight data={data?.countryNews || null} />
+          <PoliticsHighligh data={data?.politicsNews || null} />
+          <BusinessHighlight data={data?.businessNews || null} />
         </section>
         <section className='hidden md:block col-span-2 lg:col-span-1'>
-          <HotNews />
+          <HotNews data={data?.hotNews[3] || null} />
           <SmallAdd
             picture='/ad-1.png'
             link='https://iqbalhossen-c5422.web.app/'
           />
-          <TopTenNews />
+          <TopTenNews data={data?.latestNews?.slice(0, 10) || null} />
           <SmallAdd
             picture='/ad-1.png'
             link='https://iqbalhossen-c5422.web.app/'
           />
-          <OthersNews />
+          <OthersNews
+            data={data?.latestNews?.slice(10, data?.latestNews?.length || null)}
+          />
           <SmallAdd
             picture='/ad-1.png'
             link='https://iqbalhossen-c5422.web.app/'
@@ -84,15 +114,15 @@ const Home = () => {
         link='https://iqbalhossen-c5422.web.app/'
       />
       <Divider />
-      <OtherNews />
+      <OtherNews data={otherNews?.otherNews || null} />
       <LergeAdd
         picture='/longadd.png'
         link='https://iqbalhossen-c5422.web.app/'
       />
       <Divider />
-      <AtHome />
+      <AtHome data={otherNews?.homeNews || null} />
       <Divider />
-      <Features />
+      <Features data={otherNews?.featuresNews || null} />
       <LergeAdd
         picture='/longadd.png'
         link='https://iqbalhossen-c5422.web.app/'

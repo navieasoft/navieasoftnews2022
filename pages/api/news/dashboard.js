@@ -49,6 +49,8 @@ async function handleDashboard(req, res, news) {
         created_at: { $gt: req.body.firstDayOfYear, $lt: req.body.today },
       })
       .count();
+    console.log(req.body);
+    console.log({ todaysNews, thisMonthNews, thisYearNews });
     res.send({ someNews, todaysNews, thisMonthNews, thisYearNews });
   } catch (err) {
     errorHandler(res, { msg: err.message, status: err.status });
@@ -73,22 +75,33 @@ async function updateNewsViews(req, res, news, settings) {
         } else {
           throw { message: "Unable to update, try again" };
         }
+      } else {
+        res.send({ message: "already added" });
       }
     } //till;
     //update visitor views;
     else {
       const _id = ObjectId("6358fa24cf4c489e511941c5");
       const title = "visitors";
-      const result = await settings.updateOne(
-        { _id },
-        {
-          $push: { [title]: req.body },
+      const existed = await settings.findOne({
+        _id,
+        "visitors.ipAdress": req.body.ipAdress,
+        "visitors.date": req.body.date,
+      });
+      if (!existed) {
+        const result = await settings.updateOne(
+          { _id },
+          {
+            $push: { [title]: req.body },
+          }
+        );
+        if (result.modifiedCount > 0) {
+          res.send({ message: "updated" });
+        } else {
+          throw { message: "Unable to update, try again" };
         }
-      );
-      if (result.modifiedCount > 0) {
-        res.send({ message: "updated" });
       } else {
-        throw { message: "Unable to update, try again" };
+        res.send({ message: "already added" });
       }
     }
   } catch (err) {

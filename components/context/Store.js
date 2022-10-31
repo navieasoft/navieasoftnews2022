@@ -22,7 +22,7 @@ const Store = () => {
         setUser(user);
         try {
           const res = await fetch(
-            `https://newsportal-tau.vercel.app/api/user?uid=${user.uid}`
+            `http://localhost:3000/api/user?uid=${user.uid}`
           );
           if (res.ok) {
             const { designation } = res.json();
@@ -47,7 +47,7 @@ const Store = () => {
         if (res.ok) {
           const result = await res.json();
           setIpAddress(result.IPv4);
-          await fetch("https://newsportal-tau.vercel.app/api/news/dashboard", {
+          await fetch("http://localhost:3000/api/news/dashboard", {
             headers: {
               "content-type": "application/json",
             },
@@ -70,12 +70,9 @@ const Store = () => {
     //fetch siteinfo and settings;
     (async () => {
       try {
-        const res = await fetch(
-          "https://newsportal-tau.vercel.app/api/settings",
-          {
-            signal,
-          }
-        );
+        const res = await fetch("http://localhost:3000/api/settings", {
+          signal,
+        });
         const result = await res.json();
         setSiteInfo(result);
       } catch (error) {}
@@ -84,7 +81,7 @@ const Store = () => {
     //fetch category menus;
     (async () => {
       try {
-        const res = await fetch("https://newsportal-tau.vercel.app/api/menus", {
+        const res = await fetch("http://localhost:3000/api/menus", {
           signal,
         });
         const result = await res.json();

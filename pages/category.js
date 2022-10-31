@@ -1,129 +1,57 @@
-import Image from "next/image";
+/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
-import React from "react";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 import LergeAdd from "../components/common/advertizer/LergeAdd";
 import Breakingnews from "../components/common/BreakingNews";
 import CategoryDetailsSideBar from "../components/common/CategoryDetailsSideBar";
 import TopMenus from "../components/common/TopMenus";
 import TopPart from "../components/common/TopPart";
+import useStore from "../components/context/useStore";
 
-const category = () => {
-  const data = [
-    {
-      _id: 1,
-      img: "/topnews.png",
-      category: "World News",
-      heading:
-        "Combat Veterans, Eyeing House, Strike From the Right Strike Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 2,
-      img: "/topnews.png",
-      category: "U.S News",
-      heading: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 3,
-      img: "/topnews.png",
-      category: "Politics",
-      heading: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 4,
-      img: "/topnews.png",
-      category: "New York",
-      heading: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 5,
-      img: "/topnews.png",
-      category: "Business",
-      heading: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 6,
-      img: "/topnews.png",
-      category: "Technology",
-      heading: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 7,
-      img: "/topnews.png",
-      category: "Science",
-      heading: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 8,
-      img: "/topnews.png",
-      category: "sports",
-      heading: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 9,
-      img: "/topnews.png",
-      category: "Health",
-      heading: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 10,
-      img: "/topnews.png",
-      category: "Education",
-      heading: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 11,
-      img: "/topnews.png",
-      category: "Science",
-      heading: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 12,
-      img: "/topnews.png",
-      category: "sports",
-      heading: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 13,
-      img: "/topnews.png",
-      category: "Health",
-      heading: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 14,
-      img: "/topnews.png",
-      category: "Education",
-      heading: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 15,
-      img: "/topnews.png",
-      category: "Health",
-      heading: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 16,
-      img: "/topnews.png",
-      category: "Education",
-      heading: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-  ];
+const Category = () => {
+  const [news, setNews] = useState(null);
+  const { setError } = useStore();
+  const router = useRouter();
 
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    (async function () {
+      try {
+        const res = await fetch(
+          `http://localhost:3000/api/news/home?category=${router.query.q}&sub=${
+            router.query.sub || ""
+          }`,
+          {
+            signal,
+          }
+        );
+        const result = await res.json();
+        if (res.ok) {
+          setNews(result);
+        } else throw { message: result.message };
+      } catch (error) {
+        setError(true);
+      }
+    })();
+    return () => {
+      controller.abort();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.query]);
+
+  if (!news) return null;
+  if (!news.length) {
+    return (
+      <div className='no-data-container'>
+        <p>There is no news</p>
+        <button onClick={() => router.push("/")} className='btn btn-primary'>
+          Go back
+        </button>
+      </div>
+    );
+  }
   return (
     <div>
       <TopPart page='details' />
@@ -132,35 +60,31 @@ const category = () => {
       <LergeAdd picture={"/longadd.png"} />
       <section className='category-wrapper'>
         <section className='col-span-3 md:col-span-2'>
-          <Link href={`details?category=${data[0].category}&id=${data[0]._id}`}>
+          <Link href={`details?category=${news[0].category}&id=${news[0]._id}`}>
             <a className='first-item'>
-              <Image
+              <img
                 className='object-contain'
-                width={500}
-                height={300}
-                src={data[0].img}
+                src={`/assets/${news[0].mainImg}`}
                 alt=''
               />
-              <p className='font-medium'>{data[0].heading}</p>
-              <p>{data[0].body.slice(0, 300)}...</p>
+              <p className='font-medium'>{news[0].headline}</p>
+              <p>{news[0].body.slice(0, 300)}...</p>
             </a>
           </Link>
 
           <LergeAdd picture={"/longadd.png"} />
 
           <div className='second-item'>
-            {data.slice(1, 7).map((news) => (
+            {news.slice(1, 7).map((news) => (
               <Link
                 href={`details?category=${news.category}&id=${news._id}`}
                 key={news._id}
               >
                 <a className='news'>
-                  <p className='font-medium py-2 px-3'>{news.heading}</p>
-                  <Image
+                  <p className='font-medium py-2 px-3'>{news.headline}</p>
+                  <img
                     className='object-cover object-center rounded-r'
-                    width={200}
-                    height={100}
-                    src={news.img}
+                    src={`/assets/${news.mainImg}`}
                     alt=''
                   />
                 </a>
@@ -171,26 +95,21 @@ const category = () => {
           <LergeAdd picture={"/longadd.png"} />
 
           <div className='third-item'>
-            {data.slice(8, data.length).map((news) => (
+            {news.slice(8, news.length)?.map((news) => (
               <Link
                 href={`details?category=${news.category}&id=${news._id}`}
                 key={news._id}
               >
                 <a className='news'>
-                  <Image
+                  <img
                     className='object-cover object-center rounded-t'
-                    width={200}
-                    height={100}
-                    src={news.img}
+                    src={`/assets/${news.mainImg}`}
                     alt=''
                   />
-                  <p className='font-medium py-2 px-3'>{news.heading}</p>
+                  <p className='font-medium py-2 px-3'>{news.headline}</p>
                 </a>
               </Link>
             ))}
-          </div>
-          <div className='flex justify-end mt-5 mr-5'>
-            <button className='btn btn-primary'>See More</button>
           </div>
         </section>
 
@@ -201,4 +120,4 @@ const category = () => {
   );
 };
 
-export default category;
+export default Category;

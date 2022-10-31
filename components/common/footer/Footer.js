@@ -13,12 +13,9 @@ const Footer = () => {
     const signal = controller.signal;
     (async () => {
       try {
-        const res = await fetch(
-          "https://newsportal-tau.vercel.app/api/menus/footermenus",
-          {
-            signal,
-          }
-        );
+        const res = await fetch("http://localhost:3000/api/menus/footermenus", {
+          signal,
+        });
         const result = await res.json();
         setMenus(result);
       } catch (error) {

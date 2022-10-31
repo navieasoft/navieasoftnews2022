@@ -23,19 +23,74 @@ import Link from "next/link";
 import CategoryDetailsSideBar from "../components/common/CategoryDetailsSideBar";
 import Breakingnews from "../components/common/BreakingNews";
 import useStore from "../components/context/useStore";
-import Spinner from "../components/common/Spinner";
 
 const Details = () => {
-  const [linkCopy, setLinkCopied] = useState(false);
+  const [relatedNews, setRelatedNews] = useState(null);
   const { setError, siteInfo, ipAdress } = useStore();
+  const [linkCopy, setLinkCopied] = useState(false);
   const [news, setNews] = useState(null);
+  const [skip, setSkip] = useState(0);
   const router = useRouter();
 
   function handleCopyLink() {
     setLinkCopied(true);
-    navigator.clipboard.writeText(
-      "https://newsportal-tau.vercel.app/" + router.asPath
-    );
+    navigator.clipboard.writeText("http://localhost:3000/" + router.asPath);
+  }
+
+  async function getSingeNews(signal) {
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/news?id=${router.query?.id}`,
+        {
+          signal,
+        }
+      );
+      const result = await res.json();
+      if (res.ok) {
+        setNews(result);
+        //get related news;
+        await getRelatedNews(result.category);
+        //update news views;
+        if (ipAdress) {
+          await updateViewPost();
+        }
+      } else throw result;
+    } catch (error) {
+      setError(true);
+    }
+  }
+  async function updateViewPost(ipAdress) {
+    try {
+      await fetch(
+        `http://localhost:3000/api/news/dashboard?id=${router.query.id}&news=true`,
+        {
+          headers: {
+            "content-type": "application/json",
+          },
+          method: "PUT",
+          body: JSON.stringify({
+            views: ipAdress,
+            date: `${new Date()}`,
+          }),
+        }
+      );
+    } catch (error) {
+      throw { message: "There was an error" };
+    }
+  }
+  async function getRelatedNews(category) {
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/news/home?category=${category}&limit=9&skip=${skip}`
+      );
+      const result = await res.json();
+      console.log(result);
+      if (res.ok) {
+        setRelatedNews(result);
+      } else throw result;
+    } catch (error) {
+      throw error;
+    }
   }
 
   useEffect(() => {
@@ -43,119 +98,18 @@ const Details = () => {
     const signal = controller.signal;
     //get the news;
     (async () => {
-      try {
-        const res = await fetch(
-          `https://newsportal-tau.vercel.app/api/news?id=${router.query?.id}`,
-          {
-            signal,
-          }
-        );
-        if (res.ok) {
-          const result = await res.json();
-          setNews(result);
-
-          //update news views;
-          if (ipAdress) {
-            try {
-              await fetch(
-                `https://newsportal-tau.vercel.app/api/news/dashboard?id=${router.query.id}&news=true`,
-                {
-                  headers: {
-                    "content-type": "application/json",
-                  },
-                  method: "PUT",
-                  body: JSON.stringify({
-                    views: ipAdress,
-                  }),
-                }
-              );
-            } catch (error) {
-              console.log(error.message);
-              throw { message: "There was an error" };
-            }
-          }
-        } else throw { message: "No data found" };
-      } catch (error) {
-        router.push("/404");
-        setError(true);
-      }
+      await getSingeNews(signal);
     })();
     return () => {
       controller.abort();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.query.id]);
 
-  const relatedNews = [
-    {
-      _id: 1,
-      img: "/topnews.png",
-      category: "World News",
-      heading: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 2,
-      img: "/topnews.png",
-      category: "U.S News",
-      heading: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 3,
-      img: "/topnews.png",
-      category: "Politics",
-      heading: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 4,
-      img: "/topnews.png",
-      category: "New York",
-      heading: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 5,
-      img: "/topnews.png",
-      category: "Business",
-      heading: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 6,
-      img: "/topnews.png",
-      category: "Technology",
-      heading: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 7,
-      img: "/topnews.png",
-      category: "Science",
-      heading: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 8,
-      img: "/topnews.png",
-      category: "sports",
-      heading: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-    {
-      _id: 9,
-      img: "/topnews.png",
-      category: "Health",
-      heading: "Combat Veterans, Eyeing House, Strike From the Right Strike",
-      body: "top news Candidates with remarkable military records are embracing the stolen-election myth, challenging the assumption that veterans can foster bipartisanship. Beyond right-wing leanings, they support anti-interventionist foreign policies that for decades have been associated more with the Democratic left than the G.O.P.",
-    },
-  ];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.query.id, ipAdress]);
 
   if (!news) {
     return <p>Loading</p>;
   }
-
   return (
     <div className='mb-10'>
       <TopPart page='details' />
@@ -213,27 +167,27 @@ const Details = () => {
 
               <div className='social-icons'>
                 <TwitterShareButton url={"https://navieasoft.com/"}>
-                  <button className='text-blue-400'>
+                  <a className='text-blue-400'>
                     <FontAwesomeIcon icon={faTwitter} />
-                  </button>
+                  </a>
                 </TwitterShareButton>
                 <LinkedinShareButton url={"https://navieasoft.com/"}>
-                  <button className='text-[#0e76a8]'>
+                  <a className='text-[#0e76a8]'>
                     <FontAwesomeIcon icon={faLinkedin} />
-                  </button>
+                  </a>
                 </LinkedinShareButton>
                 <FacebookShareButton url={"https://navieasoft.com/"}>
-                  <button className='text-blue-600'>
+                  <a className='text-blue-600'>
                     <FontAwesomeIcon icon={faFacebook} />
-                  </button>
+                  </a>
                 </FacebookShareButton>
                 <EmailShareButton
                   subject='This the subject of the email'
                   url={"https://navieasoft.com/"}
                 >
-                  <button>
+                  <a>
                     <FontAwesomeIcon icon={faEnvelope} />
-                  </button>
+                  </a>
                 </EmailShareButton>
               </div>
             </div>
@@ -258,26 +212,40 @@ const Details = () => {
             <section className='print:hidden'>
               <b className='mb-4 block'>Related News:</b>
               <div className='related-news-wrapper'>
-                {relatedNews.map((news) => (
-                  <Link
-                    href={`/details?category=${news.category}&id=${news._id}`}
-                    key={news._id}
-                  >
-                    <a className='news'>
-                      <Image
-                        className='object-cover object-center rounded-t'
-                        width={200}
-                        height={100}
-                        src={news.img}
-                        alt=''
-                      />
-                      <p className='font-medium px-2 pb-3'>{news.heading}</p>
-                    </a>
-                  </Link>
-                ))}
+                {relatedNews && relatedNews.length ? (
+                  relatedNews.map((news) => (
+                    <Link
+                      href={`/details?category=${news.category}&id=${news._id}`}
+                      key={news._id}
+                    >
+                      <a className='news'>
+                        <img
+                          className='object-cover object-center rounded-t'
+                          src={`/assets/${news.mainImg}`}
+                          alt=''
+                        />
+                        <p className='font-medium px-2 pb-3'>{news.headline}</p>
+                      </a>
+                    </Link>
+                  ))
+                ) : (
+                  <div>
+                    <p className='font-medium text-gray-600 mt-5 text-center'>
+                      No data
+                    </p>
+                  </div>
+                )}
               </div>
               <div className='flex justify-end mt-5'>
-                <button className='btn btn-primary'>Load More</button>
+                <button
+                  onClick={() => {
+                    setSkip((prev) => prev + 9);
+                    getRelatedNews(news.category, skip);
+                  }}
+                  className='btn btn-primary'
+                >
+                  Load More
+                </button>
               </div>
             </section>
             <LergeAdd picture={"/longadd.png"} />

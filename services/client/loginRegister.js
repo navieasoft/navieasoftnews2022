@@ -103,7 +103,7 @@ export async function passwordResetEmail(email, store, setError) {
 async function sentVarifyEmail(user, store, setError) {
   try {
     await sendEmailVerification(user, {
-      url: "https://newsportal-tau.vercel.app/",
+      url: "http://localhost:3000/",
     });
     store?.setAlert({
       msg: "An varification email sent to your email",

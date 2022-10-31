@@ -17,12 +17,9 @@ const Footer = () => {
     const signal = controller.signal;
     (async () => {
       try {
-        const res = await fetch(
-          "https://newsportal-tau.vercel.app/api/menus/footermenus",
-          {
-            signal,
-          }
-        );
+        const res = await fetch("http://localhost:3000/api/menus/footermenus", {
+          signal,
+        });
         const result = await res.json();
         setMenus(result);
       } catch (error) {
@@ -37,16 +34,13 @@ const Footer = () => {
 
   async function deleteFooterMenu(title, value) {
     try {
-      const res = await fetch(
-        "https://newsportal-tau.vercel.app/api/menus/footermenus",
-        {
-          headers: {
-            "content-type": "application/json",
-          },
-          method: "DELETE",
-          body: JSON.stringify({ title, value }),
-        }
-      );
+      const res = await fetch("http://localhost:3000/api/menus/footermenus", {
+        headers: {
+          "content-type": "application/json",
+        },
+        method: "DELETE",
+        body: JSON.stringify({ title, value }),
+      });
       const result = await res.json();
       if (!res.ok) throw { message: result.message };
       store?.setAlert({ msg: result.message, type: "success" });

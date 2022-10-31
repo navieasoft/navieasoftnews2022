@@ -2,7 +2,7 @@ import { errorHandler } from "../errorhandler";
 import { firebaseServerInit } from "../firebase";
 import admin from "firebase-admin";
 
-if (!admin.app.length) firebaseServerInit();
+firebaseServerInit();
 
 export async function addUser(req, res) {
   try {

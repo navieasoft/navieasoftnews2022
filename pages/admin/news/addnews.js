@@ -46,7 +46,7 @@ const AddNews = () => {
 
   async function postNews(formData) {
     try {
-      const res = await fetch("https://newsportal-tau.vercel.app/api/news", {
+      const res = await fetch("http://localhost:3000/api/news", {
         method: "POST",
         body: formData,
       });
@@ -115,9 +115,13 @@ const AddNews = () => {
                 <label htmlFor='newsType'>News type:</label>
                 <select required {...register("newsType", { required: true })}>
                   <option value=''>select</option>
-                  <option value='genaral news'>genaral news</option>
                   <option value='hot news'>hot news</option>
                   <option value='top news'>top news</option>
+                  <option value='opinion'>opinion</option>
+                  <option value='arts'>arts</option>
+                  <option value='living'>living</option>
+                  <option value='features'>features news</option>
+                  <option value='genaral news'>genaral news</option>
                 </select>
               </div>
 

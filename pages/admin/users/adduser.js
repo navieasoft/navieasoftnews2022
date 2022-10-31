@@ -41,7 +41,7 @@ const Adduser = () => {
         }
       }
       //post data;
-      const res = await fetch("https://newsportal-tau.vercel.app/api/user", {
+      const res = await fetch("http://localhost:3000/api/user", {
         headers: {
           "content-type": "application/json",
         },

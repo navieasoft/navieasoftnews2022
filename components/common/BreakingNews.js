@@ -9,12 +9,9 @@ const Breakingnews = () => {
     const signal = controller.signal;
     (async () => {
       try {
-        const res = await fetch(
-          "https://newsportal-tau.vercel.app/api/news/breakingnews",
-          {
-            signal,
-          }
-        );
+        const res = await fetch("http://localhost:3000/api/news/breakingnews", {
+          signal,
+        });
         const result = await res.json();
         setNews(result);
       } catch (error) {
@@ -30,7 +27,7 @@ const Breakingnews = () => {
   return (
     <div className='bg-white border-b py-2 px-5 xl:px-10 print:hidden'>
       <marquee>
-        <p>{news && news.breakingNews.join(" || ")}</p>
+        <p>{news && news.breakingNews?.join(" || ")}</p>
       </marquee>
     </div>
   );
