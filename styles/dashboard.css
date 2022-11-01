@@ -180,10 +180,38 @@
     @apply md:grid grid-cols-3 gap-5 my-2 space-y-5 md:space-y-0;
   }
   .dashboard-container .post-details .item {
-    @apply bg-gray-200 rounded-md shadow py-5 space-y-3 text-center;
+    @apply bg-slate-200 rounded-md shadow py-5 space-y-3 text-center;
   }
   .dashboard-container .post-details .item svg {
-    @apply px-4 py-3 text-green-900 rounded-md;
+    @apply py-3 text-green-900 rounded-md;
+  }
+
+  /* advertisement components */
+  .advertisement-wrapper {
+    @apply my-5 w-full relative;
+  }
+  .advertisement-wrapper .save-btn {
+    @apply absolute top-0 right-3;
+  }
+  .advertisement-wrapper h3 {
+    @apply text-center mb-2;
+  }
+  .advertisement-wrapper h4 {
+    @apply font-medium text-gray-700 mb-2;
+  }
+  .advertisement-wrapper .small-wrapper {
+    @apply grid grid-cols-3 gap-5;
+  }
+  .advertisement-wrapper .small-item,
+  .advertisement-wrapper .long-item {
+    @apply bg-slate-200 rounded shadow px-3 py-7;
+  }
+  .advertisement-wrapper .small-item img,
+  .advertisement-wrapper .long-item img {
+    @apply w-full h-16 object-contain;
+  }
+  .advertisement-wrapper .long-wrapper {
+    @apply grid grid-cols-2 gap-5;
   }
 }
 

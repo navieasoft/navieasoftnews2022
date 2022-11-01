@@ -17,6 +17,20 @@ const Store = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    let unsub;
+    (async function () {
+      unsub = await manageUser();
+      const { error, ipAdress } = await getIpAddress();
+      if (!error) {
+        await updateVisitor(ipAdress);
+      }
+    })();
+    return () => {
+      unsub();
+    };
+  }, []);
+
+  async function manageUser() {
     const unsub = onAuthStateChanged(auth, async (user) => {
       if (user && user.emailVerified) {
         setUser(user);
@@ -35,67 +49,77 @@ const Store = () => {
         setUser(null);
       }
     });
-    return unsub();
-  }, []);
-
-  useEffect(() => {
-    (async function () {
-      try {
-        const res = await fetch(
-          `https://geolocation-db.com/json/${process.env.NEXT_PUBLIC_IP_ADDRESS}`
-        );
-        if (res.ok) {
-          const result = await res.json();
-          setIpAddress(result.IPv4);
-          await fetch("http://localhost:3000/api/news/dashboard", {
-            headers: {
-              "content-type": "application/json",
-            },
-            method: "PUT",
-            body: JSON.stringify({
-              ipAdress: result.IPv4,
-              date: `${new Date()}`,
-            }),
-          });
-        }
-      } catch (error) {
-        console.log(error.message);
+    return unsub;
+  }
+  async function getIpAddress() {
+    try {
+      const res = await fetch(
+        `https://geolocation-db.com/json/${process.env.NEXT_PUBLIC_IP_ADDRESS}`
+      );
+      if (res.ok) {
+        const result = await res.json();
+        setIpAddress(result.IPv4);
+        return { error: false, ipAdress: result.IPv4 };
       }
-    })();
-  }, []);
+    } catch (error) {
+      return { error: true, ipAdress: null };
+    }
+  }
+  async function updateVisitor(ipAdress) {
+    try {
+      const res = await fetch("http://localhost:3000/api/news/dashboard", {
+        method: "PUT",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          ipAdress,
+          date: `${new Date().toDateString()}`,
+        }),
+      });
+      const result = await res.json();
+      console.log(result);
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
 
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
-    //fetch siteinfo and settings;
     (async () => {
-      try {
-        const res = await fetch("http://localhost:3000/api/settings", {
-          signal,
-        });
-        const result = await res.json();
-        setSiteInfo(result);
-      } catch (error) {}
-    })(); //till;
-
-    //fetch category menus;
-    (async () => {
-      try {
-        const res = await fetch("http://localhost:3000/api/menus", {
-          signal,
-        });
-        const result = await res.json();
-        setCategoryMenu(result);
-      } catch (error) {
-        setError(true);
-      }
-    })(); // till;
+      //fetch siteinfo and settings;
+      await getSiteInfo(signal);
+      //fetch category menus;
+      await getMenus(signal);
+    })();
 
     return () => {
       controller.abort();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [update]);
+
+  async function getSiteInfo(signal) {
+    try {
+      const res = await fetch("http://localhost:3000/api/settings", {
+        signal,
+      });
+      const result = await res.json();
+      setSiteInfo(result);
+    } catch (error) {}
+  }
+  async function getMenus(signal) {
+    try {
+      const res = await fetch("http://localhost:3000/api/menus", {
+        signal,
+      });
+      const result = await res.json();
+      setCategoryMenu(result);
+    } catch (error) {
+      setError(true);
+    }
+  }
 
   return {
     showLoginRegister,

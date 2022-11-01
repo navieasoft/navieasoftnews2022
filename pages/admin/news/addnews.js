@@ -17,11 +17,6 @@ const AddNews = () => {
 
   async function onSubmit(data) {
     setLoading(true);
-    data.editor_name = user.displayName;
-    const d = new Date();
-    const date = `${d.getDate()} ${d.toLocaleString("en-us", {
-      month: "long",
-    })}, ${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}`;
     if (data.raletedTopic.includes("|")) {
       data.raletedTopic = data.raletedTopic
         .split("|")
@@ -30,8 +25,6 @@ const AddNews = () => {
       data.raletedTopic = [data.raletedTopic];
     }
     data.raletedTopic = JSON.stringify(data.raletedTopic);
-    data.date = date;
-    data.created_at = d;
     data.mainImg = data.mainImg[0];
     data.featureImg1 = data.featureImg1[0] || "";
     data.featureImg2 = data.featureImg2[0] || "";
@@ -55,6 +48,7 @@ const AddNews = () => {
       setAlert({ msg: result.message, type: "success" });
       reset();
     } catch (error) {
+      console.log(error);
       setAlert({ msg: error.message, type: "error" });
     }
   }

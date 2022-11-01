@@ -58,7 +58,6 @@ const AddNews = () => {
     }
     data.raletedTopic = JSON.stringify(data.raletedTopic);
     data.date = date;
-    data.created_at = d;
     data.mainImg = data.mainImg[0];
     data.featureImg1 = data.featureImg1[0] || "";
     data.featureImg2 = data.featureImg2[0] || "";

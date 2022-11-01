@@ -1,14 +1,12 @@
-import Image from "next/image";
+/* eslint-disable @next/next/no-img-element */
 import React from "react";
 
 const LergeAdd = ({ picture, link }) => {
   return (
     <div className='advertise-slot print:hidden'>
       <a href={link} target='_blank' rel='noopener noreferrer'>
-        <Image
-          className='object-contain'
-          width={800}
-          height={100}
+        <img
+          className='object-contain h-28 w-full'
           src={picture}
           alt='ad image'
         />

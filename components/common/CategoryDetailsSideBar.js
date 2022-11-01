@@ -6,6 +6,7 @@ import SmallAdd from "./advertizer/SmallAd";
 
 const CategoryDetailsSideBar = ({ page }) => {
   const [latestNews, setLatestNews] = useState(null);
+  const [ads, setAds] = useState(null);
   const { setError } = useStore();
 
   useEffect(() => {
@@ -24,6 +25,19 @@ const CategoryDetailsSideBar = ({ page }) => {
         setError(true);
       }
     })();
+    (async function () {
+      try {
+        const res = await fetch("http://localhost:3000/api/settings/ads", {
+          signal,
+        });
+        const result = await res.json();
+        if (res.ok) {
+          setAds(result.others);
+        } else throw result;
+      } catch (error) {
+        console.log(error.message);
+      }
+    })();
     return () => {
       controller.abort();
     };
@@ -32,7 +46,10 @@ const CategoryDetailsSideBar = ({ page }) => {
 
   return (
     <section className='hidden md:block'>
-      <SmallAdd picture='/ad-1.png' link='https://iqbalhossen-c5422.web.app/' />
+      <SmallAdd
+        picture={`/ads/${ads?.small[0].adImg || ""}`}
+        link={ads?.small[0].url}
+      />
 
       {/* latest news */}
       <div
@@ -58,7 +75,10 @@ const CategoryDetailsSideBar = ({ page }) => {
             </Link>
           ))}
       </div>
-      <SmallAdd picture='/ad-1.png' link='https://iqbalhossen-c5422.web.app/' />
+      <SmallAdd
+        picture={`/ads/${ads?.small[1].adImg || ""}`}
+        link={ads?.small[1].url}
+      />
 
       {/* most read news */}
       <div className='some-news h-[900px]'>

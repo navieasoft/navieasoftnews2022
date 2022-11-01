@@ -147,11 +147,7 @@ const Allnews = () => {
               «
             </button>
             <button className='btn'>Page {page + 1}</button>
-            <button
-              disabled={page < 20}
-              onClick={() => setPage((prev) => prev + 1)}
-              className='btn'
-            >
+            <button onClick={() => setPage((prev) => prev + 1)} className='btn'>
               »
             </button>
           </div>

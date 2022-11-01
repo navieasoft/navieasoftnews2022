@@ -5,7 +5,7 @@ export async function getBreakingNews(req, res, breakingNews) {
   try {
     const _id = ObjectId("6358e226cf4c489e511941c1");
     const result = await breakingNews.findOne({ _id });
-    res.send(result);
+    res.send(result || {});
   } catch (err) {
     errorHandler(res, { msg: err.message, status: err.status });
   }

@@ -11,13 +11,14 @@ export default async function handler(req, res) {
   } else {
     const news = database.collection("news");
     const settings = database.collection("settings");
+    const visitors = database.collection("visitors");
     switch (req.method) {
-      case "POST":
-        handleDashboard(req, res, news);
+      case "GET":
+        handleDashboard(req, res, news, settings);
         break;
 
       case "PUT":
-        updateNewsViews(req, res, news, settings);
+        updateNewsViews(req, res, news, visitors);
         break;
 
       default:
@@ -27,81 +28,161 @@ export default async function handler(req, res) {
   }
 }
 
-async function handleDashboard(req, res, news) {
+function getAllDates() {
+  const date = new Date();
+  const today = date;
+  const yesterday = new Date(date.valueOf() - 1000 * 60 * 60 * 24);
+  const beforeYesterday = new Date(date.valueOf() - 1000 * 60 * 60 * 48);
+  const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+  const previousMonth = new Date(date.getFullYear(), date.getMonth() - 1, 1);
+  const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+  const previousYear = new Date(date.getFullYear() - 1, 0, 1);
+
+  return {
+    today,
+    yesterday,
+    beforeYesterday,
+    firstDayOfMonth,
+    previousMonth,
+    firstDayOfYear,
+    previousYear,
+  };
+}
+
+async function getPostReport(news) {
+  const {
+    today,
+    yesterday,
+    beforeYesterday,
+    firstDayOfMonth,
+    previousMonth,
+    firstDayOfYear,
+    previousYear,
+  } = getAllDates();
+  const todaysNews = await news
+    .find({
+      created_at: { $gt: yesterday, $lt: today },
+    })
+    .count();
+
+  const yesterNews = await news
+    .find({
+      created_at: { $gt: beforeYesterday, $lt: yesterday },
+    })
+    .count();
+  const thisMonthNews = await news
+    .find({
+      created_at: { $gt: firstDayOfMonth, $lt: today },
+    })
+    .count();
+
+  const previousMonthNews = await news
+    .find({
+      created_at: { $gt: previousMonth, $lt: firstDayOfMonth },
+    })
+    .count();
+  const thisYearNews = await news
+    .find({
+      created_at: { $gt: firstDayOfYear, $lt: today },
+    })
+    .count();
+
+  const previousYearNews = await news
+    .find({
+      created_at: { $gt: previousYear, $lt: firstDayOfYear },
+    })
+    .count();
+  return [
+    {
+      name: "Today's Post",
+      count: todaysNews,
+      grouth: ((todaysNews - yesterNews) / yesterNews) * 100,
+    },
+    {
+      name: "This Month's Post",
+      count: thisMonthNews,
+      grouth:
+        ((thisMonthNews - previousMonthNews) /
+          (previousMonthNews === 0 ? 1 : previousMonthNews)) *
+        100,
+    },
+    {
+      name: "This year's Post",
+      count: thisYearNews,
+      grouth:
+        ((thisYearNews - previousYearNews) /
+          (previousMonthNews === 0 ? 1 : previousYearNews)) *
+          100 || 0,
+    },
+  ];
+}
+
+async function getViewerReport(settings) {
+  const {
+    today,
+    yesterday,
+    beforeYesterday,
+    firstDayOfMonth,
+    previousMonth,
+    firstDayOfYear,
+    previousYear,
+  } = getAllDates();
+}
+
+async function handleDashboard(req, res, news, settings) {
   try {
     const someNews = await news
       .find({})
       .sort({ created_at: -1 })
       .limit(10)
       .toArray();
-    const todaysNews = await news
-      .find({
-        created_at: { $gt: req.body.yesterday, $lt: req.body.today },
-      })
-      .count();
-    const thisMonthNews = await news
-      .find({
-        created_at: { $gt: req.body.firstDayOfMonth, $lt: req.body.today },
-      })
-      .count();
-    const thisYearNews = await news
-      .find({
-        created_at: { $gt: req.body.firstDayOfYear, $lt: req.body.today },
-      })
-      .count();
-    console.log(req.body);
-    console.log({ todaysNews, thisMonthNews, thisYearNews });
-    res.send({ someNews, todaysNews, thisMonthNews, thisYearNews });
+    const postReport = await getPostReport(news);
+    const viewerReport = await getViewerReport(settings);
+
+    res.send({
+      someNews,
+      postReport,
+      viewerReport,
+    });
   } catch (err) {
     errorHandler(res, { msg: err.message, status: err.status });
   }
 }
 
-async function updateNewsViews(req, res, news, settings) {
+async function updateNewsViews(req, res, news, visitors) {
   try {
     //update news views;
     if (req.query.news) {
-      const isExist = await footer.findOne({
+      const isExist = await news.findOne({
         _id: ObjectId(req.query.id),
-        views: req.body.value,
+        "views.ipAdress": req.body.ipAdress,
+        "views.date": req.body.date,
       });
-      if (!isExist) {
-        const result = await news.updateOne(
-          { _id: ObjectId(req.query.id) },
-          { $push: { views: req.body.views } }
-        );
-        if (result.modifiedCount > 0) {
-          res.send({ message: "News updated" });
-        } else {
-          throw { message: "Unable to update, try again" };
-        }
+      if (isExist) throw { message: "already added", status: 200 };
+
+      const result = await news.updateOne(
+        { _id: ObjectId(req.query.id) },
+        { $push: { views: req.body } }
+      );
+      if (result.modifiedCount > 0) {
+        res.send({ message: "News updated" });
       } else {
-        res.send({ message: "already added" });
+        throw { message: "Unable to update, try again" };
       }
     } //till;
     //update visitor views;
     else {
-      const _id = ObjectId("6358fa24cf4c489e511941c5");
-      const title = "visitors";
-      const existed = await settings.findOne({
-        _id,
-        "visitors.ipAdress": req.body.ipAdress,
-        "visitors.date": req.body.date,
+      const existed = await visitors.findOne({
+        ipAdress: req.body.ipAdress,
+        date: req.body.date,
       });
-      if (!existed) {
-        const result = await settings.updateOne(
-          { _id },
-          {
-            $push: { [title]: req.body },
-          }
-        );
-        if (result.modifiedCount > 0) {
-          res.send({ message: "updated" });
-        } else {
-          throw { message: "Unable to update, try again" };
-        }
+      if (existed) throw { message: "already added", status: 200 };
+      req.body.created_at = new Date();
+      const result = await visitors.insertOne(req.body);
+      if (result.insertedId) {
+        res.send({ message: "updated" });
       } else {
-        res.send({ message: "already added" });
+        throw { message: "Unable to update, try again" };
       }
     }
   } catch (err) {

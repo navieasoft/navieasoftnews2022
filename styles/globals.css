@@ -16,6 +16,7 @@
   input[type="text"],
   input[type="email"],
   input[type="password"],
+  input[type="url"],
   select {
     @apply border rounded py-2 px-4 outline-none text-lg w-full hover:border-gray-400;
   }
@@ -75,7 +76,8 @@
     items-center text-5xl text-gray-600;
   }
   .no-data-container {
-    @apply flex justify-center items-center h-[54vh] flex-col gap-5 text-gray-600 font-medium;
+    @apply flex justify-center items-center h-[54vh] flex-col gap-5 text-gray-600 
+    font-medium;
   }
 }
 

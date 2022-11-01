@@ -17,6 +17,7 @@ export async function postNews(req, res, news) {
       ([key, value]) => (req.body[key] = value[0].filename)
     );
     req.body.raletedTopic = JSON.parse(req.body.raletedTopic);
+    req.body.created_at = new Date();
 
     const result = await news.insertOne(req.body);
     if (result.insertedId) {
@@ -31,7 +32,7 @@ export async function postNews(req, res, news) {
 
 export async function getNews(req, res, news) {
   try {
-    const page = parseInt(req.query.page + "0" || "0");
+    const page = parseInt(req.query.page) * 20;
     if (req.query.id) {
       const result = await news.findOne({ _id: ObjectId(req.query.id) });
       if (result) res.send(result);
@@ -39,8 +40,8 @@ export async function getNews(req, res, news) {
     } else {
       const result = await news
         .find({})
-        .sort({ created_at: 1 })
-        .skip(page)
+        .sort({ created_at: -1 })
+        .skip(page || 0)
         .limit(20)
         .toArray();
 

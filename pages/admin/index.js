@@ -13,11 +13,7 @@ const Admin = () => {
   const [news, setNews] = useState(null);
   const { setError } = useStore();
   const router = useRouter();
-  const [postReport, setPostReport] = useState([
-    { name: "Today's Post", count: 0, id: "todaysNews" },
-    { name: "This Month's Post", count: 0, id: "thisMonthNews" },
-    { name: "This year's Post", count: 0, id: "thisYearNews" },
-  ]);
+  const [postReport, setPostReport] = useState(null);
   const visitors = [
     { range: "Today's Visitors", count: 17 },
     { range: "This Month's Visitors", count: 55 },
@@ -28,38 +24,13 @@ const Admin = () => {
     const controller = new AbortController();
     const signal = controller.signal;
     (async () => {
-      const date = new Date();
-      const today = `${date}`;
-      const yesterday = `${new Date(date.valueOf() - 1000 * 60 * 60 * 24)}`;
-      const firstDayOfMonth = `${new Date(
-        date.getFullYear(),
-        date.getMonth(),
-        1
-      )}`;
-      const firstDayOfYear = `${new Date(date.getFullYear(), 0, 1)}`;
-
       try {
         const res = await fetch("http://localhost:3000/api/news/dashboard", {
-          headers: {
-            "content-type": "application/json",
-          },
-          method: "POST",
-          body: JSON.stringify({
-            today,
-            yesterday,
-            firstDayOfMonth,
-            firstDayOfYear,
-          }),
           signal,
         });
         const result = await res.json();
         setNews(result.someNews);
-        setPostReport((prev) => {
-          prev.forEach((item) => {
-            item.count = result[item.id];
-          });
-          return [...prev];
-        });
+        setPostReport(result.postReport);
       } catch (error) {
         setError(true);
       }
@@ -84,8 +55,12 @@ const Admin = () => {
                 <div className='item' key={i}>
                   <div className='flex justify-center items-center gap-1 font-bold'>
                     <p className='text-xl'>{item.count}</p>
-                    <p className='text-green-800'>+4.5%</p>
-                    <FontAwesomeIcon icon={faArrowUpShortWide} />
+                    <p className='text-green-800 ml-2'>{item.grouth}%</p>
+                    {Math.sign(item.grouth) === 1 ? (
+                      <FontAwesomeIcon icon={faArrowUpShortWide} />
+                    ) : (
+                      <FontAwesomeIcon icon={faArrowDownShortWide} />
+                    )}
                   </div>
                   <p className='text-gray-600'>{item.name}</p>
                 </div>

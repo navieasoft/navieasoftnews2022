@@ -11,6 +11,7 @@ import useStore from "../components/context/useStore";
 
 const Category = () => {
   const [news, setNews] = useState(null);
+  const [ads, setAds] = useState(null);
   const { setError } = useStore();
   const router = useRouter();
 
@@ -41,6 +42,28 @@ const Category = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query]);
 
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    (async function () {
+      try {
+        const res = await fetch("http://localhost:3000/api/settings/ads", {
+          signal,
+        });
+        const result = await res.json();
+        if (res.ok) {
+          setAds(result.others);
+        } else throw result;
+      } catch (error) {
+        console.log(error.message);
+      }
+    })();
+
+    return () => {
+      controller.abort();
+    };
+  }, []);
+
   if (!news) return null;
   if (!news.length) {
     return (
@@ -57,7 +80,10 @@ const Category = () => {
       <TopPart page='details' />
       <TopMenus />
       <Breakingnews />
-      <LergeAdd picture={"/longadd.png"} />
+      <LergeAdd
+        picture={`/ads/${ads?.long[0].adImg || ""}`}
+        link={ads?.long[0].url}
+      />
       <section className='category-wrapper'>
         <section className='col-span-3 md:col-span-2'>
           <Link href={`details?category=${news[0].category}&id=${news[0]._id}`}>
@@ -72,7 +98,10 @@ const Category = () => {
             </a>
           </Link>
 
-          <LergeAdd picture={"/longadd.png"} />
+          <LergeAdd
+            picture={`/ads/${ads?.long[1].adImg || ""}`}
+            link={ads?.long[1].url}
+          />
 
           <div className='second-item'>
             {news.slice(1, 7).map((news) => (
@@ -92,7 +121,10 @@ const Category = () => {
             ))}
           </div>
 
-          <LergeAdd picture={"/longadd.png"} />
+          <LergeAdd
+            picture={`/ads/${ads?.long[2].adImg || ""}`}
+            link={ads?.long[2].url}
+          />
 
           <div className='third-item'>
             {news.slice(8, news.length)?.map((news) => (

@@ -29,6 +29,7 @@ const Details = () => {
   const { setError, siteInfo, ipAdress } = useStore();
   const [linkCopy, setLinkCopied] = useState(false);
   const [news, setNews] = useState(null);
+  const [ads, setAds] = useState(null);
   const [skip, setSkip] = useState(0);
   const router = useRouter();
 
@@ -50,10 +51,6 @@ const Details = () => {
         setNews(result);
         //get related news;
         await getRelatedNews(result.category);
-        //update news views;
-        if (ipAdress) {
-          await updateViewPost();
-        }
       } else throw result;
     } catch (error) {
       setError(true);
@@ -61,7 +58,7 @@ const Details = () => {
   }
   async function updateViewPost(ipAdress) {
     try {
-      await fetch(
+      const res = await fetch(
         `http://localhost:3000/api/news/dashboard?id=${router.query.id}&news=true`,
         {
           headers: {
@@ -69,11 +66,13 @@ const Details = () => {
           },
           method: "PUT",
           body: JSON.stringify({
-            views: ipAdress,
-            date: `${new Date()}`,
+            date: `${new Date().toDateString()}`,
+            ipAdress,
           }),
         }
       );
+      const result = await res.json();
+      console.log(result);
     } catch (error) {
       throw { message: "There was an error" };
     }
@@ -84,7 +83,6 @@ const Details = () => {
         `http://localhost:3000/api/news/home?category=${category}&limit=9&skip=${skip}`
       );
       const result = await res.json();
-      console.log(result);
       if (res.ok) {
         setRelatedNews(result);
       } else throw result;
@@ -92,20 +90,66 @@ const Details = () => {
       throw error;
     }
   }
+  function saveNewsHistory() {
+    try {
+      const history = localStorage.getItem("history");
+      if (history) {
+        const news = JSON.parse(history);
+        const isExist = news.find((id) => id === router.query.id);
+        if (!isExist) {
+          news.push(router.query.id);
+          localStorage.setItem("history", JSON.stringify(news));
+        }
+      } else {
+        localStorage.setItem("history", JSON.stringify([router.query.id]));
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
 
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
     //get the news;
-    (async () => {
-      await getSingeNews(signal);
-    })();
+    if (router.query.id) {
+      (async () => {
+        await getSingeNews(signal);
+        //update news views;
+        if (ipAdress) {
+          await updateViewPost(ipAdress);
+        }
+        saveNewsHistory();
+      })();
+    }
     return () => {
       controller.abort();
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query.id, ipAdress]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    (async function () {
+      try {
+        const res = await fetch("http://localhost:3000/api/settings/ads", {
+          signal,
+        });
+        const result = await res.json();
+        if (res.ok) {
+          setAds(result.others);
+        } else throw result;
+      } catch (error) {
+        console.log(error.message);
+      }
+    })();
+
+    return () => {
+      controller.abort();
+    };
+  }, []);
 
   if (!news) {
     return <p>Loading</p>;
@@ -116,7 +160,10 @@ const Details = () => {
       <TopMenus />
       <Breakingnews />
 
-      <LergeAdd picture={"/longadd.png"} />
+      <LergeAdd
+        picture={`/ads/${ads?.long[0].adImg || ""}`}
+        link={ads?.long[0].url}
+      />
 
       <section className='details-page-content-wrapper'>
         <section className='col-span-3 md:col-span-2 print:col-span-3'>
@@ -206,7 +253,10 @@ const Details = () => {
               </div>
             </div>
 
-            <LergeAdd picture={"/longadd.png"} />
+            <LergeAdd
+              picture={`/ads/${ads?.long[1].adImg || ""}`}
+              link={ads?.long[1].url}
+            />
 
             {/* Realated news */}
             <section className='print:hidden'>
@@ -248,7 +298,10 @@ const Details = () => {
                 </button>
               </div>
             </section>
-            <LergeAdd picture={"/longadd.png"} />
+            <LergeAdd
+              picture={`/ads/${ads?.long[2].adImg || ""}`}
+              link={ads?.long[2].url}
+            />
           </section>
         </section>
 

@@ -22,7 +22,7 @@ export async function multipleBodyParser(req, res, folder, images) {
         },
       }),
       fileFilter: (req, file, cb) => {
-        const filetypes = /jpg|jpeg|png/;
+        const filetypes = /jpg|jpeg|png|gif/;
         const extname = filetypes.test(
           path.extname(file.originalname).toLowerCase()
         );
