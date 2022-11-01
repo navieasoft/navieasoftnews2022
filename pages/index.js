@@ -49,10 +49,9 @@ const Home = () => {
     const signal = controller.signal;
     //main news for home page;
     (async function () {
+      store.setLoading(true);
       try {
-        const res = await fetch("http://localhost:3000/api/news/home", {
-          signal,
-        });
+        const res = await fetch("http://localhost:3000/api/news/home");
         const result = await res.json();
         if (res.ok) {
           setData(result);
@@ -60,6 +59,7 @@ const Home = () => {
       } catch (error) {
         store.setError(true);
       }
+      store.setLoading(false);
     })();
     //ad images for home page
     (async function () {

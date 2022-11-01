@@ -9,6 +9,7 @@ const Store = () => {
   const [showSideMenu, setShowSideMenu] = useState(false);
   const [categoryMenu, setCategoryMenu] = useState(null);
   const [showSideBar, setShowSideBar] = useState(false);
+  const [userLoading, setUserLoading] = useState(true);
   const [ipAdress, setIpAddress] = useState(null);
   const [siteInfo, setSiteInfo] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -39,8 +40,9 @@ const Store = () => {
             `http://localhost:3000/api/user?uid=${user.uid}`
           );
           if (res.ok) {
-            const { designation } = res.json();
+            const { designation } = await res.json();
             setUserDesignation(designation || "user");
+            console.log(designation);
           }
         } catch (error) {
           setUserDesignation("user");
@@ -48,6 +50,7 @@ const Store = () => {
       } else {
         setUser(null);
       }
+      setUserLoading(false);
     });
     return unsub;
   }
@@ -141,6 +144,7 @@ const Store = () => {
     loading,
     setLoading,
     ipAdress,
+    userLoading,
   };
 };
 

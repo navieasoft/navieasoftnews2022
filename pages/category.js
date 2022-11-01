@@ -14,11 +14,13 @@ const Category = () => {
   const [ads, setAds] = useState(null);
   const { setError } = useStore();
   const router = useRouter();
+  const store = useStore();
 
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
     (async function () {
+      store.setLoading(true);
       try {
         const res = await fetch(
           `http://localhost:3000/api/news/home?category=${router.query.q}&sub=${
@@ -35,6 +37,7 @@ const Category = () => {
       } catch (error) {
         setError(true);
       }
+      store.setLoading(false);
     })();
     return () => {
       controller.abort();

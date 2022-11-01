@@ -1,35 +1,3 @@
-export const category = [
-  {
-    name: "World",
-    subs: [
-      "Asia",
-      "Europe",
-      "Noth Amerika",
-      "South Amerika",
-      "Afrika",
-      "Australia",
-    ],
-  },
-  {
-    name: "US",
-    subs: ["Alaska", "Arizona", "Arkansas", "California", "Colorado"],
-  },
-  { name: "Politics", subs: ["International", "Bangladesh"] },
-  { name: "N.Y" },
-  { name: "Business" },
-  { name: "Tech" },
-  { name: "Science" },
-  { name: "Health" },
-  { name: "Sports" },
-  { name: "Arts" },
-  { name: "Books" },
-  { name: "Style" },
-  { name: "Food" },
-  { name: "Travel" },
-  { name: "Magazine", subs: ["Science", "Technology", "Story", "History"] },
-  { name: "Real EState" },
-];
-
 export async function handleAddCategory(name, store) {
   try {
     const res = await fetch("http://localhost:3000/api/menus", {

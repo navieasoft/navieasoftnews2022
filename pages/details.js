@@ -32,6 +32,7 @@ const Details = () => {
   const [ads, setAds] = useState(null);
   const [skip, setSkip] = useState(0);
   const router = useRouter();
+  const store = useStore();
 
   function handleCopyLink() {
     setLinkCopied(true);
@@ -39,6 +40,7 @@ const Details = () => {
   }
 
   async function getSingeNews(signal) {
+    store.setLoading(true);
     try {
       const res = await fetch(
         `http://localhost:3000/api/news?id=${router.query?.id}`,
@@ -55,6 +57,7 @@ const Details = () => {
     } catch (error) {
       setError(true);
     }
+    store.setLoading(false);
   }
   async function updateViewPost(ipAdress) {
     try {
@@ -119,6 +122,7 @@ const Details = () => {
         if (ipAdress) {
           await updateViewPost(ipAdress);
         }
+
         saveNewsHistory();
       })();
     }
@@ -151,9 +155,7 @@ const Details = () => {
     };
   }, []);
 
-  if (!news) {
-    return <p>Loading</p>;
-  }
+  if (!news) return null;
   return (
     <div className='mb-10'>
       <TopPart page='details' />

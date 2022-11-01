@@ -15,10 +15,12 @@ import SideMenu from "../components/common/SideMenu";
 import Head from "next/head";
 import Spinner from "../components/common/Spinner";
 import StoreProvider from "../components/context/StoreProvider";
+import AdminRoute from "../components/context/AdminRoute";
 
 function Layout({ Component, pageProps }) {
   const router = useRouter();
-  const noFooter = ["/login", "/register"];
+  const noFooter = ["/loading"];
+  const adminRoute = ["/admin"];
   const store = useStore();
 
   return (
@@ -26,7 +28,14 @@ function Layout({ Component, pageProps }) {
       <Head>
         <title>{store?.siteInfo?.name}</title>
       </Head>
-      <Component {...pageProps} />
+      {adminRoute.includes(router.pathname) ? (
+        <AdminRoute>
+          <Component {...pageProps} />
+        </AdminRoute>
+      ) : (
+        <Component {...pageProps} />
+      )}
+
       <GotoTop />
       {!noFooter.includes(router.pathname) &&
         !router.pathname.includes("/admin") && <Footer />}

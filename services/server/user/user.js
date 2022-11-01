@@ -27,7 +27,7 @@ export async function getUser(req, res) {
   try {
     if (req.query.uid) {
       const user = await admin.auth().getUser(req.query.uid);
-      res.send({ designation: user.customClaims?.role || "user" });
+      res.send({ designation: user.customClaims?.designation || "user" });
     } else if (req.query.designation) {
       const userlist = await admin
         .auth()
