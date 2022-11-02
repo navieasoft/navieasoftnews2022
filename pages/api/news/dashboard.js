@@ -1,12 +1,13 @@
 import { ObjectId } from "mongodb";
 import { errorHandler } from "../../../services/server/errorhandler";
 import { dbConnection } from "../../../services/server/mongodb";
+import { isUser } from "../../../services/server/user/user";
 
 export default async function handler(req, res) {
   const { database } = await dbConnection();
 
   if (!database) {
-    res.status(500).send({ message: "Serverside error" });
+    res.send(500).send({ message: "Serverside error" });
     return;
   } else {
     const news = database.collection("news");
@@ -14,6 +15,10 @@ export default async function handler(req, res) {
     switch (req.method) {
       case "GET":
         handleDashboard(req, res, news, visitors);
+        break;
+
+      case "POST":
+        postCommentOnNews(req, res, news);
         break;
 
       case "PUT":
@@ -244,5 +249,26 @@ async function updateNewsViews(req, res, news, visitors) {
     }
   } catch (err) {
     errorHandler(res, { msg: err.message, status: err.status });
+  }
+}
+
+async function postCommentOnNews(req, res, news) {
+  try {
+    if (!req.body.userId) throw { message: "user unauthenticated" };
+    const { varify } = await isUser(req.body.userId);
+    if (!varify) throw { message: "user unauthenticated" };
+    const id = req.body.newsId;
+    delete req.body.newsId;
+    const result = await news.updateOne(
+      { _id: ObjectId(id) },
+      {
+        $push: { comments: req.body },
+      }
+    );
+    if (result.modifiedCount > 0) {
+      res.send({ message: "Thank you for staying us." });
+    } else throw { message: "unable to post comment, please try again" };
+  } catch (error) {
+    errorHandler(res, { msg: error?.message, status: error?.status });
   }
 }

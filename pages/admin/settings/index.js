@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Footer from "../../../components/admin/common/Footer";
 import Header from "../../../components/admin/common/header";
 import SideBar from "../../../components/admin/common/SideBar";
 import useStore from "../../../components/context/useStore";
@@ -100,6 +101,7 @@ const Siteinfo = () => {
           </div>
         </form>
       </div>
+      <Footer />
     </div>
   );
 };

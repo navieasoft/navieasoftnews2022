@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import Footer from "../../../components/admin/common/Footer";
 import Header from "../../../components/admin/common/header";
 import SideBar from "../../../components/admin/common/SideBar";
 import useStore from "../../../components/context/useStore";
@@ -159,6 +160,7 @@ const AddNews = () => {
               </div>
             </div>
           </form>
+          <Footer />
         </section>
       </div>
     </div>

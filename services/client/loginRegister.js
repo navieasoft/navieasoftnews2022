@@ -90,13 +90,19 @@ export async function facebookLogin(setError, store) {
 
 export async function passwordResetEmail(email, store, setError) {
   try {
-    await sendPasswordResetEmail(auth, email);
+    await sendPasswordResetEmail(auth, email, {
+      url: "http://localhost:3000",
+    });
     store?.setAlert({
       msg: "A password reset email sent to your email",
       type: "success",
     });
   } catch (error) {
-    setError(error.message);
+    if (setError) {
+      setError(error.message);
+    } else {
+      store?.setAlert({ msg: error?.message, type: "error" });
+    }
   }
 }
 

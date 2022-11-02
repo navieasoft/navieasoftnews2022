@@ -46,11 +46,11 @@ export async function postSiteInfo(req, res, settings) {
     );
 
     if (result.modifiedCount > 0) {
-      res.status(200).send({
+      res.send(200).send({
         message: "Updated successfully",
       });
     } else {
-      res.status(424).send({ message: "Unable to update, Try again." });
+      res.send(424).send({ message: "Unable to update, Try again." });
     }
   } catch (err) {
     errorHandler(res, { msg: err.message, status: err.status });

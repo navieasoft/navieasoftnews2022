@@ -1,12 +1,13 @@
 import { faAdd, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
+import Footer from "../../../components/admin/common/Footer";
 import Header from "../../../components/admin/common/header";
 import SideBar from "../../../components/admin/common/SideBar";
 import FooterModal from "../../../components/admin/menu/FooterModal";
 import useStore from "../../../components/context/useStore";
 
-const Footer = () => {
+const FooterMenu = () => {
   const [update, setUpdate] = useState(false);
   const [showAdd, setShowAdd] = useState("");
   const [menus, setMenus] = useState(null);
@@ -207,8 +208,9 @@ const Footer = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
 
-export default Footer;
+export default FooterMenu;

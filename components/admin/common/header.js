@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
@@ -26,13 +27,15 @@ const Header = () => {
       <div className='flex gap-3'>
         {store?.user && (
           <>
-            <Image
-              className='rounded-full'
-              width={30}
-              height={30}
-              src={store?.user?.photoURL}
-              alt=''
-            />
+            {store?.user?.photoURL && (
+              <Image
+                height={32}
+                width={32}
+                className='rounded-full h-8 w-8 object-cover'
+                src={store?.user?.photoURL}
+                alt=''
+              />
+            )}
             <p>{store?.user?.displayName}</p>
           </>
         )}

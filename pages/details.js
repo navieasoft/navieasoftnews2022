@@ -1,8 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
-import { faClock, faEnvelope } from "@fortawesome/free-regular-svg-icons";
 import { faEdit, faLink, faPrint } from "@fortawesome/free-solid-svg-icons";
+import { faClock, faEnvelope } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import TopPart from "../components/common/TopPart";
 import {
@@ -23,11 +22,13 @@ import Link from "next/link";
 import CategoryDetailsSideBar from "../components/common/CategoryDetailsSideBar";
 import Breakingnews from "../components/common/BreakingNews";
 import useStore from "../components/context/useStore";
+import Comment from "../components/details/Comment";
 
 const Details = () => {
   const [relatedNews, setRelatedNews] = useState(null);
   const { setError, siteInfo, ipAdress } = useStore();
   const [linkCopy, setLinkCopied] = useState(false);
+  const [update, setUpdate] = useState(false);
   const [news, setNews] = useState(null);
   const [ads, setAds] = useState(null);
   const [skip, setSkip] = useState(0);
@@ -131,7 +132,7 @@ const Details = () => {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.query.id, ipAdress]);
+  }, [router.query.id, ipAdress, update]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -241,6 +242,13 @@ const Details = () => {
               </div>
             </div>
           </section>
+
+          {/* comment section */}
+          <Comment
+            newsId={news?._id}
+            setUpdate={setUpdate}
+            comments={news.comments || null}
+          />
 
           <section>
             {/* Realated topic */}

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from "react";
 import {
   faCircleQuestion,
@@ -132,13 +133,15 @@ const SideBar = () => {
         <div className='py-3 border-t flex justify-center items-center gap-4'>
           {store?.user && (
             <>
-              <Image
-                className='rounded-full'
-                width={40}
-                height={40}
-                src={store?.user?.photoURL}
-                alt=''
-              />
+              {store?.user?.photoURL && (
+                <Image
+                  height={40}
+                  width={40}
+                  className='rounded-full h-10 w-10 object-cover'
+                  src={store?.user?.photoURL}
+                  alt=''
+                />
+              )}
               <div className=''>
                 <p>{store?.user?.displayName}</p>
                 <p>Admin</p>
@@ -167,7 +170,7 @@ const SideBar = () => {
               {item.subs && <FontAwesomeIcon icon={faAngleDown} />}
             </a>
             {item.subs && (
-              <div className='collapse-content px-0'>
+              <div className='collapse-content'>
                 {item.subs.map((sub, i) => (
                   <Link key={i} href={sub.url}>
                     <a

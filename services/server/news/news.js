@@ -40,11 +40,24 @@ export async function postNews(req, res, news) {
 export async function getNews(req, res, news) {
   try {
     const page = parseInt(req.query.page) * 20;
-    if (req.query.id) {
+    //sent multiple new by id;
+    if (req.query.multiple) {
+      const allId = [];
+      req.query.id.split("|").forEach((id) => {
+        allId.push(ObjectId(id));
+      });
+
+      const result = await news.find({ _id: { $in: allId } }).toArray();
+      res.send(result);
+    }
+    //sent single news;
+    else if (req.query.id) {
       const result = await news.findOne({ _id: ObjectId(req.query.id) });
       if (result) res.send(result);
       else throw { message: "no data found" };
-    } else {
+    }
+    //sent all news
+    else {
       const result = await news
         .find({})
         .sort({ created_at: -1 })

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { faAngleRight, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
@@ -68,7 +69,7 @@ const DailyReportOfCountry = () => {
           </p>
         </div>
         <div className='flex justify-center items-center mt-2'>
-          <Image width={200} height={100} src='/dummy2.png' alt='' />
+          <img width={200} height={100} src='/dummy2.png' alt='' />
         </div>
       </section>
     </section>

@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   const { database } = await dbConnection();
 
   if (!database) {
-    res.status(500).send({ message: "Serverside error" });
+    res.send(500).send({ message: "Serverside error" });
     return;
   } else {
     const breakingNews = database.collection("breaking_news");

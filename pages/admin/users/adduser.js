@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import { uploadImageToFirebase } from "../../../services/client/firebase";
+import useStore from "../../../components/context/useStore";
 import Header from "../../../components/admin/common/header";
 import SideBar from "../../../components/admin/common/SideBar";
-import useStore from "../../../components/context/useStore";
-import { uploadImageToFirebase } from "../../../services/client/firebase";
+import React, { useState } from "react";
+import Footer from "../../../components/admin/common/Footer";
 
 const Adduser = () => {
   const [loading, setLoading] = useState(false);
@@ -109,6 +110,7 @@ const Adduser = () => {
           </form>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

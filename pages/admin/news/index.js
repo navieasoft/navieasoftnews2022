@@ -7,6 +7,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import Footer from "../../../components/admin/common/Footer";
 import Header from "../../../components/admin/common/header";
 import SideBar from "../../../components/admin/common/SideBar";
 import useStore from "../../../components/context/useStore";
@@ -139,7 +140,7 @@ const Allnews = () => {
               )}
             </tbody>
           </table>
-          <div className='btn-group flex justify-end my-3 mx-4'>
+          <div className='btn-group flex justify-end my-3 mx-4 w-full'>
             <button
               disabled={page === 0}
               onClick={() => setPage((prev) => prev - 1)}
@@ -154,6 +155,7 @@ const Allnews = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

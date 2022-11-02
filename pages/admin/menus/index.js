@@ -6,6 +6,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
+import Footer from "../../../components/admin/common/Footer";
 import Header from "../../../components/admin/common/header";
 import SideBar from "../../../components/admin/common/SideBar";
 import MenuModal from "../../../components/admin/menu/menuModal";
@@ -184,6 +185,7 @@ const MainMenus = () => {
           />
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

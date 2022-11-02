@@ -1,7 +1,6 @@
 import { errorHandler } from "../errorhandler";
 import { firebaseServerInit } from "../firebase";
 import admin from "firebase-admin";
-import { auth } from "../../client/firebase";
 
 firebaseServerInit();
 
@@ -109,6 +108,17 @@ export async function userVarification(uid) {
       user.customClaims?.designation === "admin" ||
       user.customClaims?.designation === "editor"
     ) {
+      return { varify: true };
+    } else throw { varify: false };
+  } catch (error) {
+    return { varify: false };
+  }
+}
+
+export async function isUser(uid) {
+  try {
+    const user = await admin.auth().getUser(uid);
+    if (user) {
       return { varify: true };
     } else throw { varify: false };
   } catch (error) {

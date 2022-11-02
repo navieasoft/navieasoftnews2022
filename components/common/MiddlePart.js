@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 import React from "react";
 import useStore from "../context/useStore";
 
@@ -30,11 +31,15 @@ const MiddlePart = () => {
         <p>Todays News</p>
       </div>
       <div className='hidden md:flex justify-center'>
-        <img
-          className='object-contain h-12'
-          src={`/${siteInfo?.logo}`}
-          alt='logo'
-        />
+        <Link href='/'>
+          <a>
+            <img
+              className='object-contain h-12'
+              src={`/${siteInfo?.logo}`}
+              alt='logo'
+            />
+          </a>
+        </Link>
       </div>
       <div className='flex justify-end'>
         <div>

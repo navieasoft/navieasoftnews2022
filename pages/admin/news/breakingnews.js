@@ -1,6 +1,7 @@
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
+import Footer from "../../../components/admin/common/Footer";
 import Header from "../../../components/admin/common/header";
 import SideBar from "../../../components/admin/common/SideBar";
 import useStore from "../../../components/context/useStore";
@@ -129,6 +130,7 @@ const Breakingnews = () => {
           </form>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

@@ -1,24 +1,28 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   faAngleDown,
   faBars,
+  faClockRotateLeft,
+  faGear,
+  faRightFromBracket,
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import SideMenu from "./SideMenu";
 import { useRouter } from "next/router";
 import useStore from "../context/useStore";
 import { signOut } from "firebase/auth";
 import { auth } from "../../services/client/firebase";
+import Link from "next/link";
 
 const TopPart = ({ page }) => {
   const [activeCountry, setActiveCountry] = useState("");
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const userMenuContainer = useRef(null);
   const router = useRouter();
   const container = useRef();
   const store = useStore();
-
   const country = ["International", "Asia", "Bangladesh"];
 
   async function logOut() {
@@ -33,6 +37,22 @@ const TopPart = ({ page }) => {
       });
     }
   }
+
+  useEffect(() => {
+    function hideUserMenu(e) {
+      if (userMenuContainer) {
+        if (userMenuContainer.current) {
+          if (!userMenuContainer.current?.contains(e.target)) {
+            setShowUserMenu(false);
+          }
+        }
+      }
+    }
+    window.addEventListener("click", (e) => hideUserMenu(e));
+    return () => {
+      window.removeEventListener("click", hideUserMenu);
+    };
+  }, []);
 
   return (
     <div ref={container} className='header-top-part'>
@@ -85,10 +105,44 @@ const TopPart = ({ page }) => {
       <div className='space-x-3 flex justify-end items-center'>
         <button className='custom-btn hidden md:block'>Subscribe now</button>
         {store?.user ? (
-          <div>
-            <button onClick={logOut} className='py-1 px-3 rounded border'>
-              Logout
-            </button>
+          <div
+            ref={userMenuContainer}
+            onClick={() => setShowUserMenu((prev) => !prev)}
+            className='cursor-pointer relative'
+          >
+            {store.user.photoURL ? (
+              <Image
+                height={40}
+                width={40}
+                className='rounded-full h-10 w-10 object-cover'
+                src={store?.user.photoURL}
+                alt='user image'
+              />
+            ) : (
+              <p>{store.user.displayName.split(" ")[0]}</p>
+            )}
+
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className={`user-wrapper ${showUserMenu ? "block" : "hidden"}`}
+            >
+              <Link href='/user/history'>
+                <button>
+                  <FontAwesomeIcon icon={faClockRotateLeft} />
+                  <span>History</span>
+                </button>
+              </Link>
+              <Link href='/user'>
+                <button>
+                  <FontAwesomeIcon icon={faGear} />
+                  <span>Settings</span>
+                </button>
+              </Link>
+              <button onClick={logOut}>
+                <FontAwesomeIcon icon={faRightFromBracket} />
+                <span>Logout</span>
+              </button>
+            </div>
           </div>
         ) : (
           <button onClick={() => store?.setShowLoginRegister(true)}>

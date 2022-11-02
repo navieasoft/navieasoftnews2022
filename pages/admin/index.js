@@ -8,6 +8,7 @@ import Header from "../../components/admin/common/header";
 import useStore from "../../components/context/useStore";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Footer from "../../components/admin/common/Footer";
 
 const Admin = () => {
   const [postReport, setPostReport] = useState(null);
@@ -111,6 +112,7 @@ const Admin = () => {
               </tbody>
             </table>
           </div>
+          <Footer />
         </div>
       </main>
     </section>
