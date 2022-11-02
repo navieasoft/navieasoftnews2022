@@ -62,6 +62,7 @@ const AddNews = () => {
     data.featureImg1 = data.featureImg1[0] || "";
     data.featureImg2 = data.featureImg2[0] || "";
     data.featureImg3 = data.featureImg3[0] || "";
+    data.userId = user?.uid;
     const formData = new FormData();
     const existedImg = [];
     Object.entries(data).map(([key, value]) => {

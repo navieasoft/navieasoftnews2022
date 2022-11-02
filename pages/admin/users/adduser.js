@@ -27,6 +27,7 @@ const Adduser = () => {
       e.preventDefault();
       setLoading(true);
       const peyload = user;
+      peyload.userId = store?.user.uid;
       // upload image
       if (peyload.photoURL) {
         if (peyload.photoURL.size > 500000) {

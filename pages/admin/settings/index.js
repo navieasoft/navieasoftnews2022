@@ -35,14 +35,15 @@ const Siteinfo = () => {
     e.preventDefault();
     setLoading(true);
     const formData = new FormData();
-    formData.append("name", info.name || existedInfo?.name);
+    formData.append("userId", store?.user.uid);
+    if (info.name) formData.append("name", info.name);
     if (info.logo) {
       formData.append("logo", info.logo);
       formData.append("existedLogo", existedInfo?.logo);
     } else {
       formData.append("logo", existedInfo?.logo);
     }
-    formData.append("favicon", info.favicon || existedInfo?.favicon);
+    if (info.favicon) formData.append("favicon", info.favicon);
     try {
       const res = await fetch("http://localhost:3000/api/settings", {
         method: "POST",

@@ -1,8 +1,14 @@
 import { ObjectId } from "mongodb";
 import { errorHandler } from "../errorhandler";
+import { userVarification } from "../user/user";
 
 export async function postSubCategoryMenus(req, res, categoryMenus) {
   try {
+    if (!req.body.userId) throw { message: "user unathenticated!" };
+    const { varify } = await userVarification(req.body.userId);
+    if (!varify) throw { message: "user unathenticated!" };
+    delete req.body.userId;
+
     const isExist = await categoryMenus.findOne({
       _id: ObjectId(req.body.categoryId),
       subs: req.body.value,
@@ -31,6 +37,11 @@ export async function postSubCategoryMenus(req, res, categoryMenus) {
 
 export async function deleteSubCategoryMenu(req, res, categoryMenus) {
   try {
+    if (!req.body.userId) throw { message: "user unathenticated!" };
+    const { varify } = await userVarification(req.body.userId);
+    if (!varify) throw { message: "user unathenticated!" };
+    delete req.body.userId;
+
     const result = await categoryMenus.updateOne(
       {
         _id: ObjectId(req.body.categoryId),

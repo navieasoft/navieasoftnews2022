@@ -10,11 +10,10 @@ export default async function handler(req, res) {
     return;
   } else {
     const news = database.collection("news");
-    const settings = database.collection("settings");
     const visitors = database.collection("visitors");
     switch (req.method) {
       case "GET":
-        handleDashboard(req, res, news, settings);
+        handleDashboard(req, res, news, visitors);
         break;
 
       case "PUT":
@@ -111,13 +110,13 @@ async function getPostReport(news) {
       count: thisYearNews,
       grouth:
         ((thisYearNews - previousYearNews) /
-          (previousMonthNews === 0 ? 1 : previousYearNews)) *
-          100 || 0,
+          (previousYearNews === 0 ? 1 : previousYearNews)) *
+        100,
     },
   ];
 }
 
-async function getViewerReport(settings) {
+async function getViewerReport(visitors) {
   const {
     today,
     yesterday,
@@ -127,9 +126,67 @@ async function getViewerReport(settings) {
     firstDayOfYear,
     previousYear,
   } = getAllDates();
+
+  const todaysViews = await visitors
+    .find({
+      created_at: { $gt: yesterday, $lt: today },
+    })
+    .count();
+
+  const yesterViews = await visitors
+    .find({
+      created_at: { $gt: beforeYesterday, $lt: yesterday },
+    })
+    .count();
+  const thisMonthViews = await visitors
+    .find({
+      created_at: { $gt: firstDayOfMonth, $lt: today },
+    })
+    .count();
+
+  const previousMonthViews = await visitors
+    .find({
+      created_at: { $gt: previousMonth, $lt: firstDayOfMonth },
+    })
+    .count();
+  const thisYearViews = await visitors
+    .find({
+      created_at: { $gt: firstDayOfYear, $lt: today },
+    })
+    .count();
+
+  const previousYearViews = await visitors
+    .find({
+      created_at: { $gt: previousYear, $lt: firstDayOfYear },
+    })
+    .count();
+
+  return [
+    {
+      name: "Today's Views",
+      count: todaysViews,
+      grouth: ((todaysViews - yesterViews) / yesterViews) * 100,
+    },
+    {
+      name: "This Month's Views",
+      count: thisMonthViews,
+      grouth:
+        ((thisMonthViews - previousMonthViews) /
+          (previousMonthViews === 0 ? 1 : previousMonthViews)) *
+        100,
+    },
+    {
+      name: "This year's Post",
+      count: thisYearViews,
+      grouth:
+        ((thisYearViews - previousYearViews) /
+          (previousYearViews === 0 ? 1 : previousYearViews)) *
+        100,
+    },
+  ];
 }
 
-async function handleDashboard(req, res, news, settings) {
+async function handleDashboard(req, res, news, visitors) {
   try {
     const someNews = await news
       .find({})
@@ -137,7 +194,7 @@ async function handleDashboard(req, res, news, settings) {
       .limit(10)
       .toArray();
     const postReport = await getPostReport(news);
-    const viewerReport = await getViewerReport(settings);
+    const viewerReport = await getViewerReport(visitors);
 
     res.send({
       someNews,

@@ -22,7 +22,10 @@ const Breakingnews = () => {
           "content-type": "application/json",
         },
         method: "POST",
-        body: JSON.stringify({ value: input.current?.value }),
+        body: JSON.stringify({
+          value: input.current?.value,
+          userId: store?.user?.uid,
+        }),
       });
       const result = await res.json();
       if (!res.ok) throw { message: result.message };
@@ -42,7 +45,7 @@ const Breakingnews = () => {
           "content-type": "application/json",
         },
         method: "DELETE",
-        body: JSON.stringify({ value }),
+        body: JSON.stringify({ value, userId: store?.user?.uid }),
       });
       const result = await res.json();
       if (!res.ok) throw { message: result.message };

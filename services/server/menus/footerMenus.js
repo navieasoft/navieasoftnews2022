@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import { errorHandler } from "../errorhandler";
+import { userVarification } from "../user/user";
 
 export async function getFooterMenus(req, res, footer) {
   try {
@@ -12,6 +13,11 @@ export async function getFooterMenus(req, res, footer) {
 
 export async function postFooterMenus(req, res, footer) {
   try {
+    if (!req.body.userId) throw { message: "user unathenticated!" };
+    const { varify } = await userVarification(req.body.userId);
+    if (!varify) throw { message: "user unathenticated!" };
+    delete req.body.userId;
+
     const id = ObjectId("6358d00bcf4c489e511941be");
     const title = req.body.title;
     const isExist = await footer.findOne({
@@ -28,7 +34,6 @@ export async function postFooterMenus(req, res, footer) {
       },
       { $push: { [title]: req.body.value } }
     );
-    console.log(result);
     if (result.modifiedCount > 0) {
       res.status(200).send({
         message: "Menu added successfully",
@@ -43,6 +48,11 @@ export async function postFooterMenus(req, res, footer) {
 
 export async function deleteFooterMenus(req, res, footer) {
   try {
+    if (!req.body.userId) throw { message: "user unathenticated!" };
+    const { varify } = await userVarification(req.body.userId);
+    if (!varify) throw { message: "user unathenticated!" };
+    delete req.body.userId;
+
     const id = ObjectId("6358d00bcf4c489e511941be");
     const title = req.body.title;
 

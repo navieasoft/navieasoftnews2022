@@ -1,8 +1,4 @@
-import {
-  faEdit,
-  faEllipsisVertical,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
 import Header from "../../../components/admin/common/header";
@@ -14,11 +10,11 @@ const AllUser = () => {
   const [showControl, setShowControl] = useState(-1);
   const [loading, setLoading] = useState(false);
   const [update, setUpdate] = useState(false);
-  const store = useStore();
   const [users, setUsers] = useState(null);
   const [page, setPage] = useState(1);
   const [uid, setUid] = useState("");
   const updatedRole = useRef(null);
+  const store = useStore();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -31,7 +27,10 @@ const AllUser = () => {
         );
         if (res.ok) {
           const result = await res.json();
-          setUsers(result);
+          const filtered = result.filter(
+            (user) => user.email !== store?.user.email
+          );
+          setUsers(filtered);
         } else throw { message: "There was an error" };
       } catch (error) {
         store.setAlert({ message: error.message, type: "error" });
@@ -78,6 +77,7 @@ const AllUser = () => {
         body: JSON.stringify({
           uid,
           [title]: value,
+          userId: store?.user.uid,
         }),
       });
       const result = await res.json();
@@ -96,7 +96,11 @@ const AllUser = () => {
       setLoading(true);
       try {
         const res = await fetch(`http://localhost:3000/api/user?uid=${uid}`, {
+          headers: {
+            "content-type": "application/json",
+          },
           method: "DELETE",
+          body: JSON.stringify({ userId: store?.user.uid }),
         });
         const result = await res.json();
         if (!res.ok) throw { message: result.message };
@@ -202,11 +206,7 @@ const AllUser = () => {
               «
             </button>
             <button className='btn'>Page 1</button>
-            <button
-              disabled={page < 20}
-              onClick={() => setPage((prev) => prev + 1)}
-              className='btn'
-            >
+            <button onClick={() => setPage((prev) => prev + 1)} className='btn'>
               »
             </button>
           </div>

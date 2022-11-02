@@ -1,11 +1,18 @@
 import { errorHandler } from "../errorhandler";
 import { firebaseServerInit } from "../firebase";
 import admin from "firebase-admin";
+import { auth } from "../../client/firebase";
 
 firebaseServerInit();
 
 export async function addUser(req, res) {
   try {
+    //user varify;
+    if (!req.body.userId) throw { message: "user unathenticated!" };
+    const { varify } = await userVarification(req.body.userId);
+    if (!varify) throw { message: "user unathenticated!" };
+    delete req.body.userId; //till;
+
     const { uid } = await admin.auth().createUser({
       displayName: req.body.displayName,
       email: req.body.email,
@@ -44,6 +51,12 @@ export async function getUser(req, res) {
 
 export async function updateUser(req, res) {
   try {
+    //user varify;
+    if (!req.body.userId) throw { message: "user unathenticated!" };
+    const { varify } = await userVarification(req.body.userId);
+    if (!varify) throw { message: "user unathenticated!" };
+    delete req.body.userId; //till;
+
     switch (req.query.title) {
       case "designation":
         await admin.auth().setCustomUserClaims(req.body.uid, {
@@ -76,9 +89,29 @@ export async function updateUser(req, res) {
 
 export async function deleteuser(req, res) {
   try {
+    //user varify;
+    if (!req.body.userId) throw { message: "user unathenticated!" };
+    const { varify } = await userVarification(req.body.userId);
+    if (!varify) throw { message: "user unathenticated!" };
+    //till;
+
     await admin.auth().deleteUser(req.query.uid);
     res.send({ message: "Deleted successfully" });
   } catch (err) {
     errorHandler(res, { msg: err.message, status: err.status });
+  }
+}
+
+export async function userVarification(uid) {
+  try {
+    const user = await admin.auth().getUser(uid);
+    if (
+      user.customClaims?.designation === "admin" ||
+      user.customClaims?.designation === "editor"
+    ) {
+      return { varify: true };
+    } else throw { varify: false };
+  } catch (error) {
+    return { varify: false };
   }
 }

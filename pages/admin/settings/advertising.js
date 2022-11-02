@@ -2,7 +2,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Header from "../../../components/admin/common/header";
 import SideBar from "../../../components/admin/common/SideBar";
-import Spinner from "../../../components/common/Spinner";
 import useStore from "../../../components/context/useStore";
 
 const Advertising = () => {
@@ -116,11 +115,7 @@ function AdComponent({ item, title, setUpdate }) {
     setLoading(true);
     try {
       const formData = new FormData();
-      if (!url.current.value || !img.current.files.length) {
-        store.setAlert({ msg: "no changes found" });
-        setLoading(false);
-        return;
-      }
+      formData.append("userId", store?.user.uid);
       if (url.current.value) formData.append("url", url.current.value);
       if (img.current.files.length) {
         formData.append("adImg", img.current.files[0]);

@@ -160,27 +160,27 @@ const MainMenus = () => {
           </div>
 
           <MenuModal
-            setUpdate={setUpdate}
             action={handleAddCategory}
             closeModal={setAddMenu}
+            setUpdate={setUpdate}
             openModal={addMenu}
             title='Add'
           />
           <MenuModal
-            setUpdate={setUpdate}
             action={handleEditCategory}
             closeModal={setUpdateMenu}
-            openModal={updateMenu}
             categoryId={categoryId}
+            openModal={updateMenu}
+            setUpdate={setUpdate}
             title='Edit'
           />
           <MenuModal
+            categoryId={categoryId}
+            closeModal={setAddSub}
             setUpdate={setUpdate}
             action={handleAddSub}
-            closeModal={setAddSub}
             openModal={addSub}
             title='Add Sub'
-            categoryId={categoryId}
           />
         </div>
       </div>

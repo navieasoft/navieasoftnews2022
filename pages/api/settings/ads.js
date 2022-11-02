@@ -1,9 +1,10 @@
-import { ObjectId } from "mongodb";
 import { errorHandler } from "../../../services/server/errorhandler";
-import { dbConnection } from "../../../services/server/mongodb";
 import { multipleBodyParser } from "../../../services/server/multer";
-import fs from "fs";
+import { userVarification } from "../../../services/server/user/user";
+import { dbConnection } from "../../../services/server/mongodb";
+import { ObjectId } from "mongodb";
 import path from "path";
+import fs from "fs";
 
 export const config = {
   api: {
@@ -58,6 +59,12 @@ async function postAds(req, res, ads) {
       { name: "adImg", maxCount: 1 },
     ]);
     if (error) throw { message: "error occured when image uploading" };
+    //user virify;
+    if (!req.body.userId) throw { message: "user unathenticated!" };
+    const { varify } = await userVarification(req.body.userId);
+    if (!varify) throw { message: "user unathenticated!" };
+    delete req.body.userId; //till;
+
     const data = {};
     if (req.body.url) data.url = req.body.url;
     if (req.files.adImg) data.adImg = req.files.adImg[0].filename;
@@ -69,17 +76,14 @@ async function postAds(req, res, ads) {
     );
     if (result.modifiedCount > 0) {
       if (req.body.exist && req.files.adImg) {
-        try {
-          fs.unlinkSync(
-            path.join(process.cwd(), "public", "ads", req.body.exist)
-          );
-        } catch (error) {
-          console.log(error.message);
-        }
+        fs.unlinkSync(
+          path.join(process.cwd(), "public", "ads", req.body.exist)
+        );
       }
       res.send({ message: "Updated successfully" });
     } else throw { message: "Unable to update" };
   } catch (error) {
+    fs.unlinkSync(path.join(process.cwd(), "public", "ads", data.adImg));
     errorHandler(res, { msg: error.message, status: error.status || 500 });
   }
 }

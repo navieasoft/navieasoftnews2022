@@ -5,7 +5,7 @@ export async function handleAddCategory(name, store) {
         "content-type": "application/json",
       },
       method: "POST",
-      body: JSON.stringify({ name }),
+      body: JSON.stringify({ name, userId: store?.user?.uid }),
     });
     const result = await res.json();
     if (!res.ok) throw { message: result.message };
@@ -22,7 +22,7 @@ export async function handleEditCategory(value, store, categoryId) {
         "content-type": "application/json",
       },
       method: "PUT",
-      body: JSON.stringify({ value, categoryId }),
+      body: JSON.stringify({ value, categoryId, userId: store?.user?.uid }),
     });
     const result = await res.json();
     if (!res.ok) throw { message: result.message };
@@ -41,7 +41,7 @@ export async function handleDeleteCategory(id, store, setUpdate) {
           "content-type": "application/json",
         },
         method: "DELETE",
-        body: JSON.stringify({ id }),
+        body: JSON.stringify({ id, userId: store?.user?.uid }),
       });
       const result = await res.json();
       if (!res.ok) throw { message: result.message };
@@ -62,7 +62,7 @@ export async function handleAddSub(value, store, categoryId) {
         "content-type": "application/json",
       },
       method: "POST",
-      body: JSON.stringify({ value, categoryId }),
+      body: JSON.stringify({ value, categoryId, userId: store?.user?.uid }),
     });
     const result = await res.json();
     if (!res.ok) throw { message: result.message };
@@ -81,7 +81,7 @@ export async function handleDeleteSub(categoryId, value, store, setUpdate) {
           "content-type": "application/json",
         },
         method: "DELETE",
-        body: JSON.stringify({ categoryId, value }),
+        body: JSON.stringify({ categoryId, value, userId: store?.user?.uid }),
       });
       const result = await res.json();
       if (!res.ok) throw { message: result.message };

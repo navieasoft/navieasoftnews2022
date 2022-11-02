@@ -18,6 +18,7 @@ const MenuModal = (props) => {
       await action(input.current?.value, store, categoryId);
     }
     setUpdate((prev) => !prev);
+    closeModal(false);
     setLoading(false);
   }
 

@@ -7,9 +7,9 @@ import FooterModal from "../../../components/admin/menu/FooterModal";
 import useStore from "../../../components/context/useStore";
 
 const Footer = () => {
+  const [update, setUpdate] = useState(false);
   const [showAdd, setShowAdd] = useState("");
   const [menus, setMenus] = useState(null);
-  const [update, setUpdate] = useState(false);
   const store = useStore();
 
   useEffect(() => {
@@ -39,7 +39,7 @@ const Footer = () => {
           "content-type": "application/json",
         },
         method: "DELETE",
-        body: JSON.stringify({ title, value }),
+        body: JSON.stringify({ title, value, userId: store?.user?.uid }),
       });
       const result = await res.json();
       if (!res.ok) throw { message: result.message };

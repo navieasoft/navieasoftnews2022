@@ -1,8 +1,9 @@
-import { ObjectId } from "mongodb";
+import { userVarification } from "../user/user";
 import { errorHandler } from "../errorhandler";
 import { multipleBodyParser } from "../multer";
-import fs from "fs";
+import { ObjectId } from "mongodb";
 import path from "path";
+import fs from "fs";
 
 export async function getSiteInfo(req, res, settings) {
   try {
@@ -21,6 +22,11 @@ export async function postSiteInfo(req, res, settings) {
       { name: "favicon", maxCount: 1 },
     ]);
     if (error) throw error || "Error occour when file uploading";
+    //user virify;
+    if (!req.body.userId) throw { message: "user unathenticated!" };
+    const { varify } = await userVarification(req.body.userId);
+    if (!varify) throw { message: "user unathenticated!" };
+    delete req.body.userId; //till;
 
     const _id = ObjectId("6358fa24cf4c489e511941c5");
     const title = "siteInfo";

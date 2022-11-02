@@ -3,22 +3,18 @@ import {
   faArrowUpShortWide,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import Header from "../../components/admin/common/header";
 import SideBar from "../../components/admin/common/SideBar";
+import Header from "../../components/admin/common/header";
 import useStore from "../../components/context/useStore";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 const Admin = () => {
+  const [postReport, setPostReport] = useState(null);
+  const [viewsReport, setViewsReport] = useState(null);
   const [news, setNews] = useState(null);
   const { setError } = useStore();
   const router = useRouter();
-  const [postReport, setPostReport] = useState(null);
-  const visitors = [
-    { range: "Today's Visitors", count: 17 },
-    { range: "This Month's Visitors", count: 55 },
-    { range: "This year's Visitors", count: 103 },
-  ];
 
   useEffect(() => {
     const controller = new AbortController();
@@ -31,6 +27,7 @@ const Admin = () => {
         const result = await res.json();
         setNews(result.someNews);
         setPostReport(result.postReport);
+        setViewsReport(result.viewerReport);
       } catch (error) {
         setError(true);
       }
@@ -55,7 +52,9 @@ const Admin = () => {
                 <div className='item' key={i}>
                   <div className='flex justify-center items-center gap-1 font-bold'>
                     <p className='text-xl'>{item.count}</p>
-                    <p className='text-green-800 ml-2'>{item.grouth}%</p>
+                    <p className='text-green-800 ml-2'>
+                      {Math.ceil(item.grouth)}%
+                    </p>
                     {Math.sign(item.grouth) === 1 ? (
                       <FontAwesomeIcon icon={faArrowUpShortWide} />
                     ) : (
@@ -68,16 +67,21 @@ const Admin = () => {
           </div>
           <h3 className='mt-5'>Visitors Report</h3>
           <div className='post-details'>
-            {visitors.map((item, i) => (
-              <div className='item' key={i}>
-                <div className='flex justify-center items-center gap-1 font-bold'>
-                  <p className='text-xl'>{item.count}</p>
-                  <p className='text-green-900'>+4.5%</p>
-                  <FontAwesomeIcon icon={faArrowUpShortWide} />
+            {viewsReport &&
+              viewsReport.map((item, i) => (
+                <div className='item' key={i}>
+                  <div className='flex justify-center items-center gap-1 font-bold'>
+                    <p className='text-xl'>{item.count}</p>
+                    <p className='text-green-900'>{Math.ceil(item.grouth)}%</p>
+                    {Math.sign(item.grouth) === 1 ? (
+                      <FontAwesomeIcon icon={faArrowUpShortWide} />
+                    ) : (
+                      <FontAwesomeIcon icon={faArrowDownShortWide} />
+                    )}
+                  </div>
+                  <p className='text-gray-600'>{item.name}</p>
                 </div>
-                <p className='text-gray-600'>{item.range}</p>
-              </div>
-            ))}
+              ))}
           </div>
 
           <h3 className='mt-12'>Some Latest News</h3>

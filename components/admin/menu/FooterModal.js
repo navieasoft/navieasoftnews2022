@@ -17,7 +17,11 @@ const FooterModal = ({ close, title, setUpdate }) => {
           "content-type": "application/json",
         },
         method: "POST",
-        body: JSON.stringify({ title, value: input.current?.value }),
+        body: JSON.stringify({
+          title,
+          value: input.current?.value,
+          userId: store?.user?.uid,
+        }),
       });
       const result = await res.json();
       if (!res.ok) throw { message: result.message };

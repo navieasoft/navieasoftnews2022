@@ -12,10 +12,10 @@ import SideBar from "../../../components/admin/common/SideBar";
 import useStore from "../../../components/context/useStore";
 
 const Allnews = () => {
+  const { setError, setAlert, user } = useStore();
   const [loading, setLoading] = useState(false);
   const [showMenu, setShowMenu] = useState(-1);
   const [update, setUpdate] = useState(false);
-  const { setError, setAlert } = useStore();
   const [news, setNews] = useState(null);
   const [page, setPage] = useState(0);
   const router = useRouter();
@@ -45,6 +45,7 @@ const Allnews = () => {
     if (confirm) {
       setLoading(true);
       const formData = new FormData();
+      formData.append("userId", user?.uid);
       formData.append("images", JSON.stringify(option));
       try {
         const res = await fetch(`http://localhost:3000/api/news?id=${id}`, {

@@ -1,5 +1,6 @@
-import { ObjectId } from "mongodb";
 import { errorHandler } from "../errorhandler";
+import { ObjectId } from "mongodb";
+import { userVarification } from "../user/user";
 
 export async function getBreakingNews(req, res, breakingNews) {
   try {
@@ -13,6 +14,11 @@ export async function getBreakingNews(req, res, breakingNews) {
 
 export async function postBreakingNews(req, res, breakingnews) {
   try {
+    if (!req.body.userId) throw { message: "user unathenticated!" };
+    const { varify } = await userVarification(req.body.userId);
+    if (!varify) throw { message: "user unathenticated!" };
+    delete req.body.userId;
+
     const id = ObjectId("6358e226cf4c489e511941c1");
     const title = "breakingNews";
 
@@ -44,6 +50,11 @@ export async function postBreakingNews(req, res, breakingnews) {
 
 export async function deleteBreakingNews(req, res, breakingNews) {
   try {
+    if (!req.body.userId) throw { message: "user unathenticated!" };
+    const { varify } = await userVarification(req.body.userId);
+    if (!varify) throw { message: "user unathenticated!" };
+    delete req.body.userId;
+
     const id = ObjectId("6358e226cf4c489e511941c1");
     const title = "breakingNews";
 

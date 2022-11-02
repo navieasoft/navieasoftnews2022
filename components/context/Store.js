@@ -42,7 +42,6 @@ const Store = () => {
           if (res.ok) {
             const { designation } = await res.json();
             setUserDesignation(designation || "user");
-            console.log(designation);
           }
         } catch (error) {
           setUserDesignation("user");
