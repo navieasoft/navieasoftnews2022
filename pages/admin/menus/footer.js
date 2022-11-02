@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { faAdd, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
@@ -5,6 +6,7 @@ import Footer from "../../../components/admin/common/Footer";
 import Header from "../../../components/admin/common/header";
 import SideBar from "../../../components/admin/common/SideBar";
 import FooterModal from "../../../components/admin/menu/FooterModal";
+import SocialModal from "../../../components/admin/menu/SocialModal";
 import useStore from "../../../components/context/useStore";
 
 const FooterMenu = () => {
@@ -41,6 +43,23 @@ const FooterMenu = () => {
         },
         method: "DELETE",
         body: JSON.stringify({ title, value, userId: store?.user?.uid }),
+      });
+      const result = await res.json();
+      if (!res.ok) throw { message: result.message };
+      store?.setAlert({ msg: result.message, type: "success" });
+      setUpdate((prev) => !prev);
+    } catch (error) {
+      store?.setAlert({ msg: error.message, type: "error" });
+    }
+  }
+  async function deleteSocialLink(menu) {
+    try {
+      const formData = new FormData();
+      formData.append("menu", JSON.stringify(menu));
+      formData.append("userId", store.user.uid);
+      const res = await fetch("http://localhost:3000/api", {
+        method: "DELETE",
+        body: formData,
       });
       const result = await res.json();
       if (!res.ok) throw { message: result.message };
@@ -202,6 +221,40 @@ const FooterMenu = () => {
                   setUpdate={setUpdate}
                   close={setShowAdd}
                   title='MORE'
+                />
+              )}
+            </div>
+
+            <div className='item relative'>
+              <header>
+                <p>Social Links</p>
+                <button
+                  onClick={() => setShowAdd("social")}
+                  className='add-btn'
+                >
+                  <FontAwesomeIcon icon={faAdd} />
+                </button>
+              </header>
+              {menus &&
+                menus.social.map((menu, i) => (
+                  <div className='flex justify-between py-2 border-b' key={i}>
+                    <div>
+                      <img className='h-6' src={`/${menu.img}`} alt='' />
+                      <small>{menu.link}</small>
+                    </div>
+                    <button
+                      onClick={() => deleteSocialLink(menu)}
+                      className='w-5'
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                  </div>
+                ))}
+              {showAdd === "social" && (
+                <SocialModal
+                  setUpdate={setUpdate}
+                  close={setShowAdd}
+                  title='social'
                 />
               )}
             </div>

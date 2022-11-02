@@ -1,4 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
+import {
+  faFacebook,
+  faInstagram,
+  faYoutube,
+} from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import useStore from "../../context/useStore";
@@ -39,6 +45,11 @@ const Footer = () => {
     "Site map",
     "Help",
   ];
+  const socialLink = [
+    { icon: faFacebook, link: "https://www.facebook.com/" },
+    { icon: faYoutube, link: "https://www.youtube.com/" },
+    { icon: faInstagram, link: "https://www.instagram.com/" },
+  ];
 
   return (
     <footer className='mt-5 print:hidden'>
@@ -55,7 +66,7 @@ const Footer = () => {
             </a>
           </Link>
         </div>
-        <section className='grid grid-cols-2 md:grid-cols-5 gap-5'>
+        <section className='grid grid-cols-2 md:grid-cols-6 gap-5'>
           <div className='flex flex-col items-start'>
             <p className='font-medium'>NEWS</p>
             {menus &&
@@ -80,6 +91,23 @@ const Footer = () => {
             <p className='font-medium'>MORE</p>
             {menus &&
               menus.MORE.map((menu, i) => <button key={i}>{menu}</button>)}
+          </div>
+
+          <div className='flex flex-col items-start'>
+            <p className='font-medium'>Social Link</p>
+            <div className='text-2xl flex gap-4 flex-wrap mt-2'>
+              {menus &&
+                menus.social.map((item, i) => (
+                  <a
+                    key={i}
+                    href={item.link}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    <img className='h-5 w-5' src={item.img} alt='' />
+                  </a>
+                ))}
+            </div>
           </div>
         </section>
         <div className='footer-bottom-menu'>
