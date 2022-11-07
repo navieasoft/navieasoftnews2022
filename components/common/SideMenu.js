@@ -1,32 +1,16 @@
-import { faClose } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAngleDown,
+  faAngleUp,
+  faClose,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import useStore from "../context/useStore";
 
 const SideMenu = () => {
+  const [showSub, setShowSub] = useState(-1);
   const store = useStore();
-  const menus = [
-    "World",
-    "US",
-    "Politics",
-    "N.Y",
-    "Business",
-    "Opinion",
-    "Tech",
-    "Science",
-    "Health",
-    "Sports",
-    "Arts",
-    "Books",
-    "Style",
-    "Food",
-    "Travel",
-    "Magazine",
-    "T Magazine",
-    "Real EState",
-    "Video",
-  ];
 
   return (
     <div
@@ -37,10 +21,40 @@ const SideMenu = () => {
       <div onClick={() => store.setShowSideMenu(false)} className='close-btn'>
         <FontAwesomeIcon icon={faClose} />
       </div>
-      {menus.map((menu, i) => (
-        <Link href={`/category?q=${menu.toLowerCase()}`} key={i}>
-          <a>{menu}</a>
-        </Link>
+      {store?.categoryMenu?.map((menu, i) => (
+        <div key={i}>
+          <div className='menus'>
+            <Link href={`/category?q=${menu.name}`}>
+              <a>{menu.name}</a>
+            </Link>
+            {menu.subs && (
+              <div
+                className='cursor-pointer'
+                onClick={() =>
+                  setShowSub((prev) => {
+                    if (prev === i) return -1;
+                    else return i;
+                  })
+                }
+              >
+                {showSub === i ? (
+                  <FontAwesomeIcon icon={faAngleUp} />
+                ) : (
+                  <FontAwesomeIcon icon={faAngleDown} />
+                )}
+              </div>
+            )}
+          </div>
+          {menu.subs && (
+            <div className={`accordion ${showSub === i ? "show" : ""}`}>
+              {menu.subs.map((sub) => (
+                <Link href={`/category?q=${menu.name}&sub=${sub}`} key={sub}>
+                  <a className='sub-menus'>{sub}</a>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
       ))}
     </div>
   );

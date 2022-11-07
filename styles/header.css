@@ -66,8 +66,13 @@
   .side-menu-container:hover {
     @apply scrollbar-thumb-gray-400;
   }
-  .side-menu-container a {
-    @apply pr-24 pl-6 hover:bg-gray-100 py-2 border-b block;
+  .side-menu-container .menus {
+    @apply pr-24 pl-6 hover:bg-gray-100 py-2 border-b flex 
+    justify-between w-full;
+  }
+  .side-menu-container .sub-menus {
+    @apply pr-24 pl-6 hover:bg-gray-100 py-2 bg-gray-50 flex 
+    justify-between w-full;
   }
   .user-wrapper {
     @apply absolute top-full right-0 bg-gray-100 rounded-b shadow 

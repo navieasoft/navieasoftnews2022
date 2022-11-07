@@ -239,12 +239,12 @@
   border-radius: 7px;
 }
 
-.dashboard-main-menus-container .menus-wrapper .accordion {
+.accordion {
   max-height: 0;
   overflow: hidden;
   transition: all 0.5s cubic-bezier(0, 1, 0, 1);
 }
-.dashboard-main-menus-container .menus-wrapper .accordion.show {
+.accordion.show {
   height: auto;
   max-height: 9999px;
   transition: all 0.5s cubic-bezier(1, 0, 1, 0);
