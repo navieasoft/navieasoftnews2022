@@ -6,9 +6,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-import Footer from "../../../components/admin/common/Footer";
-import Header from "../../../components/admin/common/header";
-import SideBar from "../../../components/admin/common/SideBar";
+import AdminLayout from "../../../components/admin/AdminLayout";
 import MenuModal from "../../../components/admin/menu/menuModal";
 import useStore from "../../../components/context/useStore";
 import {
@@ -53,140 +51,135 @@ const MainMenus = () => {
   }, [update]);
 
   return (
-    <div className='bg-gray-50'>
-      <Header />
-      <div className='flex gap-5'>
-        <SideBar />
-        <div className='dashboard-main-menus-container'>
-          <header>
-            <p>Category menus</p>
-            <button className='add-btn' onClick={() => setAddMenu(true)}>
-              <FontAwesomeIcon icon={faPlus} />
-            </button>
-          </header>
-          <div className='menus-wrapper'>
-            {menus &&
-              menus.map((item, index) => (
-                <div
-                  onClick={() => setShowControl(-1)}
-                  className='relative'
-                  key={item._id}
-                >
-                  <div className=' item'>
-                    <p>{item.name}</p>
+    <AdminLayout>
+      <div className='dashboard-main-menus-container'>
+        <header>
+          <p>Category menus</p>
+          <button className='add-btn' onClick={() => setAddMenu(true)}>
+            <FontAwesomeIcon icon={faPlus} />
+          </button>
+        </header>
+        <div className='menus-wrapper'>
+          {menus &&
+            menus.map((item, index) => (
+              <div
+                onClick={() => setShowControl(-1)}
+                className='relative'
+                key={item._id}
+              >
+                <div className=' item'>
+                  <p>{item.name}</p>
 
-                    <div className='flex gap-3 items-center text-gray-500'>
-                      {item.subs && (
-                        <button
-                          onClick={() =>
-                            setShowCollaps((prev) => {
-                              if (prev === index) return -1;
-                              else return index;
-                            })
-                          }
-                        >
-                          <FontAwesomeIcon icon={faAngleDown} />
-                        </button>
-                      )}
-                      <button
-                        className='w-5'
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setShowControl(index);
-                        }}
-                      >
-                        <FontAwesomeIcon icon={faEllipsisVertical} />
-                      </button>
-                    </div>
-
-                    <div
-                      className={`control-wrapper ${
-                        showControl === index ? "block" : "hidden"
-                      }`}
-                    >
+                  <div className='flex gap-3 items-center text-gray-500'>
+                    {item.subs && (
                       <button
                         onClick={() =>
-                          handleDeleteCategory(item._id, store, setUpdate)
+                          setShowCollaps((prev) => {
+                            if (prev === index) return -1;
+                            else return index;
+                          })
                         }
                       >
-                        Delete
+                        <FontAwesomeIcon icon={faAngleDown} />
                       </button>
-                      <button
-                        onClick={() => {
-                          setCategoryId(item._id);
-                          setUpdateMenu(true);
-                        }}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => {
-                          setCategoryId(item._id);
-                          setAddSub((prev) => !prev);
-                        }}
-                      >
-                        Add Sub Category
-                      </button>
-                    </div>
-                  </div>
-                  {item.subs && (
-                    <div
-                      className={`accordion ${
-                        showCollaps === index ? "show" : ""
-                      }`}
+                    )}
+                    <button
+                      className='w-5'
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowControl(index);
+                      }}
                     >
-                      {item.subs.map((sub, i) => (
-                        <div
-                          onMouseEnter={() => setShowDeleteBtn(i)}
-                          className='sub-menu'
-                          key={i}
-                        >
-                          <p>{sub}</p>
-                          <button
-                            onClick={() =>
-                              handleDeleteSub(item._id, sub, store, setUpdate)
-                            }
-                            className={`${
-                              showDeleteBtn === i ? "block" : "hidden"
-                            } text-gray-500`}
-                          >
-                            <FontAwesomeIcon icon={faTrash} />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-          </div>
+                      <FontAwesomeIcon icon={faEllipsisVertical} />
+                    </button>
+                  </div>
 
-          <MenuModal
-            action={handleAddCategory}
-            closeModal={setAddMenu}
-            setUpdate={setUpdate}
-            openModal={addMenu}
-            title='Add'
-          />
-          <MenuModal
-            action={handleEditCategory}
-            closeModal={setUpdateMenu}
-            categoryId={categoryId}
-            openModal={updateMenu}
-            setUpdate={setUpdate}
-            title='Edit'
-          />
-          <MenuModal
-            categoryId={categoryId}
-            closeModal={setAddSub}
-            setUpdate={setUpdate}
-            action={handleAddSub}
-            openModal={addSub}
-            title='Add Sub'
-          />
+                  <div
+                    className={`control-wrapper ${
+                      showControl === index ? "block" : "hidden"
+                    }`}
+                  >
+                    <button
+                      onClick={() =>
+                        handleDeleteCategory(item._id, store, setUpdate)
+                      }
+                    >
+                      Delete
+                    </button>
+                    <button
+                      onClick={() => {
+                        setCategoryId(item._id);
+                        setUpdateMenu(true);
+                      }}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => {
+                        setCategoryId(item._id);
+                        setAddSub((prev) => !prev);
+                      }}
+                    >
+                      Add Sub Category
+                    </button>
+                  </div>
+                </div>
+                {item.subs && (
+                  <div
+                    className={`accordion ${
+                      showCollaps === index ? "show" : ""
+                    }`}
+                  >
+                    {item.subs.map((sub, i) => (
+                      <div
+                        onMouseEnter={() => setShowDeleteBtn(i)}
+                        className='sub-menu'
+                        key={i}
+                      >
+                        <p>{sub}</p>
+                        <button
+                          onClick={() =>
+                            handleDeleteSub(item._id, sub, store, setUpdate)
+                          }
+                          className={`${
+                            showDeleteBtn === i ? "block" : "hidden"
+                          } text-gray-500`}
+                        >
+                          <FontAwesomeIcon icon={faTrash} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
         </div>
+
+        <MenuModal
+          action={handleAddCategory}
+          closeModal={setAddMenu}
+          setUpdate={setUpdate}
+          openModal={addMenu}
+          title='Add'
+        />
+        <MenuModal
+          action={handleEditCategory}
+          closeModal={setUpdateMenu}
+          categoryId={categoryId}
+          openModal={updateMenu}
+          setUpdate={setUpdate}
+          title='Edit'
+        />
+        <MenuModal
+          categoryId={categoryId}
+          closeModal={setAddSub}
+          setUpdate={setUpdate}
+          action={handleAddSub}
+          openModal={addSub}
+          title='Add Sub'
+        />
       </div>
-      <Footer />
-    </div>
+    </AdminLayout>
   );
 };
 

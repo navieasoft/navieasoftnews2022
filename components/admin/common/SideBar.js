@@ -142,79 +142,77 @@ const SideBar = () => {
 
   return (
     <div
-      className={`side-bar-container lg:block ${
+      className={`side-bar-wrapper lg:block ${
         store.showSideBar ? "block" : "hidden"
       }`}
     >
-      <div className='side-bar-wrapper'>
-        <div className='py-3 border-t flex justify-center items-center gap-4'>
-          {store?.user && (
-            <>
-              {store?.user?.photoURL && (
-                <Image
-                  height={40}
-                  width={40}
-                  className='rounded-full h-10 w-10 object-cover'
-                  src={store?.user?.photoURL}
-                  alt=''
-                />
-              )}
-              <div className=''>
-                <p>{store?.user?.displayName}</p>
-                <p>Admin</p>
-              </div>
-            </>
+      <div className='py-3 border-t flex justify-center items-center gap-4'>
+        {store?.user && (
+          <>
+            {store?.user?.photoURL && (
+              <Image
+                height={40}
+                width={40}
+                className='rounded-full h-10 w-10 object-cover'
+                src={store?.user?.photoURL}
+                alt=''
+              />
+            )}
+            <div className=''>
+              <p>{store?.user?.displayName}</p>
+              <p>Admin</p>
+            </div>
+          </>
+        )}
+      </div>
+      {menus.map((item) => (
+        <div
+          className={`collapse ${
+            item.highlight.includes(highlight) ? "collapse-open" : ""
+          }`}
+          key={item.id}
+        >
+          <input
+            onClick={() => {
+              router.push(item.url);
+              if (!item.subs?.length) setHighlight(item.highlight[0]);
+            }}
+            type='checkbox'
+          />
+          <a
+            className={`main-side-menu collapse-title ${
+              item.highlight.includes(highlight) ? "highlight" : ""
+            }`}
+          >
+            <div>
+              <FontAwesomeIcon icon={item.icon} />
+              <span>{item.txt}</span>
+            </div>
+            {item.subs && <FontAwesomeIcon icon={faAngleDown} />}
+          </a>
+          {item.subs && (
+            <div className='collapse-content'>
+              {item.subs.map((sub, i) => (
+                <Link key={i} href={sub.url}>
+                  <a
+                    onClick={() => {
+                      setHighlight(item.highlight[i]);
+                    }}
+                    className={`sub-side-menu ${
+                      router.pathname === sub.url
+                        ? "text-green-400"
+                        : "text-gray-300"
+                    }`}
+                  >
+                    <FontAwesomeIcon icon={sub.icon} />
+                    <span>{sub.txt}</span>
+                  </a>
+                </Link>
+              ))}
+            </div>
           )}
         </div>
-        {menus.map((item) => (
-          <div
-            className={`collapse ${
-              item.highlight.includes(highlight) ? "collapse-open" : ""
-            }`}
-            key={item.id}
-          >
-            <input
-              onClick={() => {
-                router.push(item.url);
-                if (!item.subs?.length) setHighlight(item.highlight[0]);
-              }}
-              type='checkbox'
-            />
-            <a
-              className={`main-side-menu collapse-title ${
-                item.highlight.includes(highlight) ? "highlight" : ""
-              }`}
-            >
-              <div>
-                <FontAwesomeIcon icon={item.icon} />
-                <span>{item.txt}</span>
-              </div>
-              {item.subs && <FontAwesomeIcon icon={faAngleDown} />}
-            </a>
-            {item.subs && (
-              <div className='collapse-content'>
-                {item.subs.map((sub, i) => (
-                  <Link key={i} href={sub.url}>
-                    <a
-                      onClick={() => {
-                        setHighlight(item.highlight[i]);
-                      }}
-                      className={`sub-side-menu ${
-                        router.pathname === sub.url
-                          ? "text-green-400"
-                          : "text-gray-300"
-                      }`}
-                    >
-                      <FontAwesomeIcon icon={sub.icon} />
-                      <span>{sub.txt}</span>
-                    </a>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
+      ))}
     </div>
   );
 };

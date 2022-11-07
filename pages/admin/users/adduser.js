@@ -4,6 +4,7 @@ import Header from "../../../components/admin/common/header";
 import SideBar from "../../../components/admin/common/SideBar";
 import React, { useState } from "react";
 import Footer from "../../../components/admin/common/Footer";
+import AdminLayout from "../../../components/admin/AdminLayout";
 
 const Adduser = () => {
   const [loading, setLoading] = useState(false);
@@ -61,57 +62,48 @@ const Adduser = () => {
   };
 
   return (
-    <div className='bg-gray-50'>
-      <Header />
-      <div className='flex gap-5 overflow-auto'>
-        <SideBar />
-        <div className='add-user-container'>
-          <form onSubmit={(e) => onSubmit(e)}>
-            <h3>Add a user</h3>
-            <input
-              onChange={(e) => handleChange(e)}
-              name='displayName'
-              type='text'
-              required
-              placeholder='Enter the user name'
-            />
-            <input
-              onChange={(e) => handleChange(e)}
-              name='email'
-              required
-              type='email'
-              placeholder='Enter the user email'
-            />
-            <input
-              onChange={(e) => handleChange(e)}
-              name='password'
-              required
-              type='password'
-              placeholder='Give a password'
-            />
-            <select
-              onChange={(e) => handleChange(e)}
-              name='designation'
-              required
-            >
-              <option value=''>Give a role</option>
-              <option value='admin'>admin</option>
-              <option value='editor'>editor</option>
-            </select>
-            <input
-              onChange={(e) => handleChange(e)}
-              className='w-full'
-              name='photoURL'
-              type='file'
-            />
-            <button disabled={loading} className='btn btn-primary'>
-              Add
-            </button>
-          </form>
-        </div>
+    <AdminLayout>
+      <div className='add-user-container'>
+        <form onSubmit={(e) => onSubmit(e)}>
+          <h3>Add a user</h3>
+          <input
+            onChange={(e) => handleChange(e)}
+            name='displayName'
+            type='text'
+            required
+            placeholder='Enter the user name'
+          />
+          <input
+            onChange={(e) => handleChange(e)}
+            name='email'
+            required
+            type='email'
+            placeholder='Enter the user email'
+          />
+          <input
+            onChange={(e) => handleChange(e)}
+            name='password'
+            required
+            type='password'
+            placeholder='Give a password'
+          />
+          <select onChange={(e) => handleChange(e)} name='designation' required>
+            <option value=''>Give a role</option>
+            <option value='admin'>admin</option>
+            <option value='editor'>editor</option>
+          </select>
+          <input
+            onChange={(e) => handleChange(e)}
+            className='w-full'
+            name='photoURL'
+            type='file'
+          />
+          <button disabled={loading} className='btn btn-primary'>
+            Add
+          </button>
+        </form>
       </div>
-      <Footer />
-    </div>
+    </AdminLayout>
   );
 };
 

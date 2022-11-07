@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import AdminLayout from "../../../components/admin/AdminLayout";
 import Footer from "../../../components/admin/common/Footer";
 import Header from "../../../components/admin/common/header";
 import SideBar from "../../../components/admin/common/SideBar";
@@ -61,48 +62,47 @@ const Siteinfo = () => {
   }
 
   return (
-    <div className='bg-gray-50 min-h-screen'>
-      <Header />
-      <div className='flex gap-5'>
-        <SideBar />
-        <form onSubmit={(e) => handleSubmit(e)} className='site-info-container'>
-          <div className='item'>
-            <p>Site name</p>
-            <input
-              className='font-medium'
-              name='name'
-              onChange={(e) => handleChange(e)}
-              type='text'
-              placeholder='Type here...'
-            />
-          </div>
-          <div className='item'>
-            <p>Logo of your site</p>
-            <input
-              type='file'
-              accept='image/*'
-              name='logo'
-              onChange={(e) => handleChange(e)}
-            />
-          </div>
-          <div className='item'>
-            <p>Favicon of your site</p>
-            <input
-              type='file'
-              name='favicon'
-              accept='image/*'
-              onChange={(e) => handleChange(e)}
-            />
-          </div>
-          <div className='col-span-3 flex justify-end'>
-            <button disabled={loading} className='btn btn-primary'>
-              Save Changes
-            </button>
-          </div>
-        </form>
-      </div>
-      <Footer />
-    </div>
+    <AdminLayout>
+      <form
+        onSubmit={(e) => handleSubmit(e)}
+        className='site-info-container'
+        style={{ minHeight: "calc(100vh - 120px)" }}
+      >
+        <div className='item'>
+          <p>Site name</p>
+          <input
+            className='font-medium'
+            name='name'
+            onChange={(e) => handleChange(e)}
+            type='text'
+            placeholder='Type here...'
+          />
+        </div>
+        <div className='item'>
+          <p>Logo of your site</p>
+          <input
+            type='file'
+            accept='image/*'
+            name='logo'
+            onChange={(e) => handleChange(e)}
+          />
+        </div>
+        <div className='item'>
+          <p>Favicon of your site</p>
+          <input
+            type='file'
+            name='favicon'
+            accept='image/*'
+            onChange={(e) => handleChange(e)}
+          />
+        </div>
+        <div className='col-span-3 flex justify-end'>
+          <button disabled={loading} className='btn btn-primary'>
+            Save Changes
+          </button>
+        </div>
+      </form>
+    </AdminLayout>
   );
 };
 

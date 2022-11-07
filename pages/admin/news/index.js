@@ -7,6 +7,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import AdminLayout from "../../../components/admin/AdminLayout";
 import Footer from "../../../components/admin/common/Footer";
 import Header from "../../../components/admin/common/header";
 import SideBar from "../../../components/admin/common/SideBar";
@@ -65,98 +66,92 @@ const Allnews = () => {
   }
 
   return (
-    <div className='bg-gray-50'>
-      <Header />
-      <div className='flex gap-5 overflow-auto'>
-        <SideBar />
-
-        <div className='allnews-container'>
-          <table>
-            <thead>
-              <tr>
-                <th>Headline</th>
-                <th>Category</th>
-                <th>Editor_name</th>
-                <th>Date</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {news && news.length ? (
-                news?.map((news, i) => (
-                  <tr onClick={() => setShowMenu(-1)} key={i}>
-                    <td style={{ textAlign: "left" }}>
-                      {news.headline.slice(0, 200)}{" "}
-                      {news.headline.length > 200 && "..."}
-                    </td>
-                    <td>{news.category}</td>
-                    <td>{news.editorName}</td>
-                    <td>{news.date}</td>
-                    <td
-                      onClick={(e) => e.stopPropagation()}
-                      className='space-x-2 relative'
+    <AdminLayout>
+      <div className='allnews-container'>
+        <table>
+          <thead>
+            <tr>
+              <th>Headline</th>
+              <th>Category</th>
+              <th>Editor_name</th>
+              <th>Date</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {news && news.length ? (
+              news?.map((news, i) => (
+                <tr onClick={() => setShowMenu(-1)} key={i}>
+                  <td style={{ textAlign: "left" }}>
+                    {news.headline.slice(0, 200)}{" "}
+                    {news.headline.length > 200 && "..."}
+                  </td>
+                  <td>{news.category}</td>
+                  <td>{news.editorName}</td>
+                  <td>{news.date}</td>
+                  <td
+                    onClick={(e) => e.stopPropagation()}
+                    className='space-x-2 relative'
+                  >
+                    <button onClick={() => setShowMenu(i)} className='w-5'>
+                      <FontAwesomeIcon icon={faEllipsisVertical} />
+                    </button>
+                    <div
+                      className={`controll-menus ${
+                        showMenu === i ? "block" : "hidden"
+                      }`}
                     >
-                      <button onClick={() => setShowMenu(i)} className='w-5'>
-                        <FontAwesomeIcon icon={faEllipsisVertical} />
-                      </button>
-                      <div
-                        className={`controll-menus ${
-                          showMenu === i ? "block" : "hidden"
-                        }`}
+                      <button
+                        onClick={() =>
+                          router.push(`/admin/news/updatenews?id=${news._id}`)
+                        }
                       >
-                        <button
-                          onClick={() =>
-                            router.push(`/admin/news/updatenews?id=${news._id}`)
-                          }
-                        >
-                          <FontAwesomeIcon icon={faEdit} />
-                        </button>
-                        <button
-                          onClick={() => router.push(`/details?id=${news._id}`)}
-                        >
-                          <FontAwesomeIcon icon={faEye} />
-                        </button>
-                        <button
-                          disabled={loading}
-                          onClick={() =>
-                            handleDelete(news._id, {
-                              mainImg: news.mainImg,
-                              featureImg1: news.featureImg1,
-                              featureImg2: news.featureImg2,
-                              featureImg3: news.featureImg3,
-                            })
-                          }
-                        >
-                          <FontAwesomeIcon icon={faTrash} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td className='w-full'>No data found</td>
+                        <FontAwesomeIcon icon={faEdit} />
+                      </button>
+                      <button
+                        onClick={() => router.push(`/details?id=${news._id}`)}
+                      >
+                        <FontAwesomeIcon icon={faEye} />
+                      </button>
+                      <button
+                        disabled={loading}
+                        onClick={() =>
+                          handleDelete(news._id, {
+                            mainImg: news.mainImg,
+                            featureImg1: news.featureImg1,
+                            featureImg2: news.featureImg2,
+                            featureImg3: news.featureImg3,
+                          })
+                        }
+                      >
+                        <FontAwesomeIcon icon={faTrash} />
+                      </button>
+                    </div>
+                  </td>
                 </tr>
-              )}
-            </tbody>
-          </table>
-          <div className='btn-group flex justify-end my-3 mx-4 w-full'>
-            <button
-              disabled={page === 0}
-              onClick={() => setPage((prev) => prev - 1)}
-              className='btn'
-            >
-              «
-            </button>
-            <button className='btn'>Page {page + 1}</button>
-            <button onClick={() => setPage((prev) => prev + 1)} className='btn'>
-              »
-            </button>
-          </div>
+              ))
+            ) : (
+              <tr>
+                <td className='w-full'>No data found</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+        <div className='btn-group flex justify-end my-3 pr-4 w-full'>
+          <button
+            disabled={page === 0}
+            onClick={() => setPage((prev) => prev - 1)}
+            className='btn'
+          >
+            «
+          </button>
+          <button className='btn'>Page {page + 1}</button>
+          <button onClick={() => setPage((prev) => prev + 1)} className='btn'>
+            »
+          </button>
         </div>
       </div>
-      <Footer />
-    </div>
+    </AdminLayout>
   );
 };
 

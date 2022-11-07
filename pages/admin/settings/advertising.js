@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useRef, useState } from "react";
+import AdminLayout from "../../../components/admin/AdminLayout";
 import Footer from "../../../components/admin/common/Footer";
 import Header from "../../../components/admin/common/header";
 import SideBar from "../../../components/admin/common/SideBar";
@@ -31,76 +32,69 @@ const Advertising = () => {
   }, [update]);
 
   return (
-    <div className='bg-gray-50'>
-      <Header />
-      <div className='flex gap-5 overflow-auto'>
-        <div className='w-[200px]'>
-          <SideBar />
-        </div>
-        <section className='advertisement-wrapper'>
-          {ads ? (
-            <>
-              <h3>All Ads for Home page</h3>
-              <h4>Small Ads:</h4>
-              <div className='small-wrapper'>
-                {ads &&
-                  ads.home.small.map((item, i) => (
-                    <AdComponent
-                      setUpdate={setUpdate}
-                      title='small'
-                      key={i}
-                      item={item}
-                    />
-                  ))}
-              </div>
-              <h4 className='mt-7'>Long Ads:</h4>
-              <div className='long-wrapper'>
-                {ads &&
-                  ads.home.long.map((item, i) => (
-                    <AdComponent
-                      setUpdate={setUpdate}
-                      title='long'
-                      key={i}
-                      item={item}
-                    />
-                  ))}
-              </div>
-
-              <h3 className='mt-16'>All Ads for Details & Category pages</h3>
-              <h4>Small Ads:</h4>
-              <div className='small-wrapper'>
-                {ads &&
-                  ads.others.small.map((item, i) => (
-                    <AdComponent
-                      setUpdate={setUpdate}
-                      title='small'
-                      key={i}
-                      item={item}
-                    />
-                  ))}
-              </div>
-              <h4 className='mt-7'>Long Ads:</h4>
-              <div className='long-wrapper'>
-                {ads &&
-                  ads.others.long.map((item, i) => (
-                    <AdComponent
-                      setUpdate={setUpdate}
-                      title='long'
-                      key={i}
-                      item={item}
-                    />
-                  ))}
-              </div>
-            </>
-          ) : (
-            <div>
-              <p>Loading...</p>
+    <AdminLayout>
+      <section className='advertisement-wrapper'>
+        {ads ? (
+          <>
+            <h3>All Ads for Home page</h3>
+            <h4>Small Ads:</h4>
+            <div className='small-wrapper'>
+              {ads &&
+                ads.home.small.map((item, i) => (
+                  <AdComponent
+                    setUpdate={setUpdate}
+                    title='small'
+                    key={i}
+                    item={item}
+                  />
+                ))}
             </div>
-          )}
-        </section>
-      </div>
-      <Footer />
-    </div>
+            <h4 className='mt-7'>Long Ads:</h4>
+            <div className='long-wrapper'>
+              {ads &&
+                ads.home.long.map((item, i) => (
+                  <AdComponent
+                    setUpdate={setUpdate}
+                    title='long'
+                    key={i}
+                    item={item}
+                  />
+                ))}
+            </div>
+
+            <h3 className='mt-16'>All Ads for Details & Category pages</h3>
+            <h4>Small Ads:</h4>
+            <div className='small-wrapper'>
+              {ads &&
+                ads.others.small.map((item, i) => (
+                  <AdComponent
+                    setUpdate={setUpdate}
+                    title='small'
+                    key={i}
+                    item={item}
+                  />
+                ))}
+            </div>
+            <h4 className='mt-7'>Long Ads:</h4>
+            <div className='long-wrapper'>
+              {ads &&
+                ads.others.long.map((item, i) => (
+                  <AdComponent
+                    setUpdate={setUpdate}
+                    title='long'
+                    key={i}
+                    item={item}
+                  />
+                ))}
+            </div>
+          </>
+        ) : (
+          <div>
+            <p>Loading...</p>
+          </div>
+        )}
+      </section>
+    </AdminLayout>
   );
 };
 

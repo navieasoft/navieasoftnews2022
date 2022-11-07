@@ -23,7 +23,6 @@ export async function postNews(req, res, news) {
     Object.entries(req.files).map(
       ([key, value]) => (req.body[key] = value[0].filename)
     );
-    req.body.raletedTopic = JSON.parse(req.body.raletedTopic);
     req.body.created_at = new Date();
 
     const result = await news.insertOne(req.body);
@@ -92,7 +91,6 @@ export async function updateNews(req, res, news) {
         ([key, value]) => (req.body[key] = value[0].filename)
       );
     }
-    req.body.raletedTopic = JSON.parse(req.body.raletedTopic);
     const existedImg = req.body.existedImg;
     delete req.body.existedImg;
     const result = await news.updateOne(

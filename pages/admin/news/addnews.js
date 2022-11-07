@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import AdminLayout from "../../../components/admin/AdminLayout";
 import Footer from "../../../components/admin/common/Footer";
 import Header from "../../../components/admin/common/header";
 import SideBar from "../../../components/admin/common/SideBar";
@@ -18,14 +19,6 @@ const AddNews = () => {
 
   async function onSubmit(data) {
     setLoading(true);
-    if (data.raletedTopic.includes("|")) {
-      data.raletedTopic = data.raletedTopic
-        .split("|")
-        .map((topic) => topic.trim());
-    } else {
-      data.raletedTopic = [data.raletedTopic];
-    }
-    data.raletedTopic = JSON.stringify(data.raletedTopic);
     data.mainImg = data.mainImg[0];
     data.featureImg1 = data.featureImg1[0] || "";
     data.featureImg2 = data.featureImg2[0] || "";
@@ -56,114 +49,98 @@ const AddNews = () => {
   }
 
   return (
-    <div className='bg-gray-50'>
-      <Header />
-      <div className='flex gap-5'>
-        <SideBar />
+    <AdminLayout>
+      <section className='create-news-container'>
+        <form onSubmit={handleSubmit(onSubmit)} className='news-area'>
+          <div className='md:col-span-2 lg:col-span-3'>
+            <textarea
+              {...register("headline", { required: true })}
+              required
+              rows={2}
+              placeholder='Headline for the news'
+            />
+            <textarea
+              {...register("body", { required: true })}
+              required
+              rows='20'
+              placeholder='Write the news body'
+            />
+          </div>
 
-        <section className='create-news-container'>
-          <form onSubmit={handleSubmit(onSubmit)} className='news-area'>
-            <div className='md:col-span-2 lg:col-span-3'>
-              <textarea
-                {...register("headline", { required: true })}
+          <div className='space-y-3'>
+            <div className='space-y-2'>
+              <label htmlFor='Category'>Category:</label>
+              <select
+                {...register("category", { required: true })}
+                onChange={(e) => handleCategory(e)}
                 required
-                rows={2}
-                placeholder='Headline for the news'
-              />
-              <textarea
-                {...register("body", { required: true })}
+              >
+                <option value=''>select</option>
+                {categoryMenu?.map((item, i) => (
+                  <option key={i} value={item.name}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className='space-y-2'>
+              <label htmlFor='Sub Category'>Sub Category:</label>
+              <select {...register("subs")}>
+                <option value=''>select</option>
+                {subs?.map((sub, i) => (
+                  <option key={i} value={sub}>
+                    {sub}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className='space-y-2'>
+              <label htmlFor='newsType'>News type:</label>
+              <select required {...register("newsType", { required: true })}>
+                <option value=''>select</option>
+                <option value='hot news'>hot news</option>
+                <option value='top news'>top news</option>
+                <option value='opinion'>opinion</option>
+                <option value='arts'>arts</option>
+                <option value='living'>living</option>
+                <option value='features'>features news</option>
+                <option value='genaral news'>genaral news</option>
+              </select>
+            </div>
+
+            <div className='space-y-2'>
+              <label htmlFor='topic'>Main Image:</label>
+              <input
                 required
-                rows='20'
-                placeholder='Write the news body'
+                {...register("mainImg", { required: true })}
+                type='file'
               />
             </div>
 
-            <div className='space-y-3'>
-              <div className='space-y-2'>
-                <label htmlFor='Category'>Category:</label>
-                <select
-                  {...register("category", { required: true })}
-                  onChange={(e) => handleCategory(e)}
-                  required
-                >
-                  <option value=''>select</option>
-                  {categoryMenu?.map((item, i) => (
-                    <option key={i} value={item.name}>
-                      {item.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className='space-y-2'>
-                <label htmlFor='Sub Category'>Sub Category:</label>
-                <select {...register("subs")}>
-                  <option value=''>select</option>
-                  {subs?.map((sub, i) => (
-                    <option key={i} value={sub}>
-                      {sub}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className='space-y-2'>
-                <label htmlFor='newsType'>News type:</label>
-                <select required {...register("newsType", { required: true })}>
-                  <option value=''>select</option>
-                  <option value='hot news'>hot news</option>
-                  <option value='top news'>top news</option>
-                  <option value='opinion'>opinion</option>
-                  <option value='arts'>arts</option>
-                  <option value='living'>living</option>
-                  <option value='features'>features news</option>
-                  <option value='genaral news'>genaral news</option>
-                </select>
-              </div>
-
-              <div className='space-y-2'>
-                <label htmlFor='topic'>Related Topic:</label>
-                <input
-                  required
-                  {...register("raletedTopic", { required: true })}
-                  type='text'
-                  placeholder='Type a | b | c'
-                />
-              </div>
-
-              <div className='space-y-2'>
-                <label htmlFor='topic'>Main Image:</label>
-                <input
-                  required
-                  {...register("mainImg", { required: true })}
-                  type='file'
-                />
-              </div>
-
-              <div className='space-y-2'>
-                <label htmlFor='topic'>Features Image 1:</label>
-                <input {...register("featureImg1")} type='file' />
-              </div>
-              <div className='space-y-2'>
-                <label htmlFor='topic'>Features Image 2:</label>
-                <input {...register("featureImg2")} type='file' />
-              </div>
-              <div className='space-y-2'>
-                <label htmlFor='topic'>Features Image 3:</label>
-                <input {...register("featureImg3")} type='file' />
-              </div>
-
-              <div className='flex justify-center'>
-                <button disabled={loading} className='btn btn-primary'>
-                  Save
-                </button>
-              </div>
+            <div className='space-y-2'>
+              <label htmlFor='topic'>Features Image 1:</label>
+              <input {...register("featureImg1")} type='file' />
             </div>
-          </form>
-          <Footer />
-        </section>
-      </div>
-    </div>
+            <div className='space-y-2'>
+              <label htmlFor='topic'>Features Image 2:</label>
+              <input {...register("featureImg2")} type='file' />
+            </div>
+            <div className='space-y-2'>
+              <label htmlFor='topic'>Features Image 3:</label>
+              <input {...register("featureImg3")} type='file' />
+            </div>
+
+            <div className='flex justify-center'>
+              <button disabled={loading} className='btn btn-primary'>
+                Save
+              </button>
+            </div>
+          </div>
+        </form>
+      </section>
+    </AdminLayout>
   );
 };
 
