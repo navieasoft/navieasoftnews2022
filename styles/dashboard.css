@@ -36,9 +36,6 @@
     @apply py-2 w-full text-left pl-7 font-medium hover:bg-[#3b3e46] 
     flex gap-3 items-center;
   }
-  .side-bar-container a svg {
-    @apply text-gray-300;
-  }
 
   /* site info */
   .site-info-container {

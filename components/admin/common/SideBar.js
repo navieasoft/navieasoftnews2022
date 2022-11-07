@@ -167,7 +167,12 @@ const SideBar = () => {
           )}
         </div>
         {menus.map((item) => (
-          <div className='collapse' key={item.id}>
+          <div
+            className={`collapse ${
+              item.highlight.includes(highlight) ? "collapse-open" : ""
+            }`}
+            key={item.id}
+          >
             <input
               onClick={() => {
                 router.push(item.url);
@@ -194,7 +199,11 @@ const SideBar = () => {
                       onClick={() => {
                         setHighlight(item.highlight[i]);
                       }}
-                      className='sub-side-menu'
+                      className={`sub-side-menu ${
+                        router.pathname === sub.url
+                          ? "text-green-400"
+                          : "text-gray-300"
+                      }`}
                     >
                       <FontAwesomeIcon icon={sub.icon} />
                       <span>{sub.txt}</span>
