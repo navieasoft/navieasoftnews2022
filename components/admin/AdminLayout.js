@@ -8,7 +8,7 @@ const AdminLayout = ({ children }) => {
     <div className='bg-gray-100'>
       <Header />
       <SideBar />
-      <div className='pl-[250px] pr-5 w-full'>{children}</div>
+      <div className='lg:pl-[250px] pl-5 pr-5 w-full'>{children}</div>
       <Footer />
     </div>
   );
