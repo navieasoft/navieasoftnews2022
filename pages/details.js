@@ -251,20 +251,6 @@ const Details = () => {
           />
 
           <section>
-            {/* Realated topic */}
-            {news.raletedTopic.length && (
-              <div className='related-topic'>
-                <p>Realated Topic, You can visit.</p>
-                <div className='flex'>
-                  {news.raletedTopic.map((tp, i) => (
-                    <Link href={`/category?q=${tp}`} key={i}>
-                      <a>{tp}</a>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-
             <LergeAdd
               picture={`/ads/${ads?.long[1].adImg || ""}`}
               link={ads?.long[1].url}
