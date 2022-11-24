@@ -86,7 +86,7 @@ export async function updateNews(req, res) {
   }
 }
 
-export async function deleteNews(req, res, news) {
+export async function deleteNews(req, res) {
   try {
     const { error } = await multipleBodyParser(req, res, "", []);
     if (error) throw { message: error || "Internal server error" };
@@ -96,19 +96,12 @@ export async function deleteNews(req, res, news) {
     if (!varify) throw { message: "user unathenticated!" };
 
     //delete data from db;
-    const database = mySql;
-    if (database.error) throw error;
     const sql = `DELETE FROM news WHERE id = '${req.query.id}'`;
-    database.db.query(sql, (err, result) => {
-      if (err) throw new Error(err.sqlMessage);
-      console.log(result);
-      if (result) {
-        deleteImage(req.body.image);
-        res.send({ message: "News successfully deleted" });
-      } else {
-        throw { message: "Unable to delete, try again", status: 500 };
-      }
-    });
+    const result = await queryDocument(sql);
+    if (result.affectedRows > 0) {
+      deleteImage(req.body.image);
+      res.send({ message: "News successfully deleted" });
+    } else throw { message: "Unable to delete, try again" };
   } catch (err) {
     errorHandler(res, { msg: err.message, status: err.status });
   }

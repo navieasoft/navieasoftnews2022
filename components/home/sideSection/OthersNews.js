@@ -8,14 +8,11 @@ const OthersNews = ({ data }) => {
   return (
     <div className='space-y-5'>
       {data.map((item) => (
-        <Link
-          href={`/details?category=${item.category}&id=${item.id}`}
-          key={item.id}
-        >
+        <Link href={`/details?id=${item.id}`} key={item.id}>
           <a className='grid grid-cols-3 gap-2 hover:text-gray-500'>
             <img
               className='object-contain h-full w-24'
-              src={`/assets/${item.mainImg}`}
+              src={`/assets/${item.image}`}
               alt='news image'
             />
             <p className='col-span-2 font-medium'>{item.headline}</p>

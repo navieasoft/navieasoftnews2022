@@ -60,10 +60,7 @@ const CategoryDetailsSideBar = ({ page }) => {
         <b>Latest news:</b>
         {latestNews &&
           latestNews?.map((news) => (
-            <Link
-              href={`details?category=${news.category}&id=${news.id}`}
-              key={news.id}
-            >
+            <Link href={`details?id=${news.id}`} key={news.id}>
               <a className='news'>
                 <img
                   className='object-contain'
@@ -85,10 +82,7 @@ const CategoryDetailsSideBar = ({ page }) => {
         <b>Most read:</b>
         {latestNews &&
           latestNews?.map((news) => (
-            <Link
-              href={`details?category=${news.category}&id=${news.id}`}
-              key={news.id}
-            >
+            <Link href={`details?id=${news.id}`} key={news.id}>
               <a className='news'>
                 <p className='font-medium col-span-2 pl-2'>{news.headline}</p>
                 <img

@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import carusalSetting from "../../services/client/carusalSetting";
 import Carousel from "react-multi-carousel";
-import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
@@ -19,14 +18,11 @@ const AtHome = ({ data }) => {
         responsive={carusalSetting}
       >
         {data.map((item) => (
-          <Link
-            href={`/details?category=${item.category}&id=${item.id}`}
-            key={item.id}
-          >
+          <Link href={`/details?id=${item.id}`} key={item.id}>
             <a className='flex flex-col hover:text-gray-500 mx-3'>
               <img
                 className='object-cover object-center'
-                src={`assets/${item.mainImg}`}
+                src={`assets/${item.image}`}
                 alt=''
               />
               <p className='font-medium'>{item.headline}</p>

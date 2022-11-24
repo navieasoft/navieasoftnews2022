@@ -1,35 +1,26 @@
 import { queryDocument } from "../../../services/server/common";
 import { errorHandler } from "../../../services/server/errorhandler";
-import { dbConnection } from "../../../services/server/mongodb";
 
 export default async function handler(req, res) {
-  const { database } = await dbConnection();
-
-  if (!database) {
-    res.send(500).send({ message: "Serverside error" });
-    return;
-  } else {
-    const news = database.collection("news");
-    switch (req.method) {
-      case "GET":
-        if (req.query.otherNews) {
-          getOtherNews(req, res, news);
-        } else if (req.query.category) {
-          getCategoryNews(req, res, news);
-        } else if (req.query.types) {
-          getTypesNews(req, res, news);
-        } else {
-          getBasicData(req, res, news);
-        }
-        break;
-      default:
-        res.status(404).send({ message: "not found" });
-        break;
-    }
+  switch (req.method) {
+    case "GET":
+      if (req.query.otherNews) {
+        getOtherNews(res);
+      } else if (req.query.category) {
+        getCategoryNews(req, res);
+      } else if (req.query.types) {
+        getTypesNews(req, res);
+      } else {
+        getBasicData(res);
+      }
+      break;
+    default:
+      res.status(404).send({ message: "not found" });
+      break;
   }
 }
 
-async function getBasicData(req, res, news) {
+async function getBasicData(res) {
   try {
     const hotNews = await queryDocument(
       "SELECT * FROM news WHERE type = 'hot news' ORDER BY created_at LIMIT 4"
@@ -40,15 +31,15 @@ async function getBasicData(req, res, news) {
     );
 
     const countryNews = await queryDocument(
-      "SELECT * FROM news WHERE category_name LIKE '%bangladesh%' ORDER BY created_at LIMIT 5"
+      "SELECT news.*, category.name as category_name FROM news INNER JOIN category ON news.category_id = category.id WHERE category.name = 'Bangladesh' ORDER BY created_at LIMIT 5"
     );
 
     const politicsNews = await queryDocument(
-      "SELECT * FROM news WHERE category_name LIKE '%politics%' ORDER BY created_at LIMIT 5"
+      "SELECT news.*, category.name as category_name FROM news INNER JOIN category ON news.category_id = category.id WHERE category.name = 'Politics' ORDER BY created_at LIMIT 5"
     );
 
     const businessNews = await queryDocument(
-      "SELECT * FROM news WHERE category_name LIKE '%business%' ORDER BY created_at LIMIT 5"
+      "SELECT news.*, category.name as category_name FROM news INNER JOIN category ON news.category_id = category.id WHERE category.name = 'Business' ORDER BY created_at LIMIT 5"
     );
 
     const latestNews = await queryDocument(
@@ -68,68 +59,53 @@ async function getBasicData(req, res, news) {
   }
 }
 
-async function getOtherNews(req, res, news) {
+async function getOtherNews(res) {
   try {
-    const otherNews = await news
-      .find({ newsType: "genaral news" })
-      .sort({ created_at: 1 })
-      .limit(10)
-      .toArray();
+    const otherNews = await queryDocument(
+      "SELECT * FROM news WHERE type = 'genaral news' ORDER BY created_at LIMIT 10"
+    );
 
-    const homeNews = await news
-      .find({ category: /bangladesh/i })
-      .sort({ created_at: 1 })
-      .toArray();
-
-    const featuresNews = await news
-      .find({ newsType: /features/i })
-      .sort({ created_at: 1 })
-      .limit(5)
-      .toArray();
-
+    const homeNews = await queryDocument(
+      "SELECT news.*, category.name as category_name FROM news INNER JOIN category ON news.category_id = category.id WHERE category.name = 'Bangladesh' ORDER BY created_at LIMIT 5, 20"
+    );
+    const featuresNews = await queryDocument(
+      "SELECT * FROM news WHERE type = 'features' ORDER BY created_at LIMIT 5"
+    );
     res.send({ otherNews, homeNews, featuresNews });
   } catch (error) {
     errorHandler(res, { msg: error.message, status: error.status || 500 });
   }
 }
 
-async function getCategoryNews(req, res, news) {
+async function getCategoryNews(req, res) {
   try {
     if (req.query.sub) {
-      const result = await news
-        .find({
-          category: RegExp(req.query.category, "i"),
-          subs: RegExp(req.query.sub, "i"),
-        })
-        .sort({ created_at: 1 })
-        .limit(parseInt(req.query.limit) || 20)
-        .toArray();
+      const limit = parseInt(req.query.limit) || 20;
+      const page = parseInt(req.query.page || 0) * limit;
+      const sql = `SELECT news.*, category.name as category_name, s.name as sub_category_name FROM news INNER JOIN category ON news.category_id = category.id INNER JOIN sub_category as s ON category.id = s.category_id WHERE category.name = '${req.query.category}' AND s.name = '${req.query.sub}' ORDER BY created_at LIMIT ${page}, ${limit}`;
+      const result = await queryDocument(sql);
       res.send(result);
     } else {
-      const result = await news
-        .find({
-          category: RegExp(req.query.category, "i"),
-        })
-        .sort({ created_at: 1 })
-        .skip(parseInt(req.query.skip) || 0)
-        .limit(parseInt(req.query.limit) || 20)
-        .toArray();
+      const limit = parseInt(req.query.limit) || 20;
+      const page = parseInt(req.query.page || 0) * limit;
+      const sql = `SELECT news.*, category.name as category_name FROM news INNER JOIN category ON news.category_id = category.id  WHERE category.name = '${req.query.category}' ORDER BY created_at LIMIT ${page}, ${limit}`;
+      const result = await queryDocument(sql);
       res.send(result);
     }
   } catch (error) {
-    errorHandler(res, { msg: error.message, status: error.status || 500 });
+    errorHandler(res, { msg: error.message, status: error.status });
   }
 }
 
-async function getTypesNews(req, res, news) {
+async function getTypesNews(req, res) {
   try {
-    const result = await news
-      .find({ newsType: RegExp(req.query.types, "i") })
-      .sort({ created_at: 1 })
-      .limit(12)
-      .toArray();
+    const limit = parseInt(req.query.limit) || 12;
+    const page = parseInt(req.query.page || 0) * limit;
+    const sql = `SELECT * FROM news WHERE type = '${req.query.types}' ORDER BY created_at LIMIT ${page}, ${limit}`;
+    const result = await queryDocument(sql);
+    console.log(req.query);
     res.send(result);
   } catch (error) {
-    errorHandler(res, { msg: error.message, status: error.status || null });
+    errorHandler(res, { msg: error.message, status: error.status });
   }
 }

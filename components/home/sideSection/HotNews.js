@@ -5,11 +5,11 @@ import React from "react";
 const HotNews = ({ data }) => {
   if (!data) return null;
   return (
-    <Link href={`/details?category=${data.category}&id=${data.id}`}>
+    <Link href={`/details?id=${data.id}`}>
       <a className='hot-new-container'>
         <img
           className='object-contain h-52 w-full'
-          src={`/assets/${data.mainImg}`}
+          src={`/assets/${data.image}`}
           alt='news'
         />
         <h3>{data.headline}</h3>

@@ -7,10 +7,7 @@ const TopTenNews = ({ data }) => {
   return (
     <div className='space-y-5 my-5 pb-1.5 border-b'>
       {data.map((item) => (
-        <Link
-          href={`/details?category=${item.category}&id=${item.id}`}
-          key={item.id}
-        >
+        <Link href={`/details?id=${item.id}`} key={item.id}>
           <a className='grid grid-cols-3 gap-2 hover:text-gray-500'>
             <p className='col-span-2 font-medium'>
               {item.headline.slice(0, 60)} {item.headline.length > 60 && "..."}
@@ -18,7 +15,7 @@ const TopTenNews = ({ data }) => {
             <div>
               <img
                 className='object-cover h-full w-36'
-                src={`/assets/${item.mainImg}`}
+                src={`/assets/${item.image}`}
                 alt='news image'
               />
             </div>

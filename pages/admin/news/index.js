@@ -87,8 +87,8 @@ const Allnews = () => {
                     {news.headline.slice(0, 200)}{" "}
                     {news.headline.length > 200 && "..."}
                   </td>
-                  <td>{news.category}</td>
-                  <td>{news.editorName}</td>
+                  <td>{news.category_name}</td>
+                  <td>{news.editor_name}</td>
                   <td>{news.date}</td>
                   <td
                     onClick={(e) => e.stopPropagation()}
@@ -102,12 +102,18 @@ const Allnews = () => {
                         showMenu === i ? "block" : "hidden"
                       }`}
                     >
-                      <Link href={`/admin/news/updatenews?id=${news.id}`}>
+                      <button
+                        onClick={() =>
+                          router.push(`/admin/news/updatenews?id=${news.id}`)
+                        }
+                      >
                         <FontAwesomeIcon icon={faEdit} />
-                      </Link>
-                      <Link href={`/details?id=${news.id}`}>
+                      </button>
+                      <button
+                        onClick={() => router.push(`/details?id=${news.id}`)}
+                      >
                         <FontAwesomeIcon icon={faEye} />
-                      </Link>
+                      </button>
                       <button
                         disabled={loading}
                         onClick={() => handleDelete(news.id, news.image)}

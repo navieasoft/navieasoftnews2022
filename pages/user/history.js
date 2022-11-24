@@ -63,11 +63,7 @@ const History = () => {
             {news.map((item) => (
               <Link key={item.id} href={`/details?id=${item.id}`}>
                 <a className='item'>
-                  <img
-                    className='h-20'
-                    src={`/assets/${item.mainImg}`}
-                    alt=''
-                  />
+                  <img className='h-20' src={`/assets/${item.image}`} alt='' />
                   <div className='col-span-3'>
                     <p className='mb-2'>
                       <b>{item.headline}</b>

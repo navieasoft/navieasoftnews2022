@@ -30,7 +30,7 @@ const AddNews = () => {
       (item) => item.id == data.sub_category_id
     ).name;
     data.image = data.image[0];
-    data.body = body.current?.value;
+    data.body = body.current?.value.replaceAll('"', "'");
     data.user_id = user?.uid;
     data.editor_name = user.displayName;
     const d = new Date();

@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { faAngleRight, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Image from "next/image";
 import React from "react";
 
 const DailyReportOfCountry = () => {

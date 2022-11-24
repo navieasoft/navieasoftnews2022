@@ -48,7 +48,7 @@ const Details = () => {
       });
       const result = await res.json();
       if (res.ok) {
-        setNews(result);
+        setNews(result[0]);
         //get related news;
         await getRelatedNews(result.category);
       } else throw result;
@@ -202,7 +202,7 @@ const Details = () => {
               </p>
               <img
                 className='object-contain'
-                src={`/assets/${news.mainImg}`}
+                src={`/assets/${news.image}`}
                 alt='news image'
               />
 
@@ -266,7 +266,7 @@ const Details = () => {
                       <a className='news'>
                         <img
                           className='object-cover object-center rounded-t'
-                          src={`/assets/${news.mainImg}`}
+                          src={`/assets/${news.image}`}
                           alt=''
                         />
                         <p className='font-medium px-2 pb-3'>{news.headline}</p>

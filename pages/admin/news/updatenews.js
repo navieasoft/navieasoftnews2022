@@ -73,7 +73,7 @@ const AddNews = () => {
     })}, ${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}`;
 
     if (news.body !== body.current?.value) {
-      data.body = body.current?.value;
+      data.body = body.current?.value.replaceAll('"', "'");
     }
     if (data.category_id) {
       data.category_name = categoryMenu.find(

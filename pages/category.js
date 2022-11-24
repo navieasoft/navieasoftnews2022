@@ -55,7 +55,7 @@ const Category = () => {
         });
         const result = await res.json();
         if (res.ok) {
-          setAds(result.others);
+          setAds(result.other);
         } else throw result;
       } catch (error) {
         console.log(error.message);
@@ -66,6 +66,8 @@ const Category = () => {
       controller.abort();
     };
   }, []);
+
+  console.log(ads.long[0].image);
 
   if (!news) return null;
   if (!news.length) {
@@ -84,16 +86,16 @@ const Category = () => {
       <TopMenus />
       <Breakingnews />
       <LergeAdd
-        picture={`/ads/${ads?.long[0].adImg || ""}`}
+        picture={`/ads/${ads.long[0].image || ""}`}
         link={ads?.long[0].url}
       />
       <section className='category-wrapper'>
         <section className='col-span-3 md:col-span-2'>
-          <Link href={`details?category=${news[0].category}&id=${news[0].id}`}>
+          <Link href={`details?id=${news[0].id}`}>
             <a className='first-item'>
               <img
                 className='object-contain'
-                src={`/assets/${news[0].mainImg}`}
+                src={`/assets/${news[0].image}`}
                 alt=''
               />
               <p className='font-medium'>{news[0].headline}</p>
@@ -102,21 +104,18 @@ const Category = () => {
           </Link>
 
           <LergeAdd
-            picture={`/ads/${ads?.long[1].adImg || ""}`}
+            picture={`/ads/${ads?.long[1].image || ""}`}
             link={ads?.long[1].url}
           />
 
           <div className='second-item'>
             {news.slice(1, 7).map((news) => (
-              <Link
-                href={`details?category=${news.category}&id=${news.id}`}
-                key={news.id}
-              >
+              <Link href={`details?id=${news.id}`} key={news.id}>
                 <a className='news'>
                   <p className='font-medium py-2 px-3'>{news.headline}</p>
                   <img
                     className='object-cover object-center rounded-r'
-                    src={`/assets/${news.mainImg}`}
+                    src={`/assets/${news.image}`}
                     alt=''
                   />
                 </a>
@@ -125,20 +124,17 @@ const Category = () => {
           </div>
 
           <LergeAdd
-            picture={`/ads/${ads?.long[2].adImg || ""}`}
+            picture={`/ads/${ads?.long[2].image || ""}`}
             link={ads?.long[2].url}
           />
 
           <div className='third-item'>
             {news.slice(8, news.length)?.map((news) => (
-              <Link
-                href={`details?category=${news.category}&id=${news.id}`}
-                key={news.id}
-              >
+              <Link href={`details?id=${news.id}`} key={news.id}>
                 <a className='news'>
                   <img
                     className='object-cover object-center rounded-t'
-                    src={`/assets/${news.mainImg}`}
+                    src={`/assets/${news.image}`}
                     alt=''
                   />
                   <p className='font-medium py-2 px-3'>{news.headline}</p>

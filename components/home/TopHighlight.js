@@ -1,5 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
@@ -8,14 +7,11 @@ const TopHighlight = ({ data }) => {
     <div className='highlight-part'>
       {data &&
         data.map((item) => (
-          <Link
-            href={`/details?category=${item.category}&id=${item.id}`}
-            key={item.id}
-          >
+          <Link href={`/details?id=${item.id}`} key={item.id}>
             <a className='item'>
               <img
                 className='object-contain h-20'
-                src={`/assets/${item.mainImg}`}
+                src={`/assets/${item.image}`}
                 alt='news image'
               />
               <div>
