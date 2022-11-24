@@ -1,40 +1,40 @@
-import { ObjectId } from "mongodb";
+import { queryDocument } from "../common";
 import { errorHandler } from "../errorhandler";
 import { userVarification } from "../user/user";
 
-export async function getFooterMenus(req, res, footer) {
+export async function getFooterMenus(req, res) {
   try {
-    const result = await footer.find().toArray();
-    res.status(200).send(result[0]);
+    const result = {};
+    const data = await queryDocument("SELECT * FROM footer_menu");
+    result.news = data.filter((item) => item.column_number === 1);
+    result.opinion = data.filter((item) => item.column_number === 2);
+    result.arts = data.filter((item) => item.column_number === 3);
+    result.living = data.filter((item) => item.column_number === 4);
+    result.more = data.filter((item) => item.column_number === 5);
+    result.social = data.filter((item) => item.column_number === 6);
+    res.send(result);
   } catch (error) {
     errorHandler(res);
   }
 }
 
-export async function postFooterMenus(req, res, footer) {
+export async function postFooterMenus(req, res) {
   try {
     if (!req.body.userId) throw { message: "user unathenticated!" };
     const { varify } = await userVarification(req.body.userId);
     if (!varify) throw { message: "user unathenticated!" };
     delete req.body.userId;
 
-    const id = ObjectId("6358d00bcf4c489e511941be");
-    const title = req.body.title;
-    const isExist = await footer.findOne({
-      _id: id,
-      [title]: req.body.value,
-    });
-    if (isExist) {
+    const sql = `SELECT id FROM footer_menu WHERE name = '${req.body.name}' AND column_number = '${req.body.collumn}'`;
+    const isExist = await queryDocument(sql);
+
+    if (isExist.length) {
       res.status(409).send({ message: "Already added menu" });
       return;
     }
-    const result = await footer.updateOne(
-      {
-        _id: id,
-      },
-      { $push: { [title]: req.body.value } }
-    );
-    if (result.modifiedCount > 0) {
+    const query = `INSERT INTO footer_menu SET name = '${req.body.name}', column_number = '${req.body.collumn}'`;
+    const result = await queryDocument(query);
+    if (result.insertId > 0) {
       res.status(200).send({
         message: "Menu added successfully",
       });
@@ -46,25 +46,17 @@ export async function postFooterMenus(req, res, footer) {
   }
 }
 
-export async function deleteFooterMenus(req, res, footer) {
+export async function deleteFooterMenus(req, res) {
   try {
     if (!req.body.userId) throw { message: "user unathenticated!" };
     const { varify } = await userVarification(req.body.userId);
     if (!varify) throw { message: "user unathenticated!" };
     delete req.body.userId;
 
-    const id = ObjectId("6358d00bcf4c489e511941be");
-    const title = req.body.title;
-
-    const result = await footer.updateOne(
-      {
-        _id: id,
-      },
-      { $pull: { [title]: req.body.value } }
-    );
-
-    if (result.modifiedCount > 0) {
-      res.status(200).send({
+    const sql = `DELETE FROM footer_menu WHERE name = '${req.body.name}' AND column_number = '${req.body.collumn}'`;
+    const result = await queryDocument(sql);
+    if (result.affectedRows > 0) {
+      res.send({
         message: "Menu deleted successfully",
       });
     } else {

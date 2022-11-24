@@ -9,8 +9,8 @@ const OthersNews = ({ data }) => {
     <div className='space-y-5'>
       {data.map((item) => (
         <Link
-          href={`/details?category=${item.category}&id=${item._id}`}
-          key={item._id}
+          href={`/details?category=${item.category}&id=${item.id}`}
+          key={item.id}
         >
           <a className='grid grid-cols-3 gap-2 hover:text-gray-500'>
             <img

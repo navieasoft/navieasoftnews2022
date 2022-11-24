@@ -1,10 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useRef, useState } from "react";
 import AdminLayout from "../../../components/admin/AdminLayout";
-import Footer from "../../../components/admin/common/Footer";
-import Header from "../../../components/admin/common/header";
-import SideBar from "../../../components/admin/common/SideBar";
 import useStore from "../../../components/context/useStore";
+import { axios } from "../../../services/client/common";
 
 const Advertising = () => {
   const [update, setUpdate] = useState(false);
@@ -16,11 +14,12 @@ const Advertising = () => {
     const signal = controller.signal;
     (async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/settings/ads", {
+        const res = await fetch("/api/settings/ads", {
           signal,
         });
         const result = await res.json();
-        setAds(result);
+        if (res.ok) setAds(result);
+        else throw result;
       } catch (error) {
         store.setError(true);
       }
@@ -66,7 +65,7 @@ const Advertising = () => {
             <h4>Small Ads:</h4>
             <div className='small-wrapper'>
               {ads &&
-                ads.others.small.map((item, i) => (
+                ads.other.small.map((item, i) => (
                   <AdComponent
                     setUpdate={setUpdate}
                     title='small'
@@ -78,7 +77,7 @@ const Advertising = () => {
             <h4 className='mt-7'>Long Ads:</h4>
             <div className='long-wrapper'>
               {ads &&
-                ads.others.long.map((item, i) => (
+                ads.other.long.map((item, i) => (
                   <AdComponent
                     setUpdate={setUpdate}
                     title='long'
@@ -103,7 +102,7 @@ export default Advertising;
 function AdComponent({ item, title, setUpdate }) {
   const [loading, setLoading] = useState(false);
   const store = useStore();
-  const url = useRef(null);
+  const link = useRef(null);
   const img = useRef(null);
 
   async function handleSubmit(e, exist, id) {
@@ -112,24 +111,17 @@ function AdComponent({ item, title, setUpdate }) {
     try {
       const formData = new FormData();
       formData.append("userId", store?.user.uid);
-      if (url.current.value) formData.append("url", url.current.value);
+      if (link.current.value) formData.append("link", link.current.value);
       if (img.current.files.length) {
-        formData.append("adImg", img.current.files[0]);
+        formData.append("image", img.current.files[0]);
         formData.append("exist", exist);
       }
-
-      const res = await fetch(
-        `http://localhost:3000/api/settings/ads?id=${id}`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-      const result = await res.json();
-      if (res.ok) {
-        store.setAlert({ msg: result.message, type: "success" });
-        setUpdate((prev) => !prev);
-      } else throw result;
+      const result = await axios(`/api/settings/ads?id=${id}`, {
+        method: "POST",
+        body: formData,
+      });
+      store.setAlert({ msg: result.message, type: "success" });
+      setUpdate((prev) => !prev);
     } catch (error) {
       store.setAlert({ msg: error.message, type: "error" });
     }
@@ -138,14 +130,14 @@ function AdComponent({ item, title, setUpdate }) {
 
   return (
     <div className={title === "small" ? "small-item" : "long-item"}>
-      <img src={`/ads/${item.adImg}`} alt='' />
+      <img src={`/ads/${item.image}`} alt='' />
       <form
         className='space-y-4 mt-4'
-        onSubmit={(e) => handleSubmit(e, item.adImg, item._id)}
+        onSubmit={(e) => handleSubmit(e, item.image, item.id)}
       >
         <input
-          defaultValue={item.url || ""}
-          ref={url}
+          defaultValue={item.link || ""}
+          ref={link}
           type='url'
           placeholder='Enter url'
         />

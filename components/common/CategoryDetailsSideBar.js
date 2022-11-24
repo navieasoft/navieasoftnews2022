@@ -14,7 +14,7 @@ const CategoryDetailsSideBar = ({ page }) => {
     const signal = controller.signal;
     (async function () {
       try {
-        const res = await fetch("http://localhost:3000/api/news?page=0", {
+        const res = await fetch("/api/news?page=0", {
           signal,
         });
         const result = await res.json();
@@ -27,12 +27,12 @@ const CategoryDetailsSideBar = ({ page }) => {
     })();
     (async function () {
       try {
-        const res = await fetch("http://localhost:3000/api/settings/ads", {
+        const res = await fetch("/api/settings/ads", {
           signal,
         });
         const result = await res.json();
         if (res.ok) {
-          setAds(result.others);
+          setAds(result.other);
         } else throw result;
       } catch (error) {
         console.log(error.message);
@@ -47,8 +47,8 @@ const CategoryDetailsSideBar = ({ page }) => {
   return (
     <section className='hidden md:block'>
       <SmallAdd
-        picture={`/ads/${ads?.small[0].adImg || ""}`}
-        link={ads?.small[0].url}
+        picture={`/ads/${ads?.small[0].image || ""}`}
+        link={ads?.small[0].link}
       />
 
       {/* latest news */}
@@ -61,13 +61,13 @@ const CategoryDetailsSideBar = ({ page }) => {
         {latestNews &&
           latestNews?.map((news) => (
             <Link
-              href={`details?category=${news.category}&id=${news._id}`}
-              key={news._id}
+              href={`details?category=${news.category}&id=${news.id}`}
+              key={news.id}
             >
               <a className='news'>
                 <img
                   className='object-contain'
-                  src={`/assets/${news.mainImg}`}
+                  src={`/assets/${news.image}`}
                   alt=''
                 />
                 <p className='font-medium col-span-2'>{news.headline}</p>
@@ -76,8 +76,8 @@ const CategoryDetailsSideBar = ({ page }) => {
           ))}
       </div>
       <SmallAdd
-        picture={`/ads/${ads?.small[1].adImg || ""}`}
-        link={ads?.small[1].url}
+        picture={`/ads/${ads?.small[1].image || ""}`}
+        link={ads?.small[1].link}
       />
 
       {/* most read news */}
@@ -86,14 +86,14 @@ const CategoryDetailsSideBar = ({ page }) => {
         {latestNews &&
           latestNews?.map((news) => (
             <Link
-              href={`details?category=${news.category}&id=${news._id}`}
-              key={news._id}
+              href={`details?category=${news.category}&id=${news.id}`}
+              key={news.id}
             >
               <a className='news'>
                 <p className='font-medium col-span-2 pl-2'>{news.headline}</p>
                 <img
                   className='object-contain'
-                  src={`/assets/${news.mainImg}`}
+                  src={`/assets/${news.image}`}
                   alt=''
                 />
               </a>

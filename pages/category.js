@@ -23,7 +23,7 @@ const Category = () => {
       store.setLoading(true);
       try {
         const res = await fetch(
-          `http://localhost:3000/api/news/home?category=${router.query.q}&sub=${
+          `/api/news/home?category=${router.query.q}&sub=${
             router.query.sub || ""
           }`,
           {
@@ -50,7 +50,7 @@ const Category = () => {
     const signal = controller.signal;
     (async function () {
       try {
-        const res = await fetch("http://localhost:3000/api/settings/ads", {
+        const res = await fetch("/api/settings/ads", {
           signal,
         });
         const result = await res.json();
@@ -89,7 +89,7 @@ const Category = () => {
       />
       <section className='category-wrapper'>
         <section className='col-span-3 md:col-span-2'>
-          <Link href={`details?category=${news[0].category}&id=${news[0]._id}`}>
+          <Link href={`details?category=${news[0].category}&id=${news[0].id}`}>
             <a className='first-item'>
               <img
                 className='object-contain'
@@ -109,8 +109,8 @@ const Category = () => {
           <div className='second-item'>
             {news.slice(1, 7).map((news) => (
               <Link
-                href={`details?category=${news.category}&id=${news._id}`}
-                key={news._id}
+                href={`details?category=${news.category}&id=${news.id}`}
+                key={news.id}
               >
                 <a className='news'>
                   <p className='font-medium py-2 px-3'>{news.headline}</p>
@@ -132,8 +132,8 @@ const Category = () => {
           <div className='third-item'>
             {news.slice(8, news.length)?.map((news) => (
               <Link
-                href={`details?category=${news.category}&id=${news._id}`}
-                key={news._id}
+                href={`details?category=${news.category}&id=${news.id}`}
+                key={news.id}
               >
                 <a className='news'>
                   <img

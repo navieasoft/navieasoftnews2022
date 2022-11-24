@@ -2,10 +2,8 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
 import AdminLayout from "../../../components/admin/AdminLayout";
-import Footer from "../../../components/admin/common/Footer";
-import Header from "../../../components/admin/common/header";
-import SideBar from "../../../components/admin/common/SideBar";
 import useStore from "../../../components/context/useStore";
+import { axios } from "../../../services/client/common";
 
 const Breakingnews = () => {
   const [showAdd, setShowAdd] = useState(false);
@@ -19,7 +17,7 @@ const Breakingnews = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/api/news/breakingnews", {
+      const result = await axios("/api/news/breakingnews", {
         headers: {
           "content-type": "application/json",
         },
@@ -29,9 +27,9 @@ const Breakingnews = () => {
           userId: store?.user?.uid,
         }),
       });
-      const result = await res.json();
-      if (!res.ok) throw { message: result.message };
+
       store?.setAlert({ msg: result.message, type: "success" });
+      input.current.value = "";
       setUpdate((prev) => !prev);
     } catch (error) {
       store?.setAlert({ msg: error.message, type: "error" });
@@ -39,18 +37,16 @@ const Breakingnews = () => {
     setLoading(false);
   }
 
-  async function deleteBreakingNews(value) {
+  async function deleteBreakingNews(id) {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/api/news/breakingnews", {
+      const result = await axios("/api/news/breakingnews", {
         headers: {
           "content-type": "application/json",
         },
         method: "DELETE",
-        body: JSON.stringify({ value, userId: store?.user?.uid }),
+        body: JSON.stringify({ id, userId: store?.user?.uid }),
       });
-      const result = await res.json();
-      if (!res.ok) throw { message: result.message };
       store?.setAlert({ msg: result.message, type: "success" });
       setUpdate((prev) => !prev);
     } catch (error) {
@@ -64,7 +60,7 @@ const Breakingnews = () => {
     const signal = controller.signal;
     (async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/news/breakingnews", {
+        const res = await fetch("/api/news/breakingnews", {
           signal,
         });
         const result = await res.json();
@@ -87,12 +83,12 @@ const Breakingnews = () => {
             Currently Showing These News
           </h3>
           {news &&
-            news.breakingNews.map((item, i) => (
+            news.map((item, i) => (
               <div className='flex justify-between px-5' key={i}>
-                <p className='text-lg font-medium'>{item}</p>
+                <p className='text-lg font-medium'>{item.value}</p>
                 <button
                   disabled={loading}
-                  onClick={() => deleteBreakingNews(item)}
+                  onClick={() => deleteBreakingNews(item.id)}
                   className='w-5'
                 >
                   <FontAwesomeIcon icon={faTrash} />

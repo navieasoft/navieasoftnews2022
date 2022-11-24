@@ -9,8 +9,8 @@ const TopHighlight = ({ data }) => {
       {data &&
         data.map((item) => (
           <Link
-            href={`/details?category=${item.category}&id=${item._id}`}
-            key={item._id}
+            href={`/details?category=${item.category}&id=${item.id}`}
+            key={item.id}
           >
             <a className='item'>
               <img

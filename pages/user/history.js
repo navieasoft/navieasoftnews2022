@@ -30,9 +30,7 @@ const History = () => {
       const allId = JSON.parse(history).join("|");
       (async function () {
         try {
-          const res = await fetch(
-            `http://localhost:3000/api/news?id=${allId}&multiple=true`
-          );
+          const res = await fetch(`/api/news?id=${allId}&multiple=true`);
           const result = await res.json();
           if (res.ok) {
             setNews(result);
@@ -63,7 +61,7 @@ const History = () => {
         {news ? (
           <div className='history-container'>
             {news.map((item) => (
-              <Link key={item._id} href={`/details?id=${item._id}`}>
+              <Link key={item.id} href={`/details?id=${item.id}`}>
                 <a className='item'>
                   <img
                     className='h-20'

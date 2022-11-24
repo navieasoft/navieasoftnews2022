@@ -34,7 +34,7 @@ const TopMenus = () => {
             <Link href={`/category?q=${menu.name}`}>
               <a className='main-menu'>
                 <span>{menu.name}</span>
-                {menu.subs && (
+                {menu.subs?.length ? (
                   <div>
                     {showSub === i ? (
                       <FontAwesomeIcon icon={faAngleUp} />
@@ -42,10 +42,10 @@ const TopMenus = () => {
                       <FontAwesomeIcon icon={faAngleDown} />
                     )}
                   </div>
-                )}
+                ) : null}
               </a>
             </Link>
-            {menu.subs && (
+            {menu.subs?.length ? (
               <div
                 onMouseLeave={() => setShowSub(false)}
                 className={`sub-container ${
@@ -55,12 +55,15 @@ const TopMenus = () => {
                 }`}
               >
                 {menu.subs.map((sub) => (
-                  <Link href={`/category?q=${menu.name}&sub=${sub}`} key={sub}>
-                    <a>{sub}</a>
+                  <Link
+                    href={`/category?q=${menu.name}&sub=${sub.id}`}
+                    key={sub.id}
+                  >
+                    <a>{sub.name}</a>
                   </Link>
                 ))}
               </div>
-            )}
+            ) : null}
           </div>
         ))}
     </div>

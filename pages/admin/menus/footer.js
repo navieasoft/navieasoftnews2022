@@ -3,12 +3,9 @@ import { faAdd, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import AdminLayout from "../../../components/admin/AdminLayout";
-import Footer from "../../../components/admin/common/Footer";
-import Header from "../../../components/admin/common/header";
-import SideBar from "../../../components/admin/common/SideBar";
 import FooterModal from "../../../components/admin/menu/FooterModal";
-import SocialModal from "../../../components/admin/menu/SocialModal";
 import useStore from "../../../components/context/useStore";
+import { axios } from "../../../services/client/common";
 
 const FooterMenu = () => {
   const [update, setUpdate] = useState(false);
@@ -21,7 +18,7 @@ const FooterMenu = () => {
     const signal = controller.signal;
     (async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/menus/footermenus", {
+        const res = await fetch("/api/menus/footermenus", {
           signal,
         });
         const result = await res.json();
@@ -36,34 +33,15 @@ const FooterMenu = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [update]);
 
-  async function deleteFooterMenu(title, value) {
+  async function deleteFooterMenu(collumn, name) {
     try {
-      const res = await fetch("http://localhost:3000/api/menus/footermenus", {
+      const result = await axios("/api/menus/footermenus", {
         headers: {
           "content-type": "application/json",
         },
         method: "DELETE",
-        body: JSON.stringify({ title, value, userId: store?.user?.uid }),
+        body: JSON.stringify({ collumn, name, userId: store?.user?.uid }),
       });
-      const result = await res.json();
-      if (!res.ok) throw { message: result.message };
-      store?.setAlert({ msg: result.message, type: "success" });
-      setUpdate((prev) => !prev);
-    } catch (error) {
-      store?.setAlert({ msg: error.message, type: "error" });
-    }
-  }
-  async function deleteSocialLink(menu) {
-    try {
-      const formData = new FormData();
-      formData.append("menu", JSON.stringify(menu));
-      formData.append("userId", store.user.uid);
-      const res = await fetch("http://localhost:3000/api", {
-        method: "DELETE",
-        body: formData,
-      });
-      const result = await res.json();
-      if (!res.ok) throw { message: result.message };
       store?.setAlert({ msg: result.message, type: "success" });
       setUpdate((prev) => !prev);
     } catch (error) {
@@ -84,11 +62,11 @@ const FooterMenu = () => {
               </button>
             </header>
             {menus &&
-              menus.NEWS.map((menu, i) => (
+              menus.news.map((menu, i) => (
                 <div className='flex justify-between py-2 border-b' key={i}>
-                  <p>{menu}</p>
+                  <p>{menu.name}</p>
                   <button
-                    onClick={() => deleteFooterMenu("NEWS", menu)}
+                    onClick={() => deleteFooterMenu(1, menu.name)}
                     className='w-5'
                   >
                     <FontAwesomeIcon icon={faTrash} />
@@ -101,6 +79,7 @@ const FooterMenu = () => {
                 setUpdate={setUpdate}
                 close={setShowAdd}
                 title='NEWS'
+                collumn={1}
               />
             )}
           </div>
@@ -113,11 +92,11 @@ const FooterMenu = () => {
               </button>
             </header>
             {menus &&
-              menus.OPINION.map((menu, i) => (
+              menus.opinion.map((menu, i) => (
                 <div className='flex justify-between py-2 border-b' key={i}>
-                  <p>{menu}</p>
+                  <p>{menu.name}</p>
                   <button
-                    onClick={() => deleteFooterMenu("OPINION", menu)}
+                    onClick={() => deleteFooterMenu(2, menu.name)}
                     className='w-5'
                   >
                     <FontAwesomeIcon icon={faTrash} />
@@ -128,6 +107,7 @@ const FooterMenu = () => {
               <FooterModal
                 setUpdate={setUpdate}
                 close={setShowAdd}
+                collumn={2}
                 title='OPINION'
               />
             )}
@@ -141,11 +121,11 @@ const FooterMenu = () => {
               </button>
             </header>
             {menus &&
-              menus.ARTS.map((menu, i) => (
+              menus.arts.map((menu, i) => (
                 <div className='flex justify-between py-2 border-b' key={i}>
-                  <p>{menu}</p>
+                  <p>{menu.name}</p>
                   <button
-                    onClick={() => deleteFooterMenu("ARTS", menu)}
+                    onClick={() => deleteFooterMenu(3, menu.name)}
                     className='w-5'
                   >
                     <FontAwesomeIcon icon={faTrash} />
@@ -156,6 +136,7 @@ const FooterMenu = () => {
               <FooterModal
                 setUpdate={setUpdate}
                 close={setShowAdd}
+                collumn={3}
                 title='ARTS'
               />
             )}
@@ -169,11 +150,11 @@ const FooterMenu = () => {
               </button>
             </header>
             {menus &&
-              menus.LIVING.map((menu, i) => (
+              menus.living.map((menu, i) => (
                 <div className='flex justify-between py-2 border-b' key={i}>
-                  <p>{menu}</p>
+                  <p>{menu.name}</p>
                   <button
-                    onClick={() => deleteFooterMenu("LIVING", menu)}
+                    onClick={() => deleteFooterMenu(4, menu.name)}
                     className='w-5'
                   >
                     <FontAwesomeIcon icon={faTrash} />
@@ -184,6 +165,7 @@ const FooterMenu = () => {
               <FooterModal
                 setUpdate={setUpdate}
                 close={setShowAdd}
+                collumn={4}
                 title='LIVING'
               />
             )}
@@ -197,11 +179,11 @@ const FooterMenu = () => {
               </button>
             </header>
             {menus &&
-              menus.MORE.map((menu, i) => (
+              menus.more.map((menu, i) => (
                 <div className='flex justify-between py-2 border-b' key={i}>
-                  <p>{menu}</p>
+                  <p>{menu.name}</p>
                   <button
-                    onClick={() => deleteFooterMenu("MORE", menu)}
+                    onClick={() => deleteFooterMenu(5, menu.name)}
                     className='w-5'
                   >
                     <FontAwesomeIcon icon={faTrash} />
@@ -212,6 +194,7 @@ const FooterMenu = () => {
               <FooterModal
                 setUpdate={setUpdate}
                 close={setShowAdd}
+                collumn={5}
                 title='MORE'
               />
             )}
@@ -228,8 +211,10 @@ const FooterMenu = () => {
               menus.social.map((menu, i) => (
                 <div className='flex justify-between py-2 border-b' key={i}>
                   <div>
-                    <img className='h-6' src={`/${menu.img}`} alt='' />
-                    <small>{menu.link}</small>
+                    <p className='text-left'>{menu.name.split(".")[1]}:</p>
+                    <p>
+                      <small>{menu.name}</small>
+                    </p>
                   </div>
                   <button
                     onClick={() => deleteSocialLink(menu)}
@@ -240,10 +225,11 @@ const FooterMenu = () => {
                 </div>
               ))}
             {showAdd === "social" && (
-              <SocialModal
+              <FooterModal
                 setUpdate={setUpdate}
                 close={setShowAdd}
-                title='social'
+                collumn={6}
+                title='Social Links'
               />
             )}
           </div>

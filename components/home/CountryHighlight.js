@@ -6,7 +6,7 @@ const CountryHighlight = ({ data }) => {
   if (!data) return null;
   return (
     <div className='country-highlight-container mt-5'>
-      <Link href={`/details?category=${data[0].category}&id=${data[0]._id}`}>
+      <Link href={`/details?category=${data[0].category}&id=${data[0].id}`}>
         <a className='first-highlight'>
           <div>
             <h3 className='text-xl font-medium mb-3'>{data[0].headline}</h3>
@@ -24,8 +24,8 @@ const CountryHighlight = ({ data }) => {
       <div className='item'>
         {data.slice(1, data.length).map((item) => (
           <Link
-            href={`/details?category=${item.category}&id=${item._id}`}
-            key={item._id}
+            href={`/details?category=${item.category}&id=${item.id}`}
+            key={item.id}
           >
             <a className='border-b py-4 px-4 hover:text-gray-500'>
               <h3 className='font-semibold text-xl'>{item.headline}</h3>

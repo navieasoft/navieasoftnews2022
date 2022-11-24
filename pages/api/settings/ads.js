@@ -1,10 +1,9 @@
 import { errorHandler } from "../../../services/server/errorhandler";
 import { multipleBodyParser } from "../../../services/server/multer";
 import { userVarification } from "../../../services/server/user/user";
-import { dbConnection } from "../../../services/server/mongodb";
-import { ObjectId } from "mongodb";
 import path from "path";
 import fs from "fs";
+import { queryDocument } from "../../../services/server/common";
 
 export const config = {
   api: {
@@ -13,50 +12,48 @@ export const config = {
 };
 
 export default async function handler(req, res) {
-  const { database } = await dbConnection();
+  switch (req.method) {
+    case "GET":
+      getAds(res);
+      break;
 
-  if (!database) {
-    res.send(500).send({ message: "Serverside error" });
-    return;
-  } else {
-    const ads = database.collection("ads");
+    case "POST":
+      postAds(req, res);
+      break;
 
-    switch (req.method) {
-      case "GET":
-        getAds(req, res, ads);
-        break;
-
-      case "POST":
-        postAds(req, res, ads);
-        break;
-
-      default:
-        res.status(404).send({ message: "not found" });
-        break;
-    }
+    default:
+      res.status(404).send({ message: "not found" });
+      break;
   }
 }
 
-async function getAds(req, res, ads) {
+async function getAds(res) {
   try {
-    const homeData = await ads.find({ name: "home" }).toArray();
-    const smallHome = homeData.filter((item) => item.size === "small");
-    const longHome = homeData.filter((item) => item.size === "long");
-    const home = { small: smallHome, long: longHome };
-    const othersData = await ads.find({ name: "others" }).toArray();
-    const smallOther = othersData.filter((item) => item.size === "small");
-    const longOther = othersData.filter((item) => item.size === "long");
-    const others = { small: smallOther, long: longOther };
-    res.send({ home, others });
+    const data = { home: {}, other: {} };
+    const sql = "SELECT * FROM ads";
+    const result = await queryDocument(sql);
+    data.home.small = result.filter(
+      (item) => item.page === "home" && item.size === "small"
+    );
+    data.home.long = result.filter(
+      (item) => item.page === "home" && item.size === "long"
+    );
+    data.other.small = result.filter(
+      (item) => item.page === "other" && item.size === "small"
+    );
+    data.other.long = result.filter(
+      (item) => item.page === "other" && item.size === "long"
+    );
+    res.send(data);
   } catch (error) {
     errorHandler(res, { msg: error.message, status: error.status || 500 });
   }
 }
 
-async function postAds(req, res, ads) {
+async function postAds(req, res) {
   try {
     const { error } = await multipleBodyParser(req, res, "ads", [
-      { name: "adImg", maxCount: 1 },
+      { name: "image", maxCount: 1 },
     ]);
     if (error) throw { message: "error occured when image uploading" };
     //user virify;
@@ -65,17 +62,14 @@ async function postAds(req, res, ads) {
     if (!varify) throw { message: "user unathenticated!" };
     delete req.body.userId; //till;
 
-    const data = {};
-    if (req.body.url) data.url = req.body.url;
-    if (req.files.adImg) data.adImg = req.files.adImg[0].filename;
-    const result = await ads.updateOne(
-      { _id: ObjectId(req.query.id) },
-      {
-        $set: data,
-      }
-    );
-    if (result.modifiedCount > 0) {
-      if (req.body.exist && req.files.adImg) {
+    let data = "";
+    if (req.body.link) data += `link = '${req.body.link}'`;
+    if (req.files.image) data += `, image = '${req.files.image[0].filename}'`;
+    const sql = `UPDATE ads SET ${data} WHERE id = '${req.query.id}'`;
+    const result = await queryDocument(sql);
+
+    if (result.affectedRows > 0) {
+      if (req.body.exist && req.files.image) {
         fs.unlinkSync(
           path.join(process.cwd(), "public", "ads", req.body.exist)
         );

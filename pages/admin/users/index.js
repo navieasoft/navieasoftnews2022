@@ -23,10 +23,9 @@ const AllUser = () => {
     const signal = controller.signal;
     (async () => {
       try {
-        const res = await fetch(
-          `http://localhost:3000/api/user?page=${page.toString()}`,
-          { signal }
-        );
+        const res = await fetch(`/api/user?page=${page.toString()}`, {
+          signal,
+        });
         if (res.ok) {
           const result = await res.json();
           const filtered = result.filter(
@@ -49,9 +48,7 @@ const AllUser = () => {
   async function filterUser(value) {
     store.setLoading(true);
     try {
-      const res = await fetch(
-        `http://localhost:3000/api/user?page=${page.toString()}`
-      );
+      const res = await fetch(`/api/user?page=${page.toString()}`);
       if (res.ok) {
         const result = await res.json();
         if (value) {
@@ -71,7 +68,7 @@ const AllUser = () => {
   async function updateUser(uid, title, value) {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:3000/api/user?title=${title}`, {
+      const res = await fetch(`/api/user?title=${title}`, {
         headers: {
           "content-type": "application/json",
         },
@@ -97,7 +94,7 @@ const AllUser = () => {
     if (confirm) {
       setLoading(true);
       try {
-        const res = await fetch(`http://localhost:3000/api/user?uid=${uid}`, {
+        const res = await fetch(`/api/user?uid=${uid}`, {
           headers: {
             "content-type": "application/json",
           },

@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
 import AdminLayout from "../../../components/admin/AdminLayout";
-import Footer from "../../../components/admin/common/Footer";
-import Header from "../../../components/admin/common/header";
-import SideBar from "../../../components/admin/common/SideBar";
 import useStore from "../../../components/context/useStore";
 
 const Siteinfo = () => {
@@ -47,7 +44,7 @@ const Siteinfo = () => {
     }
     if (info.favicon) formData.append("favicon", info.favicon);
     try {
-      const res = await fetch("http://localhost:3000/api/settings", {
+      const res = await fetch("/api/settings", {
         method: "POST",
         body: formData,
       });

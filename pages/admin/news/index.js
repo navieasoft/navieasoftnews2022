@@ -5,6 +5,7 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import AdminLayout from "../../../components/admin/AdminLayout";
@@ -27,7 +28,7 @@ const Allnews = () => {
     const signal = controller.signal;
     (async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/news?page=${page}`, {
+        const res = await fetch(`/api/news?page=${page}`, {
           signal,
         });
         const result = await res.json();
@@ -42,15 +43,15 @@ const Allnews = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [update, page]);
 
-  async function handleDelete(id, option) {
+  async function handleDelete(id, image) {
     const confirm = window.confirm("Are you sure to delete?");
     if (confirm) {
       setLoading(true);
       const formData = new FormData();
-      formData.append("userId", user?.uid);
-      formData.append("images", JSON.stringify(option));
+      formData.append("user_id", user?.uid);
+      formData.append("image", image);
       try {
-        const res = await fetch(`http://localhost:3000/api/news?id=${id}`, {
+        const res = await fetch(`/api/news?id=${id}`, {
           method: "DELETE",
           body: formData,
         });
@@ -101,28 +102,15 @@ const Allnews = () => {
                         showMenu === i ? "block" : "hidden"
                       }`}
                     >
-                      <button
-                        onClick={() =>
-                          router.push(`/admin/news/updatenews?id=${news._id}`)
-                        }
-                      >
+                      <Link href={`/admin/news/updatenews?id=${news.id}`}>
                         <FontAwesomeIcon icon={faEdit} />
-                      </button>
-                      <button
-                        onClick={() => router.push(`/details?id=${news._id}`)}
-                      >
+                      </Link>
+                      <Link href={`/details?id=${news.id}`}>
                         <FontAwesomeIcon icon={faEye} />
-                      </button>
+                      </Link>
                       <button
                         disabled={loading}
-                        onClick={() =>
-                          handleDelete(news._id, {
-                            mainImg: news.mainImg,
-                            featureImg1: news.featureImg1,
-                            featureImg2: news.featureImg2,
-                            featureImg3: news.featureImg3,
-                          })
-                        }
+                        onClick={() => handleDelete(news.id, news.image)}
                       >
                         <FontAwesomeIcon icon={faTrash} />
                       </button>

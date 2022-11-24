@@ -1,60 +1,49 @@
-import { ObjectId } from "mongodb";
+import { queryDocument, postDocument } from "../common";
 import { errorHandler } from "../errorhandler";
 import { userVarification } from "../user/user";
 
-export async function postSubCategoryMenus(req, res, categoryMenus) {
+export async function postSubCategoryMenus(req, res) {
   try {
     if (!req.body.userId) throw { message: "user unathenticated!" };
     const { varify } = await userVarification(req.body.userId);
     if (!varify) throw { message: "user unathenticated!" };
     delete req.body.userId;
 
-    const isExist = await categoryMenus.findOne({
-      _id: ObjectId(req.body.categoryId),
-      subs: req.body.value,
-    });
-    if (isExist) {
+    const sql = `SELECT id FROM sub_category WHERE name = '${req.body.name}'`;
+    const isExist = await queryDocument(sql);
+    if (isExist.length) {
       res.send(409).send({ message: "Already added the sub category" });
       return;
     }
-    const result = await categoryMenus.updateOne(
-      {
-        _id: ObjectId(req.body.categoryId),
-      },
-      { $push: { subs: req.body.value } }
-    );
-    if (result.modifiedCount > 0) {
-      res.send(200).send({
+    const query = `INSERT INTO sub_category SET ?`;
+    const result = await postDocument(query, req.body);
+    if (result.insertId > 0) {
+      res.send({
         message: "Sub Category menu added successfully",
       });
     } else {
-      res.send(424).send({ message: "Unable to add, Try again." });
+      res.status(424).send({ message: "Unable to add, Try again." });
     }
   } catch (err) {
     errorHandler(res, { msg: err.message, status: err.status });
   }
 }
 
-export async function deleteSubCategoryMenu(req, res, categoryMenus) {
+export async function deleteSubCategoryMenu(req, res) {
   try {
     if (!req.body.userId) throw { message: "user unathenticated!" };
     const { varify } = await userVarification(req.body.userId);
     if (!varify) throw { message: "user unathenticated!" };
     delete req.body.userId;
 
-    const result = await categoryMenus.updateOne(
-      {
-        _id: ObjectId(req.body.categoryId),
-      },
-      { $pull: { subs: req.body.value } }
-    );
-
-    if (result.modifiedCount > 0) {
-      res.send(200).send({
+    const sql = `DELETE FROM sub_category WHERE ID = ${req.body.id}`;
+    const result = await queryDocument(sql);
+    if (result.affectedRows > 0) {
+      res.send({
         message: "Sub Category menu deleted successfully",
       });
     } else {
-      res.send(424).send({ message: "Unable to delete, Try again." });
+      res.status(424).send({ message: "Unable to delete, Try again." });
     }
   } catch (err) {
     errorHandler(res, { msg: err.message, status: err.status });

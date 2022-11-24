@@ -15,7 +15,7 @@ const Comment = ({ newsId, setUpdate, comments }) => {
     }
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/api/news/dashboard", {
+      const res = await fetch("/api/news/dashboard", {
         headers: {
           "content-type": "application/json",
         },

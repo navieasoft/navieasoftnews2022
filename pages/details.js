@@ -37,18 +37,15 @@ const Details = () => {
 
   function handleCopyLink() {
     setLinkCopied(true);
-    navigator.clipboard.writeText("http://localhost:3000/" + router.asPath);
+    navigator.clipboard.writeText("/" + router.asPath);
   }
 
   async function getSingeNews(signal) {
     store.setLoading(true);
     try {
-      const res = await fetch(
-        `http://localhost:3000/api/news?id=${router.query?.id}`,
-        {
-          signal,
-        }
-      );
+      const res = await fetch(`/api/news?id=${router.query?.id}`, {
+        signal,
+      });
       const result = await res.json();
       if (res.ok) {
         setNews(result);
@@ -63,7 +60,7 @@ const Details = () => {
   async function updateViewPost(ipAdress) {
     try {
       const res = await fetch(
-        `http://localhost:3000/api/news/dashboard?id=${router.query.id}&news=true`,
+        `/api/news/dashboard?id=${router.query.id}&news=true`,
         {
           headers: {
             "content-type": "application/json",
@@ -84,7 +81,7 @@ const Details = () => {
   async function getRelatedNews(category) {
     try {
       const res = await fetch(
-        `http://localhost:3000/api/news/home?category=${category}&limit=9&skip=${skip}`
+        `/api/news/home?category=${category}&limit=9&skip=${skip}`
       );
       const result = await res.json();
       if (res.ok) {
@@ -139,12 +136,12 @@ const Details = () => {
     const signal = controller.signal;
     (async function () {
       try {
-        const res = await fetch("http://localhost:3000/api/settings/ads", {
+        const res = await fetch("/api/settings/ads", {
           signal,
         });
         const result = await res.json();
         if (res.ok) {
-          setAds(result.others);
+          setAds(result.other);
         } else throw result;
       } catch (error) {
         console.log(error.message);
@@ -164,8 +161,8 @@ const Details = () => {
       <Breakingnews />
 
       <LergeAdd
-        picture={`/ads/${ads?.long[0].adImg || ""}`}
-        link={ads?.long[0].url}
+        picture={`/ads/${ads?.long[0].image || ""}`}
+        link={ads?.long[0].link}
       />
 
       <section className='details-page-content-wrapper'>
@@ -245,15 +242,15 @@ const Details = () => {
 
           {/* comment section */}
           <Comment
-            newsId={news?._id}
+            newsId={news?.id}
             setUpdate={setUpdate}
             comments={news.comments || null}
           />
 
           <section>
             <LergeAdd
-              picture={`/ads/${ads?.long[1].adImg || ""}`}
-              link={ads?.long[1].url}
+              picture={`/ads/${ads?.long[1].image || ""}`}
+              link={ads?.long[1].link}
             />
 
             {/* Realated news */}
@@ -263,8 +260,8 @@ const Details = () => {
                 {relatedNews && relatedNews.length ? (
                   relatedNews.map((news) => (
                     <Link
-                      href={`/details?category=${news.category}&id=${news._id}`}
-                      key={news._id}
+                      href={`/details?category=${news.category}&id=${news.id}`}
+                      key={news.id}
                     >
                       <a className='news'>
                         <img
@@ -297,8 +294,8 @@ const Details = () => {
               </div>
             </section>
             <LergeAdd
-              picture={`/ads/${ads?.long[2].adImg || ""}`}
-              link={ads?.long[2].url}
+              picture={`/ads/${ads?.long[2].image || ""}`}
+              link={ads?.long[2].link}
             />
           </section>
         </section>

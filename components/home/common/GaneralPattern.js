@@ -8,9 +8,7 @@ const GaneralPattern = ({ title, isCategory }) => {
   useEffect(() => {
     (async function () {
       try {
-        const res = await fetch(
-          `http://localhost:3000/api/news/home?types=${title}`
-        );
+        const res = await fetch(`/api/news/home?types=${title}`);
         const result = await res.json();
         if (res.ok) {
           setNews(result);
@@ -26,8 +24,8 @@ const GaneralPattern = ({ title, isCategory }) => {
     <div className='md:grid grid-cols-3 xl:grid-cols-5 mt-3 gap-5'>
       {news.map((item) => (
         <Link
-          href={`/details?category=${item.category}&id=${item._id}`}
-          key={item._id}
+          href={`/details?category=${item.category}&id=${item.id}`}
+          key={item.id}
         >
           <a className='flex flex-col gap-y-2 hover:text-gray-500 py-4 border-t md:border-t-0'>
             {isCategory && <p className='font-medium'>{item.category}</p>}

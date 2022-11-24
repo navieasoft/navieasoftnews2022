@@ -6,7 +6,7 @@ import React from "react";
 const PoliticsBusiness = ({ data }) => {
   return (
     <div className='mt-4 politics-business-highligh'>
-      <Link href={`/details?category=${data[0].category}&id=${data[0]._id}`}>
+      <Link href={`/details?category=${data[0].category}&id=${data[0].id}`}>
         <a className='first-item'>
           <div>
             <h3 className='text-xl font-medium mb-3'>{data[0].headline}</h3>
@@ -22,7 +22,7 @@ const PoliticsBusiness = ({ data }) => {
         </a>
       </Link>
       <div className='md:grid grid-cols-2 lg:grid-cols-3 py-3'>
-        <Link href={`/details?category=${data[1].category}&id=${data[1]._id}`}>
+        <Link href={`/details?category=${data[1].category}&id=${data[1].id}`}>
           <a className='second-item'>
             <div className='col-span-2'>
               <h3 className='text-xl font-medium mb-3'>{data[1].headline}</h3>
@@ -37,7 +37,7 @@ const PoliticsBusiness = ({ data }) => {
             </div>
           </a>
         </Link>
-        <Link href={`/details?category=${data[2].category}&id=${data[2]._id}`}>
+        <Link href={`/details?category=${data[2].category}&id=${data[2].id}`}>
           <a className='last-item'>
             <h3>{data[2].headline}</h3>
             <p className='text-justify'>{data[2].body.slice(0, 200)}...</p>

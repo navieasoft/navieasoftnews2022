@@ -1,29 +1,44 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import AdminLayout from "../../../components/admin/AdminLayout";
-import Footer from "../../../components/admin/common/Footer";
-import Header from "../../../components/admin/common/header";
-import SideBar from "../../../components/admin/common/SideBar";
 import useStore from "../../../components/context/useStore";
+import dynamic from "next/dynamic";
+const TextEditor = dynamic(
+  () => import("../../../components/common/TextEditor"),
+  { ssr: false }
+);
 
 const AddNews = () => {
   const [loading, setLoading] = useState(false);
-  const [subs, setSubs] = useState([]);
   const { categoryMenu, setAlert, user } = useStore();
   const { register, reset, handleSubmit } = useForm();
+  const [subs, setSubs] = useState([]);
+  const body = useRef(null);
 
   function handleCategory(e) {
-    const sub = categoryMenu?.find((item) => item.name === e.target.value);
+    const sub = categoryMenu?.find((item) => item.id == e.target.value);
     if (sub) setSubs(sub.subs);
   }
 
   async function onSubmit(data) {
     setLoading(true);
-    data.mainImg = data.mainImg[0];
-    data.featureImg1 = data.featureImg1[0] || "";
-    data.featureImg2 = data.featureImg2[0] || "";
-    data.featureImg3 = data.featureImg3[0] || "";
-    data.userId = user?.uid;
+    if (!user) return;
+    data.category_name = categoryMenu.find(
+      (item) => item.id == data.category_id
+    ).name;
+    data.sub_category_name = subs.find(
+      (item) => item.id == data.sub_category_id
+    ).name;
+    data.image = data.image[0];
+    data.body = body.current?.value;
+    data.user_id = user?.uid;
+    data.editor_name = user.displayName;
+    const d = new Date();
+    const date = `${d.getDate()} ${d.toLocaleString("en-us", {
+      month: "long",
+    })}, ${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}`;
+
+    data.date = date;
     const formData = new FormData();
     Object.entries(data).map(([key, value]) => formData.append(key, value));
 
@@ -34,7 +49,7 @@ const AddNews = () => {
 
   async function postNews(formData) {
     try {
-      const res = await fetch("http://localhost:3000/api/news", {
+      const res = await fetch("/api/news", {
         method: "POST",
         body: formData,
       });
@@ -43,7 +58,6 @@ const AddNews = () => {
       setAlert({ msg: result.message, type: "success" });
       reset();
     } catch (error) {
-      console.log(error);
       setAlert({ msg: error.message, type: "error" });
     }
   }
@@ -59,25 +73,20 @@ const AddNews = () => {
               rows={2}
               placeholder='Headline for the news'
             />
-            <textarea
-              {...register("body", { required: true })}
-              required
-              rows='20'
-              placeholder='Write the news body'
-            />
+            <TextEditor editor={body} />
           </div>
 
           <div className='space-y-3'>
             <div className='space-y-2'>
               <label htmlFor='Category'>Category:</label>
               <select
-                {...register("category", { required: true })}
+                {...register("category_id", { required: true })}
                 onChange={(e) => handleCategory(e)}
                 required
               >
                 <option value=''>select</option>
                 {categoryMenu?.map((item, i) => (
-                  <option key={i} value={item.name}>
+                  <option key={i} value={item.id}>
                     {item.name}
                   </option>
                 ))}
@@ -86,11 +95,14 @@ const AddNews = () => {
 
             <div className='space-y-2'>
               <label htmlFor='Sub Category'>Sub Category:</label>
-              <select {...register("subs")}>
+              <select
+                {...register("sub_category_id", { required: subs.length })}
+                required={subs.length}
+              >
                 <option value=''>select</option>
                 {subs?.map((sub, i) => (
-                  <option key={i} value={sub}>
-                    {sub}
+                  <option key={i} value={sub.id}>
+                    {sub.name}
                   </option>
                 ))}
               </select>
@@ -98,7 +110,7 @@ const AddNews = () => {
 
             <div className='space-y-2'>
               <label htmlFor='newsType'>News type:</label>
-              <select required {...register("newsType", { required: true })}>
+              <select required {...register("type", { required: true })}>
                 <option value=''>select</option>
                 <option value='hot news'>hot news</option>
                 <option value='top news'>top news</option>
@@ -114,22 +126,10 @@ const AddNews = () => {
               <label htmlFor='topic'>Main Image:</label>
               <input
                 required
-                {...register("mainImg", { required: true })}
+                className='w-full'
+                {...register("image", { required: true })}
                 type='file'
               />
-            </div>
-
-            <div className='space-y-2'>
-              <label htmlFor='topic'>Features Image 1:</label>
-              <input {...register("featureImg1")} type='file' />
-            </div>
-            <div className='space-y-2'>
-              <label htmlFor='topic'>Features Image 2:</label>
-              <input {...register("featureImg2")} type='file' />
-            </div>
-            <div className='space-y-2'>
-              <label htmlFor='topic'>Features Image 3:</label>
-              <input {...register("featureImg3")} type='file' />
             </div>
 
             <div className='flex justify-center'>

@@ -34,11 +34,12 @@ const MainMenus = () => {
     const signal = controller.signal;
     (async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/menus", {
+        const res = await fetch("/api/menus", {
           signal,
         });
         const result = await res.json();
-        setMenus(result);
+        if (res.ok) setMenus(result);
+        else throw result;
       } catch (error) {
         store.setError(true);
       }
@@ -49,6 +50,14 @@ const MainMenus = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [update]);
+
+  function handleCollaps(index) {
+    setShowControl(-1);
+    setShowCollaps((prev) => {
+      if (prev === index) return -1;
+      else return index;
+    });
+  }
 
   return (
     <AdminLayout>
@@ -63,26 +72,21 @@ const MainMenus = () => {
           {menus &&
             menus.map((item, index) => (
               <div
-                onClick={() => setShowControl(-1)}
+                onClick={() => handleCollaps(index)}
                 className='relative'
-                key={item._id}
+                key={item.id}
               >
+                {/* main menus */}
                 <div className=' item'>
                   <p>{item.name}</p>
-
+                  {/* left side */}
+                  {/* icons */}
                   <div className='flex gap-3 items-center text-gray-500'>
-                    {item.subs && (
-                      <button
-                        onClick={() =>
-                          setShowCollaps((prev) => {
-                            if (prev === index) return -1;
-                            else return index;
-                          })
-                        }
-                      >
+                    {item?.subs.length ? (
+                      <button>
                         <FontAwesomeIcon icon={faAngleDown} />
                       </button>
-                    )}
+                    ) : null}
                     <button
                       className='w-5'
                       onClick={(e) => {
@@ -93,7 +97,9 @@ const MainMenus = () => {
                       <FontAwesomeIcon icon={faEllipsisVertical} />
                     </button>
                   </div>
+                  {/* till */}
 
+                  {/* control panel */}
                   <div
                     className={`control-wrapper ${
                       showControl === index ? "block" : "hidden"
@@ -101,14 +107,14 @@ const MainMenus = () => {
                   >
                     <button
                       onClick={() =>
-                        handleDeleteCategory(item._id, store, setUpdate)
+                        handleDeleteCategory(item.id, store, setUpdate)
                       }
                     >
                       Delete
                     </button>
                     <button
                       onClick={() => {
-                        setCategoryId(item._id);
+                        setCategoryId(item.id);
                         setUpdateMenu(true);
                       }}
                     >
@@ -116,7 +122,7 @@ const MainMenus = () => {
                     </button>
                     <button
                       onClick={() => {
-                        setCategoryId(item._id);
+                        setCategoryId(item.id);
                         setAddSub((prev) => !prev);
                       }}
                     >
@@ -124,7 +130,9 @@ const MainMenus = () => {
                     </button>
                   </div>
                 </div>
-                {item.subs && (
+
+                {/* sub menus */}
+                {item.subs.length ? (
                   <div
                     className={`accordion ${
                       showCollaps === index ? "show" : ""
@@ -134,12 +142,12 @@ const MainMenus = () => {
                       <div
                         onMouseEnter={() => setShowDeleteBtn(i)}
                         className='sub-menu'
-                        key={i}
+                        key={sub.id}
                       >
-                        <p>{sub}</p>
+                        <p>{sub.name}</p>
                         <button
                           onClick={() =>
-                            handleDeleteSub(item._id, sub, store, setUpdate)
+                            handleDeleteSub(sub.id, store, setUpdate)
                           }
                           className={`${
                             showDeleteBtn === i ? "block" : "hidden"
@@ -150,7 +158,7 @@ const MainMenus = () => {
                       </div>
                     ))}
                   </div>
-                )}
+                ) : null}
               </div>
             ))}
         </div>

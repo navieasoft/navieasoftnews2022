@@ -1,21 +1,20 @@
 import { userVarification } from "../user/user";
 import { errorHandler } from "../errorhandler";
 import { multipleBodyParser } from "../multer";
-import { ObjectId } from "mongodb";
+import { queryDocument } from "../common";
 import path from "path";
 import fs from "fs";
 
-export async function getSiteInfo(req, res, settings) {
+export async function getSiteInfo(req, res) {
   try {
-    const _id = ObjectId("6358fa24cf4c489e511941c5");
-    const result = await settings.findOne({ _id });
-    res.send({ ...result.siteInfo });
+    const result = await queryDocument("SELECT * FROM site_info");
+    res.send(result[0]);
   } catch (err) {
     errorHandler(res, { msg: err.message, status: err.status });
   }
 }
 
-export async function postSiteInfo(req, res, settings) {
+export async function postSiteInfo(req, res) {
   try {
     const { error } = await multipleBodyParser(req, res, "", [
       { name: "logo", maxCount: 1 },
@@ -28,9 +27,6 @@ export async function postSiteInfo(req, res, settings) {
     if (!varify) throw { message: "user unathenticated!" };
     delete req.body.userId; //till;
 
-    const _id = ObjectId("6358fa24cf4c489e511941c5");
-    const title = "siteInfo";
-
     if (req.files) {
       if (req.files.logo) {
         req.body.logo = req.files.logo[0].filename;
@@ -39,18 +35,23 @@ export async function postSiteInfo(req, res, settings) {
       }
       if (req.files.favicon) req.body.favicon = req.files.favicon[0].filename;
     }
+    let data = "";
+    Object.entries(req.body).forEach(([key, value]) => {
+      if (value) {
+        if (data) {
+          data += `, ${key} = '${value}'`;
+        } else data += `${key} = '${value}'`;
+      }
+    });
+    const sql = `UPDATE site_info SET ${data} WHERE id = '1'`;
+    const result = await queryDocument(sql);
 
-    const result = await settings.updateOne(
-      { _id },
-      { $set: { [title]: req.body } }
-    );
-
-    if (result.modifiedCount > 0) {
-      res.send(200).send({
+    if (result.changedRows > 0) {
+      res.send({
         message: "Updated successfully",
       });
     } else {
-      res.send(424).send({ message: "Unable to update, Try again." });
+      res.status(424).send({ message: "Unable to update, Try again." });
     }
   } catch (err) {
     errorHandler(res, { msg: err.message, status: err.status });

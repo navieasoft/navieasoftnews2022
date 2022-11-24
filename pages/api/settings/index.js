@@ -1,4 +1,3 @@
-import { dbConnection } from "../../../services/server/mongodb";
 import {
   getSiteInfo,
   postSiteInfo,
@@ -11,26 +10,17 @@ export const config = {
 };
 
 export default async function handler(req, res) {
-  const { database } = await dbConnection();
+  switch (req.method) {
+    case "GET":
+      getSiteInfo(req, res);
+      break;
 
-  if (!database) {
-    res.send(500).send({ message: "Serverside error" });
-    return;
-  } else {
-    const settings = database.collection("settings");
+    case "POST":
+      postSiteInfo(req, res);
+      break;
 
-    switch (req.method) {
-      case "GET":
-        getSiteInfo(req, res, settings);
-        break;
-
-      case "POST":
-        postSiteInfo(req, res, settings);
-        break;
-
-      default:
-        res.status(404).send({ message: "not found" });
-        break;
-    }
+    default:
+      res.status(404).send({ message: "not found" });
+      break;
   }
 }

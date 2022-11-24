@@ -1,10 +1,14 @@
+/* eslint-disable @next/next/no-img-element */
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import AdminLayout from "../../../components/admin/AdminLayout";
-import Header from "../../../components/admin/common/header";
-import SideBar from "../../../components/admin/common/SideBar";
 import useStore from "../../../components/context/useStore";
+import dynamic from "next/dynamic";
+const TextEditor = dynamic(
+  () => import("../../../components/common/TextEditor"),
+  { ssr: false }
+);
 
 const AddNews = () => {
   const { categoryMenu, setAlert, setError, user } = useStore();
@@ -13,10 +17,19 @@ const AddNews = () => {
   const [news, setNews] = useState(null);
   const [subs, setSubs] = useState([]);
   const router = useRouter();
-  const newsType = ["genaral news", "hot news", "top news"];
+  const body = useRef(null);
+  const newsType = [
+    "genaral news",
+    "hot news",
+    "top news",
+    "opinion",
+    "arts",
+    "living",
+    "features",
+  ];
 
   function handleCategory(e) {
-    const sub = categoryMenu?.find((item) => item.name === e.target.value);
+    const sub = categoryMenu?.find((item) => item.id == e.target.value);
     if (sub) setSubs(sub.subs);
   }
 
@@ -25,14 +38,15 @@ const AddNews = () => {
     const signal = controller.signal;
     (async () => {
       try {
-        const res = await fetch(
-          `http://localhost:3000/api/news?id=${router.query?.id}`,
-          {
+        if (router.query.id) {
+          const res = await fetch(`/api/news?id=${router.query?.id}`, {
             signal,
-          }
-        );
-        const result = await res.json();
-        setNews(result);
+          });
+          const result = await res.json();
+          if (result.length) {
+            setNews(result[0]);
+          } else router.push("/admin/news");
+        }
       } catch (error) {
         setError(true);
       }
@@ -43,6 +57,13 @@ const AddNews = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query.id]);
 
+  useEffect(() => {
+    if (news && categoryMenu) {
+      const sub = categoryMenu?.find((item) => item.id === news.category_id);
+      if (sub) setSubs(sub.subs);
+    }
+  }, [categoryMenu, news]);
+
   async function onSubmit(data) {
     setLoading(true);
     data.editor_name = user.displayName;
@@ -51,29 +72,30 @@ const AddNews = () => {
       month: "long",
     })}, ${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}`;
 
-    data.date = date;
-    data.mainImg = data.mainImg[0];
-    data.featureImg1 = data.featureImg1[0] || "";
-    data.featureImg2 = data.featureImg2[0] || "";
-    data.featureImg3 = data.featureImg3[0] || "";
-    data.userId = user?.uid;
+    if (news.body !== body.current?.value) {
+      data.body = body.current?.value;
+    }
+    if (data.category_id) {
+      data.category_name = categoryMenu.find(
+        (item) => item.id == data.category_id
+      ).name;
+    }
+    if (data.sub_category_id) {
+      data.sub_category_name = subs.find(
+        (item) => item.id == data.sub_category_id
+      ).name;
+    }
+    data.updated_at = date;
+    data.image = data.image[0];
+    data.user_id = user?.uid;
     const formData = new FormData();
-    const existedImg = [];
     Object.entries(data).map(([key, value]) => {
       if (value) {
         formData.append(key, value);
-        if (
-          key === "mainImg" ||
-          key === "featureImg1" ||
-          key === "featureImg2" ||
-          key === "featureImg3"
-        ) {
-          if (news[key]) existedImg.push(news[key]);
-        }
       }
     });
-    if (existedImg.length) {
-      formData.append("existedImg", existedImg);
+    if (data.image) {
+      formData.append("existedImg", news.image);
     }
     await updateNews(formData);
     setLoading(false);
@@ -81,15 +103,12 @@ const AddNews = () => {
 
   async function updateNews(formData) {
     try {
-      const res = await fetch(
-        `http://localhost:3000/api/news?id=${router.query.id}`,
-        {
-          method: "PUT",
-          body: formData,
-        }
-      );
+      const res = await fetch(`/api/news?id=${router.query.id}`, {
+        method: "PUT",
+        body: formData,
+      });
       const result = await res.json();
-      if (!res.ok) throw { message: result.message };
+      if (!res.ok) throw result;
       setAlert({ msg: result.message, type: "success" });
     } catch (error) {
       setAlert({ msg: error.message, type: "error" });
@@ -107,27 +126,22 @@ const AddNews = () => {
               rows={2}
               placeholder='Headline for the news'
             />
-            <textarea
-              {...register("body")}
-              defaultValue={news?.body}
-              rows='20'
-              placeholder='Write the news body'
-            />
+            {news && <TextEditor editor={body} value={news.body} />}
           </div>
 
           <div className='space-y-3'>
             <div className='space-y-2'>
               <label htmlFor='Category'>Category:</label>
               <select
-                {...register("category")}
+                {...register("category_id")}
                 onChange={(e) => handleCategory(e)}
               >
                 <option value=''>select</option>
                 {categoryMenu?.map((item, i) => (
                   <option
-                    selected={news?.category === item.name}
+                    selected={news?.category_id === item.id}
                     key={i}
-                    value={item.name}
+                    value={item.id}
                   >
                     {item.name}
                   </option>
@@ -137,11 +151,15 @@ const AddNews = () => {
 
             <div className='space-y-2'>
               <label htmlFor='Sub Category'>Sub Category:</label>
-              <select {...register("subs")}>
+              <select {...register("sub_category_id")}>
                 <option value=''>select</option>
                 {subs?.map((sub, i) => (
-                  <option selected={news?.category === sub} key={i} value={sub}>
-                    {sub}
+                  <option
+                    selected={news?.sub_category_id == sub.id}
+                    key={i}
+                    value={sub.id}
+                  >
+                    {sub.name}
                   </option>
                 ))}
               </select>
@@ -149,36 +167,23 @@ const AddNews = () => {
 
             <div className='space-y-2'>
               <label htmlFor='newsType'>News type:</label>
-              <select {...register("newsType")}>
+              <select {...register("type")}>
                 <option value=''>select</option>
                 {newsType.map((item, i) => (
-                  <option
-                    selected={news?.newsType === item}
-                    value={item}
-                    key={i}
-                  >
+                  <option selected={news?.type === item} value={item} key={i}>
                     {item}
                   </option>
                 ))}
               </select>
             </div>
-
+            {news && (
+              <div className=''>
+                <img src={`/assets/${news.image}`} alt='' />
+              </div>
+            )}
             <div className='space-y-2'>
               <label htmlFor='topic'>Main Image:</label>
-              <input {...register("mainImg")} type='file' />
-            </div>
-
-            <div className='space-y-2'>
-              <label htmlFor='topic'>Features Image 1:</label>
-              <input {...register("featureImg1")} type='file' />
-            </div>
-            <div className='space-y-2'>
-              <label htmlFor='topic'>Features Image 2:</label>
-              <input {...register("featureImg2")} type='file' />
-            </div>
-            <div className='space-y-2'>
-              <label htmlFor='topic'>Features Image 3:</label>
-              <input {...register("featureImg3")} type='file' />
+              <input {...register("image")} type='file' />
             </div>
 
             <div className='flex justify-center'>

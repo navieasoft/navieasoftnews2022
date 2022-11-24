@@ -4,7 +4,7 @@ export async function postImage(file, exist) {
     formData.append("img", file);
     if (exist) formData.append("exist", exist);
 
-    const res = await fetch("http://localhost:3000/api", {
+    const res = await fetch("/api", {
       method: "POST",
       body: formData,
     });

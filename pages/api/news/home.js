@@ -1,3 +1,4 @@
+import { queryDocument } from "../../../services/server/common";
 import { errorHandler } from "../../../services/server/errorhandler";
 import { dbConnection } from "../../../services/server/mongodb";
 
@@ -30,41 +31,29 @@ export default async function handler(req, res) {
 
 async function getBasicData(req, res, news) {
   try {
-    const hotNews = await news
-      .find({ newsType: "hot news" })
-      .sort({ created_at: 1 })
-      .limit(4)
-      .toArray();
+    const hotNews = await queryDocument(
+      "SELECT * FROM news WHERE type = 'hot news' ORDER BY created_at LIMIT 4"
+    );
 
-    const topNews = await news
-      .find({ newsType: "top news" })
-      .sort({ created_at: 1 })
-      .limit(3)
-      .toArray();
+    const topNews = await queryDocument(
+      "SELECT * FROM news WHERE type = 'top news' ORDER BY created_at LIMIT 3"
+    );
 
-    const countryNews = await news
-      .find({ category: /bangladesh/i })
-      .sort({ created_at: 1 })
-      .limit(5)
-      .toArray();
+    const countryNews = await queryDocument(
+      "SELECT * FROM news WHERE category_name LIKE '%bangladesh%' ORDER BY created_at LIMIT 5"
+    );
 
-    const politicsNews = await news
-      .find({ category: /politics/i })
-      .sort({ created_at: 1 })
-      .limit(5)
-      .toArray();
+    const politicsNews = await queryDocument(
+      "SELECT * FROM news WHERE category_name LIKE '%politics%' ORDER BY created_at LIMIT 5"
+    );
 
-    const businessNews = await news
-      .find({ category: /business/i })
-      .sort({ created_at: 1 })
-      .limit(5)
-      .toArray();
+    const businessNews = await queryDocument(
+      "SELECT * FROM news WHERE category_name LIKE '%business%' ORDER BY created_at LIMIT 5"
+    );
 
-    const latestNews = await news
-      .find()
-      .sort({ created_at: 1 })
-      .limit(22)
-      .toArray();
+    const latestNews = await queryDocument(
+      "SELECT * FROM news ORDER BY created_at LIMIT 22"
+    );
 
     res.send({
       hotNews,

@@ -1,114 +1,86 @@
-import { ObjectId } from "mongodb";
 import { errorHandler } from "../errorhandler";
 import { multipleBodyParser } from "../multer";
-import fs from "fs";
-import path from "path";
 import { userVarification } from "../user/user";
+import { deleteImage, queryDocument, postDocument } from "../common";
 
-export async function postNews(req, res, news) {
+export async function postNews(req, res) {
   try {
     const { error } = await multipleBodyParser(req, res, "assets", [
-      { name: "mainImg", maxCount: 1 },
-      { name: "featureImg1", maxCount: 1 },
-      { name: "featureImg2", maxCount: 1 },
-      { name: "featureImg3", maxCount: 1 },
+      { name: "image", maxCount: 1 },
     ]);
-    if (error) throw { message: error || "Error occured when file uploading" };
-    //user varify;
-    if (!req.body.userId) throw { message: "user unathenticated!" };
-    const { varify } = await userVarification(req.body.userId);
-    if (!varify) throw { message: "user unathenticated!" };
-    delete req.body.userId; //till;
+    if (error) throw { message: "Error occured when file uploading" };
 
-    Object.entries(req.files).map(
-      ([key, value]) => (req.body[key] = value[0].filename)
-    );
+    //user varify;
+    if (!req.body.user_id) throw { message: "user unathenticated!" };
+    const { varify } = await userVarification(req.body.user_id);
+    if (!varify) throw { message: "user unathenticated!" };
+
+    req.body.image = req.files.image[0].filename;
     req.body.created_at = new Date();
 
-    const result = await news.insertOne(req.body);
-    if (result.insertedId) {
-      res.send({ message: "News successfully posted" });
-    } else {
-      throw { message: "Unable to post, try again", status: 500 };
-    }
+    const sql = "INSERT INTO news SET ?";
+
+    const result = await postDocument(sql, req.body);
+    if (result.insertId > 0) {
+      res.send({ message: "News added successfully" });
+    } else res.send({ message: "Unable to add, try again" });
   } catch (err) {
+    deleteImage(req.files.image[0].filename);
     errorHandler(res, { msg: err.message, status: err.status });
   }
 }
 
-export async function getNews(req, res, news) {
+export async function getNews(req, res) {
   try {
-    const page = parseInt(req.query.page) * 20;
-    //sent multiple new by id;
+    const limit = parseInt(req.query.limit) || 10;
+    const page = parseInt(req.query.page || 0) * limit;
+    let sql = "";
     if (req.query.multiple) {
-      const allId = [];
-      req.query.id.split("|").forEach((id) => {
-        allId.push(ObjectId(id));
-      });
-
-      const result = await news.find({ _id: { $in: allId } }).toArray();
-      res.send(result);
+      //sent multiple new by id;
+      sql = `SELECT * FROM news WHERE id IN (${req.query.id})`;
+    } else if (req.query.id) {
+      //sent single news;
+      sql = `SELECT * FROM news WHERE id = '${req.query.id}'`;
+    } else {
+      //sent all news
+      sql = `SELECT * FROM news ORDER BY created_at DESC LIMIT ${page}, ${limit}`;
     }
-    //sent single news;
-    else if (req.query.id) {
-      const result = await news.findOne({ _id: ObjectId(req.query.id) });
-      if (result) res.send(result);
-      else throw { message: "no data found" };
-    }
-    //sent all news
-    else {
-      const result = await news
-        .find({})
-        .sort({ created_at: -1 })
-        .skip(page || 0)
-        .limit(20)
-        .toArray();
-
-      res.send(result);
-    }
+    const result = await queryDocument(sql);
+    res.send(result);
   } catch (err) {
-    errorHandler(res, { msg: err.message, status: err.status });
+    errorHandler(res, { msg: err.message, status: err.status || 500 });
   }
 }
 
-export async function updateNews(req, res, news) {
+export async function updateNews(req, res) {
   try {
     const { error } = await multipleBodyParser(req, res, "assets", [
-      { name: "mainImg", maxCount: 1 },
-      { name: "featureImg1", maxCount: 1 },
-      { name: "featureImg2", maxCount: 1 },
-      { name: "featureImg3", maxCount: 1 },
+      { name: "image", maxCount: 1 },
     ]);
     if (error) throw { message: error || "Error occured when file uploading" };
     //user varify;
-    if (!req.body.userId) throw { message: "user unathenticated!" };
-    const { varify } = await userVarification(req.body.userId);
+    if (!req.body.user_id) throw { message: "user unathenticated!" };
+    const { varify } = await userVarification(req.body.user_id);
     if (!varify) throw { message: "user unathenticated!" };
-    delete req.body.userId; //till;
 
-    if (req.files) {
-      Object.entries(req.files).map(
-        ([key, value]) => (req.body[key] = value[0].filename)
-      );
+    if (req.files.image) {
+      req.body.image = req.files.image[0].filename;
     }
     const existedImg = req.body.existedImg;
     delete req.body.existedImg;
-    const result = await news.updateOne(
-      { _id: ObjectId(req.query.id) },
-      {
-        $set: req.body,
-      }
-    );
-    if (result.modifiedCount > 0) {
-      if (existedImg) {
-        existedImg.forEach((item) => {
-          fs.unlinkSync(path.join(process.cwd(), "public", "assets", item));
-        });
-      }
-      res.send({ message: "News successfully updated" });
-    } else {
-      throw { message: "Unable to update, try again" };
-    }
+    let data = "";
+    Object.entries(req.body).map(([key, value]) => {
+      if (data) {
+        data += `, ${key} = "${value}"`;
+      } else data += `${key} = "${value}"`;
+    });
+
+    const sql = `UPDATE news SET ${data} WHERE id = '${req.query.id}'`;
+    const result = await queryDocument(sql);
+    if (result.affectedRows > 0) {
+      if (existedImg) deleteImage(existedImg);
+      res.send({ message: "Updated successfully" });
+    } else res.send({ message: "Unable to add, try again" });
   } catch (err) {
     errorHandler(res, { msg: err.message, status: err.status });
   }
@@ -119,25 +91,24 @@ export async function deleteNews(req, res, news) {
     const { error } = await multipleBodyParser(req, res, "", []);
     if (error) throw { message: error || "Internal server error" };
     //user varify;
-    if (!req.body.userId) throw { message: "user unathenticated!" };
-    const { varify } = await userVarification(req.body.userId);
+    if (!req.body.user_id) throw { message: "user unathenticated!" };
+    const { varify } = await userVarification(req.body.user_id);
     if (!varify) throw { message: "user unathenticated!" };
-    delete req.body.userId; //till;
 
-    req.body.images = JSON.parse(req.body.images);
-    //delte image from server;
-    Object.entries(req.body.images).map(([key, value]) => {
-      if (value) {
-        fs.unlinkSync(path.join(process.cwd(), "public", "assets", value));
+    //delete data from db;
+    const database = mySql;
+    if (database.error) throw error;
+    const sql = `DELETE FROM news WHERE id = '${req.query.id}'`;
+    database.db.query(sql, (err, result) => {
+      if (err) throw new Error(err.sqlMessage);
+      console.log(result);
+      if (result) {
+        deleteImage(req.body.image);
+        res.send({ message: "News successfully deleted" });
+      } else {
+        throw { message: "Unable to delete, try again", status: 500 };
       }
     });
-    //delete data from db;
-    const result = await news.deleteOne({ _id: ObjectId(req.query.id) });
-    if (result.deletedCount > 0) {
-      res.send({ message: "News successfully deleted" });
-    } else {
-      throw { message: "Unable to delete, try again", status: 500 };
-    }
   } catch (err) {
     errorHandler(res, { msg: err.message, status: err.status });
   }

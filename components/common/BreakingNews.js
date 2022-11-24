@@ -9,7 +9,7 @@ const Breakingnews = () => {
     const signal = controller.signal;
     (async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/news/breakingnews", {
+        const res = await fetch("/api/news/breakingnews", {
           signal,
         });
         const result = await res.json();

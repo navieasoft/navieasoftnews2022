@@ -1,9 +1,10 @@
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useRef, useState } from "react";
+import { axios } from "../../../services/client/common";
 import useStore from "../../context/useStore";
 
-const FooterModal = ({ close, title, setUpdate }) => {
+const FooterModal = ({ close, collumn, setUpdate, title }) => {
   const [loading, setLoading] = useState(false);
   const input = useRef(null);
   const store = useStore();
@@ -12,19 +13,18 @@ const FooterModal = ({ close, title, setUpdate }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/api/menus/footermenus", {
+      const result = await axios("/api/menus/footermenus", {
         headers: {
           "content-type": "application/json",
         },
         method: "POST",
         body: JSON.stringify({
-          title,
-          value: input.current?.value,
+          collumn,
+          name: input.current?.value,
           userId: store?.user?.uid,
         }),
       });
-      const result = await res.json();
-      if (!res.ok) throw { message: result.message };
+
       store?.setAlert({ msg: result.message, type: "success" });
       setUpdate((prev) => !prev);
       close("");
@@ -40,7 +40,12 @@ const FooterModal = ({ close, title, setUpdate }) => {
         <FontAwesomeIcon icon={faClose} />
       </div>
       <p className='font-medium'>{title}</p>
-      <input ref={input} required type='text' placeholder='Type here..' />
+      <input
+        ref={input}
+        required
+        type={collumn === 6 ? "url" : "text"}
+        placeholder='Type here..'
+      />
       <button disabled={loading} className='btn btn-primary'>
         Add
       </button>

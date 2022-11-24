@@ -1,4 +1,3 @@
-import { dbConnection } from "../../../services/server/mongodb";
 import {
   deleteNews,
   getNews,
@@ -13,33 +12,25 @@ export const config = {
 };
 
 export default async function handler(req, res) {
-  const { database } = await dbConnection();
+  switch (req.method) {
+    case "GET":
+      getNews(req, res);
+      break;
 
-  if (!database) {
-    res.send(500).send({ message: "Serverside error" });
-    return;
-  } else {
-    const news = database.collection("news");
-    switch (req.method) {
-      case "GET":
-        getNews(req, res, news);
-        break;
+    case "POST":
+      postNews(req, res);
+      break;
 
-      case "POST":
-        postNews(req, res, news);
-        break;
+    case "PUT":
+      updateNews(req, res);
+      break;
 
-      case "PUT":
-        updateNews(req, res, news);
-        break;
+    case "DELETE":
+      deleteNews(req, res);
+      break;
 
-      case "DELETE":
-        deleteNews(req, res, news);
-        break;
-
-      default:
-        res.status(404).send({ message: "not found" });
-        break;
-    }
+    default:
+      res.status(404).send({ message: "not found" });
+      break;
   }
 }

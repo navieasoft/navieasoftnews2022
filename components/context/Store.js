@@ -36,9 +36,7 @@ const Store = () => {
       if (user && user.emailVerified) {
         setUser(user);
         try {
-          const res = await fetch(
-            `http://localhost:3000/api/user?uid=${user.uid}`
-          );
+          const res = await fetch(`/api/user?uid=${user.uid}`);
           if (res.ok) {
             const { designation } = await res.json();
             setUserDesignation(designation || "user");
@@ -69,7 +67,7 @@ const Store = () => {
   }
   async function updateVisitor(ipAdress) {
     try {
-      const res = await fetch("http://localhost:3000/api/news/dashboard", {
+      const res = await fetch("/api/news/dashboard", {
         method: "PUT",
         headers: {
           "content-type": "application/json",
@@ -104,20 +102,22 @@ const Store = () => {
 
   async function getSiteInfo(signal) {
     try {
-      const res = await fetch("http://localhost:3000/api/settings", {
+      const res = await fetch("/api/settings", {
         signal,
       });
       const result = await res.json();
-      setSiteInfo(result);
+      if (res.ok) setSiteInfo(result);
+      else throw result;
     } catch (error) {}
   }
   async function getMenus(signal) {
     try {
-      const res = await fetch("http://localhost:3000/api/menus", {
+      const res = await fetch("/api/menus", {
         signal,
       });
       const result = await res.json();
-      setCategoryMenu(result);
+      if (res.ok) setCategoryMenu(result);
+      else throw result;
     } catch (error) {
       setError(true);
     }
