@@ -33,11 +33,13 @@ const MiddlePart = () => {
       <div className='hidden md:flex justify-center'>
         <Link href='/'>
           <a>
-            <img
-              className='object-contain h-12'
-              src={`/${siteInfo?.logo}`}
-              alt='logo'
-            />
+            {siteInfo?.logo && (
+              <img
+                className='object-contain h-12'
+                src={`/${siteInfo?.logo}`}
+                alt='logo'
+              />
+            )}
           </a>
         </Link>
       </div>

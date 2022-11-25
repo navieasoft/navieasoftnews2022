@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import React from "react";
+import { Markup } from "interweave";
 
 const TopHighlight = ({ data }) => {
   return (
@@ -16,7 +17,7 @@ const TopHighlight = ({ data }) => {
               />
               <div>
                 <h3 className='font-medium mb-2'>{item.heading}</h3>
-                <p>{item.body.slice(0, 200)}...</p>
+                <Markup content={`${item.body.slice(0, 200)}...`} />
               </div>
             </a>
           </Link>

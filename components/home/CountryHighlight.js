@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import React from "react";
+import { Markup } from "interweave";
 
 const CountryHighlight = ({ data }) => {
   if (!data) return null;
@@ -10,7 +11,10 @@ const CountryHighlight = ({ data }) => {
         <a className='first-highlight'>
           <div>
             <h3 className='text-xl font-medium mb-3'>{data[0].headline}</h3>
-            <p className='text-justify'>{data[0].body.slice(0, 300)}...</p>
+            <Markup
+              className='text-justify'
+              content={`${data[0]?.body.slice(0, 300)}...`}
+            />
           </div>
           <div className='lg:col-span-2 flex justify-center'>
             <img
@@ -26,7 +30,10 @@ const CountryHighlight = ({ data }) => {
           <Link href={`/details?id=${item.id}`} key={item.id}>
             <a className='border-b py-4 px-4 hover:text-gray-500'>
               <h3 className='font-semibold text-xl'>{item.headline}</h3>
-              <p className='text-justify'>{item.body.slice(0, 300)}...</p>
+              <Markup
+                className='text-justify'
+                content={`${item.body.slice(0, 300)}...`}
+              />
             </a>
           </Link>
         ))}

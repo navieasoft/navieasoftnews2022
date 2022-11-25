@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import { Markup } from "interweave";
 import Link from "next/link";
 import React from "react";
 
@@ -16,9 +17,7 @@ const Features = ({ data }) => {
               alt=''
             />
             <h3>{data[0].headline}</h3>
-            <p className='text-justify'>
-              {data[0].body.slice(0, 700)} {data[0].body.length > 700 && "..."}
-            </p>
+            <Markup content={`${data[0].body.slice(0, 700)}...`} />
           </a>
         </Link>
 
@@ -32,7 +31,7 @@ const Features = ({ data }) => {
                   alt='image'
                 />
                 <h3>{item.headline}</h3>
-                <p className='text-justify'>{item.body.slice(0, 100)}...</p>
+                <Markup content={`${item.body.slice(0, 100)}...`} />
               </a>
             </Link>
           ))}

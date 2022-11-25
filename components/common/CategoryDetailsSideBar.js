@@ -1,55 +1,40 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { axios } from "../../services/client/common";
 import useStore from "../context/useStore";
 import SmallAdd from "./advertizer/SmallAd";
 
 const CategoryDetailsSideBar = ({ page }) => {
   const [latestNews, setLatestNews] = useState(null);
+  const [mostreaded, setMostReaded] = useState(null);
   const [ads, setAds] = useState(null);
   const { setError } = useStore();
 
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
     (async function () {
       try {
-        const res = await fetch("/api/news?page=0", {
-          signal,
-        });
-        const result = await res.json();
-        if (res.ok) {
-          setLatestNews(result);
-        } else throw { message: result.message };
+        const latest = await axios("/api/news?page=0");
+        const mostreaded = await axios("/api/news/home?mostreaded=true");
+        const ads = await axios("/api/settings/ads");
+        setLatestNews(latest);
+        setMostReaded(mostreaded);
+        setAds(ads.other);
       } catch (error) {
         setError(true);
       }
     })();
-    (async function () {
-      try {
-        const res = await fetch("/api/settings/ads", {
-          signal,
-        });
-        const result = await res.json();
-        if (res.ok) {
-          setAds(result.other);
-        } else throw result;
-      } catch (error) {
-        console.log(error.message);
-      }
-    })();
-    return () => {
-      controller.abort();
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <section className='hidden md:block'>
-      <SmallAdd
-        picture={`/ads/${ads?.small[0].image || ""}`}
-        link={ads?.small[0].link}
-      />
+      {ads && (
+        <SmallAdd
+          picture={`/ads/${ads?.small[0].image || ""}`}
+          link={ads?.small[0].link}
+        />
+      )}
 
       {/* latest news */}
       <div
@@ -72,16 +57,18 @@ const CategoryDetailsSideBar = ({ page }) => {
             </Link>
           ))}
       </div>
-      <SmallAdd
-        picture={`/ads/${ads?.small[1].image || ""}`}
-        link={ads?.small[1].link}
-      />
+      {ads && (
+        <SmallAdd
+          picture={`/ads/${ads?.small[1].image || ""}`}
+          link={ads?.small[1].link}
+        />
+      )}
 
       {/* most read news */}
       <div className='some-news h-[900px]'>
         <b>Most read:</b>
-        {latestNews &&
-          latestNews?.map((news) => (
+        {mostreaded &&
+          mostreaded?.map((news) => (
             <Link href={`details?id=${news.id}`} key={news.id}>
               <a className='news'>
                 <p className='font-medium col-span-2 pl-2'>{news.headline}</p>

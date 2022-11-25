@@ -3,7 +3,6 @@ import {
   faFacebook,
   faInstagram,
   faYoutube,
-  faTwitter,
   faLinkedin,
 } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -69,31 +68,47 @@ const Footer = () => {
           <div className='flex flex-col items-start'>
             <p className='font-medium'>NEWS</p>
             {menus &&
-              menus.news.map((menu, i) => <button key={i}>{menu.name}</button>)}
+              menus.news.map((menu, i) => (
+                <Link href={`/category?search=${menu.name}`} key={i}>
+                  <a>{menu.name}</a>
+                </Link>
+              ))}
           </div>
           <div className='flex flex-col items-start'>
             <p className='font-medium'>OPINION</p>
             {menus &&
               menus.opinion.map((menu, i) => (
-                <button key={i}>{menu.name}</button>
+                <Link href={`/category?search=${menu.name}`} key={i}>
+                  <a>{menu.name}</a>
+                </Link>
               ))}
           </div>
           <div className='flex flex-col items-start'>
             <p className='font-medium'>ARTS</p>
             {menus &&
-              menus.arts.map((menu, i) => <button key={i}>{menu.name}</button>)}
+              menus.arts.map((menu, i) => (
+                <Link href={`/category?search=${menu.name}`} key={i}>
+                  <a>{menu.name}</a>
+                </Link>
+              ))}
           </div>
           <div className='flex flex-col items-start'>
             <p className='font-medium'>LIVING</p>
             {menus &&
               menus.living.map((menu, i) => (
-                <button key={i}>{menu.name}</button>
+                <Link href={`/category?search=${menu.name}`} key={i}>
+                  <a>{menu.name}</a>
+                </Link>
               ))}
           </div>
           <div className='flex flex-col items-start'>
             <p className='font-medium'>MORE</p>
             {menus &&
-              menus.more.map((menu, i) => <button key={i}>{menu.name}</button>)}
+              menus.more.map((menu, i) => (
+                <Link href={`/category?search=${menu.name}`} key={i}>
+                  <a>{menu.name}</a>
+                </Link>
+              ))}
           </div>
 
           <div className='flex flex-col items-start'>

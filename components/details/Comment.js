@@ -22,14 +22,15 @@ const Comment = ({ newsId, setUpdate, comments }) => {
         method: "POST",
         body: JSON.stringify({
           userId: store?.user.uid,
-          newsId,
+          news_id: newsId,
           comment: textArea.current?.value,
-          userName: store?.user.displayName,
+          user_name: store?.user.displayName,
         }),
       });
       const result = await res.json();
       if (res.ok) {
         store?.setAlert({ msg: result.message, type: "success" });
+        textArea.current.value = "";
         setUpdate((prev) => !prev);
       } else throw result;
     } catch (error) {
@@ -58,17 +59,17 @@ const Comment = ({ newsId, setUpdate, comments }) => {
           </button>
         </div>
       </form>
-      {comments && (
+      {comments.length ? (
         <div className='my-5 space-y-3'>
           <h4 className='font-bold text-xl'>All comments:</h4>
           {comments.map((item, i) => (
             <div className='mb-5 border-b rounded pb-3' key={i}>
-              <p className='font-medium'>{item.userName}</p>
+              <p className='font-medium'>{item.user_name}</p>
               <p className='text-justify'>{item.comment}</p>
             </div>
           ))}
         </div>
-      )}
+      ) : null}
     </section>
   );
 };

@@ -34,18 +34,26 @@ export async function getNews(req, res) {
   try {
     const limit = parseInt(req.query.limit) || 10;
     const page = parseInt(req.query.page || 0) * limit;
-    let sql = "";
+    let result;
     if (req.query.multiple) {
       //sent multiple new by id;
-      sql = `SELECT * FROM news WHERE id IN (${req.query.id})`;
+      const id = req.query.id.replaceAll("|", ",");
+      const sql = `SELECT * FROM news WHERE id IN (${id})`;
+      result = await queryDocument(sql);
     } else if (req.query.id) {
       //sent single news;
-      sql = `SELECT * FROM news WHERE id = '${req.query.id}'`;
+      const newssql = `SELECT news.*, c.name as category_name FROM news INNER JOIN category as c ON news.category_id = c.id  WHERE news.id = '${req.query.id}'`;
+      const news = await queryDocument(newssql);
+      if (news.length) {
+        const commentsql = `SELECT * FROM comments WHERE news_id = ${news[0].id}`;
+        const comments = await queryDocument(commentsql);
+        result = { ...news[0], comments };
+      }
     } else {
       //sent all news
-      sql = `SELECT * FROM news ORDER BY created_at DESC LIMIT ${page}, ${limit}`;
+      const sql = `SELECT * FROM news ORDER BY created_at DESC LIMIT ${page}, ${limit}`;
+      result = await queryDocument(sql);
     }
-    const result = await queryDocument(sql);
     res.send(result);
   } catch (err) {
     errorHandler(res, { msg: err.message, status: err.status || 500 });

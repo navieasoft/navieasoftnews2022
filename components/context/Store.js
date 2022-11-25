@@ -65,6 +65,7 @@ const Store = () => {
       return { error: true, ipAdress: null };
     }
   }
+
   async function updateVisitor(ipAdress) {
     try {
       const res = await fetch("/api/news/dashboard", {
@@ -72,13 +73,10 @@ const Store = () => {
         headers: {
           "content-type": "application/json",
         },
-        body: JSON.stringify({
-          ipAdress,
-          date: `${new Date().toDateString()}`,
-        }),
+        body: JSON.stringify({ ipAdress }),
       });
       const result = await res.json();
-      console.log(result);
+      if (!res.ok) throw result;
     } catch (error) {
       console.log(error.message);
     }

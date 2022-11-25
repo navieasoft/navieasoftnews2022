@@ -13,7 +13,12 @@ const Breakingnews = () => {
           signal,
         });
         const result = await res.json();
-        setNews(result);
+        if (res.ok) {
+          const newsitem = [];
+          result.forEach((item) => newsitem.push(item.value));
+          setNews(newsitem);
+        }
+        throw result;
       } catch (error) {
         store.setError(true);
       }
@@ -24,11 +29,10 @@ const Breakingnews = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return (
     <div className='bg-white border-b py-2 px-5 xl:px-10 print:hidden'>
-      <marquee>
-        <p>{news && news.breakingNews?.join(" || ")}</p>
-      </marquee>
+      <marquee>{news && <p>{news.join(" || ")}</p>}</marquee>
     </div>
   );
 };

@@ -23,15 +23,17 @@ import CategoryDetailsSideBar from "../components/common/CategoryDetailsSideBar"
 import Breakingnews from "../components/common/BreakingNews";
 import useStore from "../components/context/useStore";
 import Comment from "../components/details/Comment";
+import { Markup } from "interweave";
 
 const Details = () => {
   const [relatedNews, setRelatedNews] = useState(null);
   const { setError, siteInfo, ipAdress } = useStore();
   const [linkCopy, setLinkCopied] = useState(false);
   const [update, setUpdate] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [news, setNews] = useState(null);
   const [ads, setAds] = useState(null);
-  const [skip, setSkip] = useState(0);
+  const [page, setPage] = useState(1);
   const router = useRouter();
   const store = useStore();
 
@@ -48,40 +50,37 @@ const Details = () => {
       });
       const result = await res.json();
       if (res.ok) {
-        setNews(result[0]);
+        setNews(result);
         //get related news;
-        await getRelatedNews(result.category);
+        await getRelatedNews(result.category_name);
       } else throw result;
     } catch (error) {
       setError(true);
     }
     store.setLoading(false);
   }
+
   async function updateViewPost(ipAdress) {
     try {
-      const res = await fetch(
-        `/api/news/dashboard?id=${router.query.id}&news=true`,
-        {
-          headers: {
-            "content-type": "application/json",
-          },
-          method: "PUT",
-          body: JSON.stringify({
-            date: `${new Date().toDateString()}`,
-            ipAdress,
-          }),
-        }
-      );
+      const res = await fetch(`/api/news/dashboard?news=true`, {
+        headers: {
+          "content-type": "application/json",
+        },
+        method: "PUT",
+        body: JSON.stringify({ ipAdress, news_id: router.query.id }),
+      });
       const result = await res.json();
-      console.log(result);
+      if (!res.ok) throw result;
     } catch (error) {
-      throw { message: "There was an error" };
+      console.log(error);
+      throw error;
     }
   }
   async function getRelatedNews(category) {
+    setLoading(true);
     try {
       const res = await fetch(
-        `/api/news/home?category=${category}&limit=9&skip=${skip}`
+        `/api/news/home?category=${category}&limit=9&page=${page}`
       );
       const result = await res.json();
       if (res.ok) {
@@ -90,6 +89,7 @@ const Details = () => {
     } catch (error) {
       throw error;
     }
+    setLoading(false);
   }
   function saveNewsHistory() {
     try {
@@ -160,10 +160,12 @@ const Details = () => {
       <TopMenus />
       <Breakingnews />
 
-      <LergeAdd
-        picture={`/ads/${ads?.long[0].image || ""}`}
-        link={ads?.long[0].link}
-      />
+      {ads && (
+        <LergeAdd
+          picture={`/ads/${ads?.long[0].image || ""}`}
+          link={ads?.long[0].link}
+        />
+      )}
 
       <section className='details-page-content-wrapper'>
         <section className='col-span-3 md:col-span-2 print:col-span-3'>
@@ -185,10 +187,10 @@ const Details = () => {
                 </button>
 
                 <FacebookShareButton url={"https://navieasoft.com/"}>
-                  <button>
+                  <p className='share'>
                     <FontAwesomeIcon icon={faFacebook} />
                     <span>Share</span>
-                  </button>
+                  </p>
                 </FacebookShareButton>
               </div>
             </div>
@@ -206,7 +208,10 @@ const Details = () => {
                 alt='news image'
               />
 
-              <p className='text-justify mt-10 text-xl'>{news.body}</p>
+              <Markup
+                content={news.body}
+                className='text-justify mt-10 text-xl'
+              />
 
               <p className='mt-10 text-xl'>
                 {siteInfo?.name}/{news.editor_name}
@@ -248,10 +253,12 @@ const Details = () => {
           />
 
           <section>
-            <LergeAdd
-              picture={`/ads/${ads?.long[1].image || ""}`}
-              link={ads?.long[1].link}
-            />
+            {ads && (
+              <LergeAdd
+                picture={`/ads/${ads?.long[1].image || ""}`}
+                link={ads?.long[1].link}
+              />
+            )}
 
             {/* Realated news */}
             <section className='print:hidden'>
@@ -283,9 +290,10 @@ const Details = () => {
               </div>
               <div className='flex justify-end mt-5'>
                 <button
+                  disabled={loading}
                   onClick={() => {
-                    setSkip((prev) => prev + 9);
-                    getRelatedNews(news.category, skip);
+                    setPage((prev) => prev + 1);
+                    getRelatedNews(news.category_name);
                   }}
                   className='btn btn-primary'
                 >
@@ -293,10 +301,12 @@ const Details = () => {
                 </button>
               </div>
             </section>
-            <LergeAdd
-              picture={`/ads/${ads?.long[2].image || ""}`}
-              link={ads?.long[2].link}
-            />
+            {ads && (
+              <LergeAdd
+                picture={`/ads/${ads?.long[2].image || ""}`}
+                link={ads?.long[2].link}
+              />
+            )}
           </section>
         </section>
 

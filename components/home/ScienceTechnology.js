@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import { Markup } from "interweave";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
@@ -34,7 +35,10 @@ const ScienceTechnology = () => {
                   alt='image'
                 />
                 <h3>{item.headline}</h3>
-                <p className='text-justify'>{item.body.slice(0, 200)}...</p>
+                <Markup
+                  className='text-justify'
+                  content={`${item.body.slice(0, 200)}...`}
+                />
               </a>
             </Link>
           ))}
@@ -45,7 +49,10 @@ const ScienceTechnology = () => {
               <a className='grid grid-cols-1 md:grid-cols-2 gap-5 hover:text-gray-500'>
                 <div>
                   <h3>{item.headline}</h3>
-                  <p className='text-justify'>{item.body.slice(0, 150)}...</p>
+                  <Markup
+                    className='text-justify'
+                    content={`${item.body.slice(0, 150)}...`}
+                  />
                 </div>
                 <img
                   className='object-cover object-top'

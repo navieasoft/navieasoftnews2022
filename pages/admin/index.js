@@ -3,12 +3,9 @@ import {
   faArrowUpShortWide,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import SideBar from "../../components/admin/common/SideBar";
-import Header from "../../components/admin/common/header";
 import useStore from "../../components/context/useStore";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import Footer from "../../components/admin/common/Footer";
 import AdminLayout from "../../components/admin/AdminLayout";
 
 const Admin = () => {
@@ -27,9 +24,11 @@ const Admin = () => {
           signal,
         });
         const result = await res.json();
-        setNews(result.someNews);
-        setPostReport(result.postReport);
-        setViewsReport(result.viewerReport);
+        if (res.ok) {
+          setNews(result.someNews);
+          setPostReport(result.postReport);
+          setViewsReport(result.viewerReport);
+        } else throw result;
       } catch (error) {
         setError(true);
       }
@@ -84,12 +83,13 @@ const Admin = () => {
         </div>
 
         <h3 className='mt-12'>Some Latest News</h3>
-        <div className='allnews-container w-full mt-2 cursor-pointer'>
-          <table onClick={() => router.push("/admin/news")}>
+        <div className='allnews-container w-full mt-2 cursor-pointer overflow-auto'>
+          <table className='w-full' onClick={() => router.push("/admin/news")}>
             <thead>
               <tr>
                 <th>Headline</th>
                 <th>Category</th>
+                <th>Sub</th>
                 <th>Editor_name</th>
                 <th>Date</th>
               </tr>
@@ -99,11 +99,12 @@ const Admin = () => {
                 news.map((news, i) => (
                   <tr key={i}>
                     <td>
-                      {news.headline.slice(0, 200)}{" "}
-                      {news.headline.length > 200 && "..."}
+                      {news.headline.slice(0, 50)}{" "}
+                      {news.headline.length > 50 && "..."}
                     </td>
-                    <td>{news.category}</td>
-                    <td>{news.editorName}</td>
+                    <td>{news.category_name}</td>
+                    <td>{news.sub_category_name}</td>
+                    <td>{news.editor_name}</td>
                     <td>{news.date}</td>
                   </tr>
                 ))}

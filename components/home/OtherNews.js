@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import React from "react";
+import { Markup } from "interweave";
 
 const OtherNews = ({ data }) => {
   if (!data) return null;
@@ -17,7 +18,8 @@ const OtherNews = ({ data }) => {
                 alt=''
               />
               <h3>{data[0].headline}</h3>
-              <p>{data[0].body.slice(0, 350)}...</p>
+
+              <Markup content={`${data[0]?.body.slice(0, 350)}...`} />
             </a>
           </Link>
         </div>
@@ -31,7 +33,7 @@ const OtherNews = ({ data }) => {
                 }`}
               >
                 <h3>{item.headline}</h3>
-                <p>{item.body.slice(0, 150)}...</p>
+                <Markup content={`${item.body.slice(0, 150)}...`} />
               </a>
             </Link>
           ))}

@@ -23,7 +23,11 @@ const TopPart = ({ page }) => {
   const router = useRouter();
   const container = useRef();
   const store = useStore();
-  const country = ["International", "Asia", "Bangladesh"];
+  const country = [
+    { name: "International", link: "/category?q=world" },
+    { name: "Asia", link: "/category?q=world&sub=asia" },
+    { name: "Bangladesh", link: "/category?q=bangladesh" },
+  ];
 
   async function logOut() {
     try {
@@ -65,40 +69,36 @@ const TopPart = ({ page }) => {
         </button>
       </div>
       {page === "home" ? (
-        <div className='hidden md:flex justify-center'>
-          <div className='space-x-3'>
-            {country.map((c, i) => (
-              <button
-                className={
-                  activeCountry === c ? "text-purple-500 font-medium" : ""
-                }
-                onClick={() => setActiveCountry(c)}
-                key={i}
-              >
-                <span>{c}</span>
-              </button>
-            ))}
-          </div>
+        <div className='hidden md:flex justify-center gap-3'>
+          {country.map((c, i) => (
+            <Link href={c.link} key={i}>
+              <a>{c.name}</a>
+            </Link>
+          ))}
         </div>
       ) : (
         <div className='hidden md:flex justify-center'>
           <div onClick={() => router.push("/")} className='cursor-pointer '>
-            <img
-              className='cursor-pointer object-contain h-10'
-              src={`/${store?.siteInfo?.logo}`}
-              alt='logo'
-            />
+            {store?.siteInfo?.logo && (
+              <img
+                className='cursor-pointer object-contain h-10'
+                src={`/${store?.siteInfo?.logo}`}
+                alt='logo'
+              />
+            )}
           </div>
         </div>
       )}
 
       <div className='flex justify-center md:hidden'>
         <div onClick={() => router.push("/")} className='cursor-pointer '>
-          <img
-            className='cursor-pointer object-contain'
-            src={`/${store?.siteInfo?.logo}`}
-            alt='logo'
-          />
+          {store?.siteInfo?.logo && (
+            <img
+              className='cursor-pointer object-contain'
+              src={`/${store?.siteInfo?.logo}`}
+              alt='logo'
+            />
+          )}
         </div>
       </div>
 

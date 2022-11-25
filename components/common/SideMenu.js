@@ -29,7 +29,7 @@ const SideMenu = () => {
               <Link href={`/category?q=${menu.name}`}>
                 <a>{menu.name}</a>
               </Link>
-              {menu.subs?.length && (
+              {menu.subs?.length ? (
                 <div
                   className='cursor-pointer'
                   onClick={() =>
@@ -45,20 +45,20 @@ const SideMenu = () => {
                     <FontAwesomeIcon icon={faAngleDown} />
                   )}
                 </div>
-              )}
+              ) : null}
             </div>
-            {menu.subs?.length && (
+            {menu.subs?.length ? (
               <div className={`accordion ${showSub === i ? "show" : ""}`}>
                 {menu.subs.map((sub) => (
                   <Link
-                    href={`/category?q=${menu.name}&sub=${sub.id}`}
+                    href={`/category?q=${menu.name}&sub=${sub.name}`}
                     key={sub.id}
                   >
                     <a className='sub-menus'>{sub.name}</a>
                   </Link>
                 ))}
               </div>
-            )}
+            ) : null}
           </div>
         ))}
     </div>

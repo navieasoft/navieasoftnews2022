@@ -8,40 +8,41 @@ import CategoryDetailsSideBar from "../components/common/CategoryDetailsSideBar"
 import TopMenus from "../components/common/TopMenus";
 import TopPart from "../components/common/TopPart";
 import useStore from "../components/context/useStore";
+import { Markup } from "interweave";
 
 const Category = () => {
   const [news, setNews] = useState(null);
   const [ads, setAds] = useState(null);
+  const [page, setPage] = useState(0);
   const { setError } = useStore();
   const router = useRouter();
   const store = useStore();
 
-  useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-    (async function () {
-      store.setLoading(true);
-      try {
-        const res = await fetch(
-          `/api/news/home?category=${router.query.q}&sub=${
-            router.query.sub || ""
-          }`,
-          {
-            signal,
-          }
-        );
-        const result = await res.json();
-        if (res.ok) {
-          setNews(result);
-        } else throw { message: result.message };
-      } catch (error) {
-        setError(true);
+  async function getData(signal) {
+    store.setLoading(true);
+    try {
+      let url = "";
+      if (router.query.q) {
+        url = `/api/news/home?category=${router.query.q}&page=${page}`;
+      } else if (router.query.sub) {
+        url = `/api/news/home?category=${router.query.q}&sub=${router.query.sub}&page=${page}`;
+      } else {
+        url = `/api/news/home?search=${router.query.search}&page=${page}`;
       }
-      store.setLoading(false);
-    })();
-    return () => {
-      controller.abort();
-    };
+      const res = await fetch(url, {
+        signal,
+      });
+      const result = await res.json();
+      if (res.ok) {
+        setNews(result);
+      } else throw { message: result.message };
+    } catch (error) {
+      setError(true);
+    }
+    store.setLoading(false);
+  }
+  useEffect(() => {
+    getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query]);
 
@@ -67,8 +68,6 @@ const Category = () => {
     };
   }, []);
 
-  console.log(ads.long[0].image);
-
   if (!news) return null;
   if (!news.length) {
     return (
@@ -85,10 +84,12 @@ const Category = () => {
       <TopPart page='details' />
       <TopMenus />
       <Breakingnews />
-      <LergeAdd
-        picture={`/ads/${ads.long[0].image || ""}`}
-        link={ads?.long[0].url}
-      />
+      {ads && (
+        <LergeAdd
+          picture={`/ads/${ads.long[0].image || ""}`}
+          link={ads?.long[0].url}
+        />
+      )}
       <section className='category-wrapper'>
         <section className='col-span-3 md:col-span-2'>
           <Link href={`details?id=${news[0].id}`}>
@@ -99,14 +100,16 @@ const Category = () => {
                 alt=''
               />
               <p className='font-medium'>{news[0].headline}</p>
-              <p>{news[0].body.slice(0, 300)}...</p>
+              <Markup content={`${news[0].body.slice(0, 300)}...`} />
             </a>
           </Link>
 
-          <LergeAdd
-            picture={`/ads/${ads?.long[1].image || ""}`}
-            link={ads?.long[1].url}
-          />
+          {ads && (
+            <LergeAdd
+              picture={`/ads/${ads?.long[1].image || ""}`}
+              link={ads?.long[1].url}
+            />
+          )}
 
           <div className='second-item'>
             {news.slice(1, 7).map((news) => (
@@ -123,10 +126,12 @@ const Category = () => {
             ))}
           </div>
 
-          <LergeAdd
-            picture={`/ads/${ads?.long[2].image || ""}`}
-            link={ads?.long[2].url}
-          />
+          {ads && (
+            <LergeAdd
+              picture={`/ads/${ads?.long[2].image || ""}`}
+              link={ads?.long[2].url}
+            />
+          )}
 
           <div className='third-item'>
             {news.slice(8, news.length)?.map((news) => (
@@ -141,6 +146,17 @@ const Category = () => {
                 </a>
               </Link>
             ))}
+          </div>
+          <div className='flex justify-end mt-5'>
+            <button
+              onClick={() => {
+                setPage((prev) => prev + 1);
+                getData();
+              }}
+              className='btn btn-primary'
+            >
+              Load More
+            </button>
           </div>
         </section>
 

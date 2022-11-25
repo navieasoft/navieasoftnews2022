@@ -4,7 +4,7 @@ import { queryDocument } from "../common";
 
 export async function getBreakingNews(req, res) {
   try {
-    const result = await queryDocument("SELECT * FROM breaking_news");
+    const result = await queryDocument("SELECT value FROM breaking_news");
     res.send(result);
   } catch (err) {
     errorHandler(res, { msg: err.message, status: err.status });

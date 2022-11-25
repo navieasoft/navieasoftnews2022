@@ -123,6 +123,16 @@ const AddNews = () => {
             </div>
 
             <div className='space-y-2'>
+              <label>Tags</label>
+              <input
+                {...register("tags", { required: true })}
+                required
+                type='text'
+                placeholder='type a | b | c'
+              />
+            </div>
+
+            <div className='space-y-2'>
               <label htmlFor='topic'>Main Image:</label>
               <input
                 required

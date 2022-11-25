@@ -67,7 +67,7 @@
     @apply scrollbar-thumb-gray-400;
   }
   .side-menu-container .menus {
-    @apply pr-24 pl-6 hover:bg-gray-100 py-2 border-b flex 
+    @apply pr-10 pl-6 hover:bg-gray-100 py-2 border-b flex gap-5 
     justify-between w-full;
   }
   .side-menu-container .sub-menus {

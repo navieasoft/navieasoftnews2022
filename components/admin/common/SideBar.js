@@ -188,9 +188,9 @@ const SideBar = () => {
               <FontAwesomeIcon icon={item.icon} />
               <span>{item.txt}</span>
             </div>
-            {item.subs && <FontAwesomeIcon icon={faAngleDown} />}
+            {item.subs ? <FontAwesomeIcon icon={faAngleDown} /> : null}
           </a>
-          {item.subs && (
+          {item.subs ? (
             <div className='collapse-content'>
               {item.subs.map((sub, i) => (
                 <Link key={i} href={sub.url}>
@@ -210,7 +210,7 @@ const SideBar = () => {
                 </Link>
               ))}
             </div>
-          )}
+          ) : null}
         </div>
       ))}
     </div>

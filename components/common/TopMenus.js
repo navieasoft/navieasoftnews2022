@@ -56,7 +56,7 @@ const TopMenus = () => {
               >
                 {menu.subs.map((sub) => (
                   <Link
-                    href={`/category?q=${menu.name}&sub=${sub.id}`}
+                    href={`/category?q=${menu.name}&sub=${sub.name}`}
                     key={sub.id}
                   >
                     <a>{sub.name}</a>

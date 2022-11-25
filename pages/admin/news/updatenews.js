@@ -43,8 +43,8 @@ const AddNews = () => {
             signal,
           });
           const result = await res.json();
-          if (result.length) {
-            setNews(result[0]);
+          if (res.ok) {
+            setNews(result);
           } else router.push("/admin/news");
         }
       } catch (error) {
@@ -176,6 +176,17 @@ const AddNews = () => {
                 ))}
               </select>
             </div>
+
+            <div className='space-y-2'>
+              <label>Tags</label>
+              <input
+                {...register("tags")}
+                defaultValue={news?.tags}
+                type='text'
+                placeholder='type a | b | c'
+              />
+            </div>
+
             {news && (
               <div className=''>
                 <img src={`/assets/${news.image}`} alt='' />

@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import { Markup } from "interweave";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
@@ -8,7 +9,11 @@ const GaneralPattern = ({ title, isCategory }) => {
   useEffect(() => {
     (async function () {
       try {
-        const res = await fetch(`/api/news/home?types=${title}`);
+        const url =
+          title !== "popular"
+            ? `/api/news/home?types=${title}`
+            : `/api/news/home?mostreaded=true&limit=6`;
+        const res = await fetch(url);
         const result = await res.json();
         if (res.ok) {
           setNews(result);
@@ -32,7 +37,10 @@ const GaneralPattern = ({ title, isCategory }) => {
               alt='image'
             />
             <h3>{item.headline}</h3>
-            <p className='text-justify'>{item.body.slice(0, 200)}...</p>
+            <Markup
+              className='text-justify'
+              content={`${item.body.slice(0, 200)}...`}
+            />
           </a>
         </Link>
       ))}

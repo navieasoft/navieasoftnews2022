@@ -10,6 +10,10 @@ export default async function handler(req, res) {
         getCategoryNews(req, res);
       } else if (req.query.types) {
         getTypesNews(req, res);
+      } else if (req.query.mostreaded) {
+        getMostReadedNews(req, res);
+      } else if (req.query.search) {
+        getSearchedNews(req, res);
       } else {
         getBasicData(res);
       }
@@ -103,7 +107,30 @@ async function getTypesNews(req, res) {
     const page = parseInt(req.query.page || 0) * limit;
     const sql = `SELECT * FROM news WHERE type = '${req.query.types}' ORDER BY created_at LIMIT ${page}, ${limit}`;
     const result = await queryDocument(sql);
-    console.log(req.query);
+    res.send(result);
+  } catch (error) {
+    errorHandler(res, { msg: error.message, status: error.status });
+  }
+}
+
+async function getMostReadedNews(req, res) {
+  try {
+    const limit = parseInt(req.query.limit) || 12;
+    const page = parseInt(req.query.page || 0) * limit;
+    const sql = `SELECT news.* FROM news_viewers as v INNER JOIN news ON v.news_id = news.id ORDER BY news.created_at LIMIT ${page}, ${limit}`;
+    const result = await queryDocument(sql);
+    res.send(result);
+  } catch (error) {
+    errorHandler(res, { msg: error.message, status: error.status });
+  }
+}
+
+async function getSearchedNews(req, res) {
+  try {
+    const limit = parseInt(req.query.limit) || 12;
+    const page = parseInt(req.query.page || 0) * limit;
+    const sql = `SELECT * FROM news WHERE type LIKE '%${req.query.search}%' OR tags LIKE '%${req.query.search}%' ORDER BY created_at LIMIT ${page}, ${limit}`;
+    const result = await queryDocument(sql);
     res.send(result);
   } catch (error) {
     errorHandler(res, { msg: error.message, status: error.status });

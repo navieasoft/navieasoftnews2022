@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import React from "react";
+import { Markup } from "interweave";
 
 const TopNews = ({ data }) => {
   if (!data) return null;
@@ -10,7 +11,7 @@ const TopNews = ({ data }) => {
         <Link href={`/details?id=${data[0]?.id}`}>
           <a className='topnews_1'>
             <h3>{data[0]?.headline}</h3>
-            <p>{data[0]?.body.slice(0, 300)}...</p>
+            <Markup content={`${data[0]?.body.slice(0, 300)}...`} />
           </a>
         </Link>
         <Link href={`/details?id=${data[1]?.id}`}>
@@ -28,7 +29,7 @@ const TopNews = ({ data }) => {
             alt='news image'
           />
           <h3>{data[2]?.heading}</h3>
-          <p>{data[2]?.body.slice(0, 300)}...</p>
+          <Markup content={`${data[2]?.body.slice(0, 300)}...`} />
         </a>
       </Link>
     </div>

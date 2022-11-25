@@ -1,46 +1,48 @@
-import { ObjectId } from "mongodb";
+import { postDocument, queryDocument } from "../../../services/server/common";
 import { errorHandler } from "../../../services/server/errorhandler";
-import { dbConnection } from "../../../services/server/mongodb";
 import { isUser } from "../../../services/server/user/user";
 
 export default async function handler(req, res) {
-  const { database } = await dbConnection();
+  switch (req.method) {
+    case "GET":
+      handleDashboard(res);
+      break;
 
-  if (!database) {
-    res.send(500).send({ message: "Serverside error" });
-    return;
-  } else {
-    const news = database.collection("news");
-    const visitors = database.collection("visitors");
-    switch (req.method) {
-      case "GET":
-        handleDashboard(req, res, news, visitors);
-        break;
+    case "POST":
+      postCommentOnNews(req, res, news);
+      break;
 
-      case "POST":
-        postCommentOnNews(req, res, news);
-        break;
+    case "PUT":
+      updateNewsViews(req, res);
+      break;
 
-      case "PUT":
-        updateNewsViews(req, res, news, visitors);
-        break;
-
-      default:
-        res.status(404).send({ message: "not found" });
-        break;
-    }
+    default:
+      res.status(404).send({ message: "not found" });
+      break;
   }
 }
 
 function getAllDates() {
   const date = new Date();
-  const today = date;
-  const yesterday = new Date(date.valueOf() - 1000 * 60 * 60 * 24);
-  const beforeYesterday = new Date(date.valueOf() - 1000 * 60 * 60 * 48);
-  const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
-  const previousMonth = new Date(date.getFullYear(), date.getMonth() - 1, 1);
-  const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
-  const previousYear = new Date(date.getFullYear() - 1, 0, 1);
+  const today = date.toISOString().slice(0, 10);
+  const yesterday = new Date(date.valueOf() - 1000 * 60 * 60 * 24)
+    .toISOString()
+    .slice(0, 10);
+  const beforeYesterday = new Date(date.valueOf() - 1000 * 60 * 60 * 48)
+    .toISOString()
+    .slice(0, 10);
+  const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1)
+    .toISOString()
+    .slice(0, 10);
+  const previousMonth = new Date(date.getFullYear(), date.getMonth() - 1, 1)
+    .toISOString()
+    .slice(0, 10);
+  const firstDayOfYear = new Date(date.getFullYear(), 0, 1)
+    .toISOString()
+    .slice(0, 10);
+  const previousYear = new Date(date.getFullYear() - 1, 0, 1)
+    .toISOString()
+    .slice(0, 10);
 
   return {
     today,
@@ -53,7 +55,7 @@ function getAllDates() {
   };
 }
 
-async function getPostReport(news) {
+async function getPostReport() {
   const {
     today,
     yesterday,
@@ -63,65 +65,53 @@ async function getPostReport(news) {
     firstDayOfYear,
     previousYear,
   } = getAllDates();
-  const todaysNews = await news
-    .find({
-      created_at: { $gt: yesterday, $lt: today },
-    })
-    .count();
+  const todaysql = `SELECT id, created_at FROM news WHERE created_at >= '${yesterday}' AND created_at <= '${today}'`;
+  const todaysNews = await queryDocument(todaysql);
 
-  const yesterNews = await news
-    .find({
-      created_at: { $gt: beforeYesterday, $lt: yesterday },
-    })
-    .count();
-  const thisMonthNews = await news
-    .find({
-      created_at: { $gt: firstDayOfMonth, $lt: today },
-    })
-    .count();
+  const yestersql = `SELECT id FROM news WHERE created_at >= '${beforeYesterday}' AND created_at <= '${yesterday}'`;
+  const yesterNews = await queryDocument(yestersql);
 
-  const previousMonthNews = await news
-    .find({
-      created_at: { $gt: previousMonth, $lt: firstDayOfMonth },
-    })
-    .count();
-  const thisYearNews = await news
-    .find({
-      created_at: { $gt: firstDayOfYear, $lt: today },
-    })
-    .count();
+  const thismonthsql = `SELECT id FROM news WHERE created_at >= '${firstDayOfMonth}' AND created_at <= '${today}'`;
+  const thisMonthNews = await queryDocument(thismonthsql);
 
-  const previousYearNews = await news
-    .find({
-      created_at: { $gt: previousYear, $lt: firstDayOfYear },
-    })
-    .count();
+  const previousmonthsql = `SELECT id FROM news WHERE created_at >= '${previousMonth}' AND created_at <= '${firstDayOfMonth}'`;
+  const previousMonthNews = await queryDocument(previousmonthsql);
+
+  const thisYearsql = `SELECT id FROM news WHERE created_at >= '${firstDayOfYear}' AND created_at <= '${today}'`;
+  const thisYearNews = await queryDocument(thisYearsql);
+
+  const previousYearsql = `SELECT id FROM news WHERE created_at >= '${previousYear}' AND created_at <= '${firstDayOfYear}'`;
+  const previousYearNews = await queryDocument(previousYearsql);
+
   return [
     {
       name: "Today's Post",
-      count: todaysNews,
-      grouth: ((todaysNews - yesterNews) / yesterNews) * 100,
+      count: todaysNews.length,
+      grouth:
+        todaysNews.length - yesterNews.length ||
+        1 / yesterNews.length ||
+        0 * 100,
     },
     {
       name: "This Month's Post",
-      count: thisMonthNews,
+      count: thisMonthNews.length,
       grouth:
-        ((thisMonthNews - previousMonthNews) /
-          (previousMonthNews === 0 ? 1 : previousMonthNews)) *
-        100,
+        thisMonthNews.length - previousMonthNews.length ||
+        1 / previousMonthNews.length ||
+        0 * 100,
     },
     {
       name: "This year's Post",
-      count: thisYearNews,
+      count: thisYearNews.length,
       grouth:
-        ((thisYearNews - previousYearNews) /
-          (previousYearNews === 0 ? 1 : previousYearNews)) *
-        100,
+        thisYearNews.length - previousYearNews.length ||
+        1 / previousYearNews.length ||
+        0 * 100,
     },
   ];
 }
 
-async function getViewerReport(visitors) {
+async function getVisitorReport() {
   const {
     today,
     yesterday,
@@ -131,75 +121,59 @@ async function getViewerReport(visitors) {
     firstDayOfYear,
     previousYear,
   } = getAllDates();
+  const todaysql = `SELECT id FROM visitors WHERE date >= '${yesterday}' AND date <= '${today}'`;
+  const todaysViews = await queryDocument(todaysql);
 
-  const todaysViews = await visitors
-    .find({
-      created_at: { $gt: yesterday, $lt: today },
-    })
-    .count();
+  const yestersql = `SELECT id FROM visitors WHERE date >= '${beforeYesterday}' AND date <= '${yesterday}'`;
+  const yesterViews = await queryDocument(yestersql);
 
-  const yesterViews = await visitors
-    .find({
-      created_at: { $gt: beforeYesterday, $lt: yesterday },
-    })
-    .count();
-  const thisMonthViews = await visitors
-    .find({
-      created_at: { $gt: firstDayOfMonth, $lt: today },
-    })
-    .count();
+  const thismonthsql = `SELECT id FROM visitors WHERE date >= '${firstDayOfMonth}' AND date <= '${today}'`;
+  const thisMonthViews = await queryDocument(thismonthsql);
 
-  const previousMonthViews = await visitors
-    .find({
-      created_at: { $gt: previousMonth, $lt: firstDayOfMonth },
-    })
-    .count();
-  const thisYearViews = await visitors
-    .find({
-      created_at: { $gt: firstDayOfYear, $lt: today },
-    })
-    .count();
+  const previousmonthsql = `SELECT id FROM visitors WHERE date >= '${previousMonth}' AND date <= '${firstDayOfMonth}'`;
+  const previousMonthViews = await queryDocument(previousmonthsql);
 
-  const previousYearViews = await visitors
-    .find({
-      created_at: { $gt: previousYear, $lt: firstDayOfYear },
-    })
-    .count();
+  const thisYearsql = `SELECT id FROM visitors WHERE date >= '${firstDayOfYear}' AND date <= '${today}'`;
+  const thisYearViews = await queryDocument(thisYearsql);
+
+  const previousYearsql = `SELECT id FROM visitors WHERE date >= '${previousYear}' AND date <= '${firstDayOfYear}'`;
+  const previousYearViews = await queryDocument(previousYearsql);
 
   return [
     {
       name: "Today's Views",
-      count: todaysViews,
-      grouth: ((todaysViews - yesterViews) / yesterViews) * 100,
+      count: todaysViews.length,
+      grouth:
+        todaysViews.length - yesterViews.length ||
+        1 / yesterViews.length ||
+        0 * 100,
     },
     {
       name: "This Month's Views",
-      count: thisMonthViews,
+      count: thisMonthViews.length,
       grouth:
-        ((thisMonthViews - previousMonthViews) /
-          (previousMonthViews === 0 ? 1 : previousMonthViews)) *
-        100,
+        thisMonthViews.length - previousMonthViews.length ||
+        1 / previousMonthViews.length ||
+        0 * 100,
     },
     {
       name: "This year's Post",
-      count: thisYearViews,
+      count: thisYearViews.length,
       grouth:
-        ((thisYearViews - previousYearViews) /
-          (previousYearViews === 0 ? 1 : previousYearViews)) *
-        100,
+        thisYearViews.length - previousYearViews.length ||
+        1 / previousYearViews.length ||
+        0 * 100,
     },
   ];
 }
 
-async function handleDashboard(req, res, news, visitors) {
+async function handleDashboard(res) {
   try {
-    const someNews = await news
-      .find({})
-      .sort({ created_at: -1 })
-      .limit(10)
-      .toArray();
-    const postReport = await getPostReport(news);
-    const viewerReport = await getViewerReport(visitors);
+    const sql =
+      "SELECT news.headline, news.date, news.editor_name, category.name as category_name, s.name as sub_category_name FROM news INNER JOIN category ON news.category_id = category.id INNER JOIN sub_category as s ON news.sub_category_id = s.id ORDER BY created_at LIMIT 10";
+    const someNews = await queryDocument(sql);
+    const postReport = await getPostReport();
+    const viewerReport = await getVisitorReport();
 
     res.send({
       someNews,
@@ -211,40 +185,38 @@ async function handleDashboard(req, res, news, visitors) {
   }
 }
 
-async function updateNewsViews(req, res, news, visitors) {
+async function updateNewsViews(req, res) {
   try {
     //update news views;
     if (req.query.news) {
-      const isExist = await news.findOne({
-        _id: ObjectId(req.query.id),
-        "views.ipAdress": req.body.ipAdress,
-        "views.date": req.body.date,
-      });
-      if (isExist) throw { message: "already added", status: 200 };
+      req.body.date = new Date().toISOString().slice(0, 10);
+      const isExistsql = `SELECT id FROM news_viewers WHERE news_id = '${req.body.news_id}' AND ipAdress = '${req.body.ipAdress}' AND date = '${req.body.date}'`;
+      const isExist = await queryDocument(isExistsql);
+      if (isExist.length) throw { message: "already added", status: 200 };
 
-      const result = await news.updateOne(
-        { _id: ObjectId(req.query.id) },
-        { $push: { views: req.body } }
+      const result = await postDocument(
+        "INSERT INTO news_viewers SET ?",
+        req.body
       );
-      if (result.modifiedCount > 0) {
-        res.send({ message: "News updated" });
+      if (result.insertId > 0) {
+        res.send({ message: "Added" });
       } else {
-        throw { message: "Unable to update, try again" };
+        res.send({ message: "Unable to add" });
       }
     } //till;
+
     //update visitor views;
     else {
-      const existed = await visitors.findOne({
-        ipAdress: req.body.ipAdress,
-        date: req.body.date,
-      });
-      if (existed) throw { message: "already added", status: 200 };
-      req.body.created_at = new Date();
-      const result = await visitors.insertOne(req.body);
-      if (result.insertedId) {
-        res.send({ message: "updated" });
+      req.body.date = new Date().toISOString().slice(0, 10);
+      const existsql = `SELECT id FROM visitors WHERE ipAdress = '${req.body.ipAdress}' AND date = '${req.body.date}'`;
+      const existed = await queryDocument(existsql);
+      if (existed.length) throw { message: "already added", status: 200 };
+
+      const result = await postDocument("INSERT INTO visitors SET ?", req.body);
+      if (result.insertId > 0) {
+        res.send({ message: "Added" });
       } else {
-        throw { message: "Unable to update, try again" };
+        throw { message: "Unable to Added" };
       }
     }
   } catch (err) {
@@ -252,20 +224,16 @@ async function updateNewsViews(req, res, news, visitors) {
   }
 }
 
-async function postCommentOnNews(req, res, news) {
+async function postCommentOnNews(req, res) {
   try {
     if (!req.body.userId) throw { message: "user unauthenticated" };
     const { varify } = await isUser(req.body.userId);
     if (!varify) throw { message: "user unauthenticated" };
-    const id = req.body.newsId;
-    delete req.body.newsId;
-    const result = await news.updateOne(
-      { _id: ObjectId(id) },
-      {
-        $push: { comments: req.body },
-      }
-    );
-    if (result.modifiedCount > 0) {
+    delete req.body.userId;
+    req.body.user_id = 1;
+    const sql = "INSERT INTO comments SET ?";
+    const result = await postDocument(sql, req.body);
+    if (result.insertId > 0) {
       res.send({ message: "Thank you for staying us." });
     } else throw { message: "unable to post comment, please try again" };
   } catch (error) {

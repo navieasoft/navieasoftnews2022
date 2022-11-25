@@ -26,6 +26,9 @@
   .news-details-wrapper .top-part button {
     @apply bg-white rounded py-1 px-2 space-x-2 font-medium;
   }
+  .news-details-wrapper .top-part .share {
+    @apply bg-blue-400 rounded py-1 px-2 space-x-2 font-medium text-white;
+  }
   .news-details-wrapper .top-part button svg {
     @apply text-red-400;
   }
