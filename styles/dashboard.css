@@ -209,6 +209,21 @@
   .admin-footer-container {
     @apply bg-[#53576082] flex justify-center gap-3 items-center;
   }
+
+  .varification-container {
+    @apply flex justify-center text-2xl font-medium 
+    items-center gap-2 bg-white;
+  }
+  .varification-container.success {
+    @apply text-green-400;
+  }
+  .varification-container.unsuccess {
+    @apply text-red-400;
+  }
+}
+
+.varification-container {
+  min-height: calc(100vh - 250px);
 }
 
 .side-bar-wrapper {

@@ -17,7 +17,6 @@ import { auth } from "../../services/client/firebase";
 import Link from "next/link";
 
 const TopPart = ({ page }) => {
-  const [activeCountry, setActiveCountry] = useState("");
   const [showUserMenu, setShowUserMenu] = useState(false);
   const userMenuContainer = useRef(null);
   const router = useRouter();
@@ -119,7 +118,7 @@ const TopPart = ({ page }) => {
                 alt='user image'
               />
             ) : (
-              <p>{store.user.displayName.split(" ")[0]}</p>
+              <p>{store.user.name}</p>
             )}
 
             <div

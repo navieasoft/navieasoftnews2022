@@ -16,6 +16,7 @@ const Store = () => {
   const [update, setUpdate] = useState(false);
   const [error, setError] = useState(false);
   const [user, setUser] = useState(null);
+  const [redirect, setRedirect] = useState("/");
 
   useEffect(() => {
     let unsub;
@@ -142,6 +143,8 @@ const Store = () => {
     setLoading,
     ipAdress,
     userLoading,
+    redirect,
+    setRedirect,
   };
 };
 

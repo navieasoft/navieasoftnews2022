@@ -10,6 +10,7 @@ import {
   handleRegister,
   passwordResetEmail,
 } from "../../services/client/loginRegister";
+import { useRouter } from "next/router";
 
 const LoginRegister = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,6 +18,7 @@ const LoginRegister = () => {
   const [login, setLogin] = useState(true);
   const [error, setError] = useState("");
   const store = useStore();
+  const router = useRouter();
   const [payload, setPayload] = useState(() => {
     return {
       name: "",
@@ -33,26 +35,78 @@ const LoginRegister = () => {
     });
   }
 
+  async function SingUp() {
+    try {
+      if (payload.password !== payload.rePassword) {
+        setError("Please check your password carefully");
+        return;
+      } else delete payload.rePassword;
+      const res = await fetch("/api/login", {
+        method: "PUT",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      const result = await res.json();
+      if (res.ok) {
+        store.setAlert({ msg: result.message, type: "success" });
+      } else throw result;
+    } catch (error) {
+      setError(error.message);
+    }
+  }
+  async function Login() {
+    try {
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      const result = await res.json();
+      if (res.ok) {
+        store.setUser(result.user);
+        store.setShowLoginRegister(false);
+        sessionStorage.setItem("token", result.token);
+        router.push(store?.redirect);
+      } else throw result;
+    } catch (error) {
+      setError(error.message);
+    }
+  }
+
+  async function ForgotPassword() {
+    const email = emailRef.current?.value;
+    if (!email) return emailRef.current?.focus();
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/login?forgotPassword=${email}`);
+      const result = await res.json();
+      if (res.ok) {
+        store.setAlert({
+          msg: result.message,
+          type: "info",
+        });
+      } else throw result;
+    } catch (error) {
+      store.setAlert({
+        msg: error.message,
+        type: "error",
+      });
+    }
+    setLoading(false);
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
     setLoading(true);
     if (login) {
-      await handleLogin(payload.email, payload.password, store, setError);
+      await Login();
     } else {
-      if (payload.password !== payload.rePassword) {
-        setError("Please check your password carefully");
-      } else if (payload.password < 6) {
-        setError("Password should be at least 6 charecters");
-      } else {
-        await handleRegister(
-          payload.email,
-          payload.password,
-          payload.name,
-          store,
-          setError
-        );
-      }
+      await SingUp();
     }
     setLoading(false);
   }
@@ -129,14 +183,14 @@ const LoginRegister = () => {
         {/* showing forget password */}
         {error.includes("wrong-password") && (
           <p
-            onClick={() => passwordResetEmail(payload.email, store, setError)}
+            onClick={ForgotPassword}
             className='cursor-pointer text-purple-500 text-left w-full'
           >
             Forgot password?
           </p>
         )}
 
-        <button disabled={loading} className='btn' type='submit'>
+        <button disabled={loading} className='custom-btn' type='submit'>
           {login ? "Login" : "Register"}
         </button>
 
@@ -146,7 +200,7 @@ const LoginRegister = () => {
           <button
             onClick={() => googleLogin(setError, store)}
             type='button'
-            className='btn space-x-2'
+            className='custom-btn space-x-2'
           >
             <FontAwesomeIcon icon={faGoogle} />
             <span>Google</span>
@@ -154,7 +208,7 @@ const LoginRegister = () => {
           <button
             onClick={() => facebookLogin(setError, store)}
             type='button'
-            className='btn space-x-2'
+            className='custom-btn space-x-2'
           >
             <FontAwesomeIcon icon={faFacebook} />
             <span>Facebook</span>

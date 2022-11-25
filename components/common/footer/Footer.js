@@ -24,7 +24,9 @@ const Footer = () => {
           signal,
         });
         const result = await res.json();
-        setMenus(result);
+        if (res.ok) {
+          setMenus(result);
+        } else throw result;
       } catch (error) {
         store.setError(true);
       }
