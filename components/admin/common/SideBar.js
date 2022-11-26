@@ -149,17 +149,17 @@ const SideBar = () => {
       <div className='py-3 border-t flex justify-center items-center gap-4'>
         {store?.user && (
           <>
-            {store?.user?.photoURL && (
+            {store?.user?.profile && (
               <Image
                 height={40}
                 width={40}
                 className='rounded-full h-10 w-10 object-cover'
-                src={store?.user?.photoURL}
+                src={store?.user?.profile}
                 alt=''
               />
             )}
             <div className=''>
-              <p>{store?.user?.displayName}</p>
+              <p>{store?.user?.name}</p>
               <p>Admin</p>
             </div>
           </>

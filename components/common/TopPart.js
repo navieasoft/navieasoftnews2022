@@ -99,12 +99,12 @@ const TopPart = ({ page }) => {
             onClick={() => setShowUserMenu((prev) => !prev)}
             className='cursor-pointer relative'
           >
-            {store.user.photoURL ? (
+            {store.user.profile ? (
               <Image
                 height={40}
                 width={40}
                 className='rounded-full h-10 w-10 object-cover'
-                src={store?.user.photoURL}
+                src={store?.user.profile}
                 alt='user image'
               />
             ) : (

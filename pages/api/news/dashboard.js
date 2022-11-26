@@ -1,6 +1,5 @@
 import { postDocument, queryDocument } from "../../../services/server/common";
 import { errorHandler } from "../../../services/server/errorhandler";
-import { isUser } from "../../../services/server/user/user";
 
 export default async function handler(req, res) {
   switch (req.method) {
@@ -226,11 +225,6 @@ async function updateNewsViews(req, res) {
 
 async function postCommentOnNews(req, res) {
   try {
-    if (!req.body.userId) throw { message: "user unauthenticated" };
-    const { varify } = await isUser(req.body.userId);
-    if (!varify) throw { message: "user unauthenticated" };
-    delete req.body.userId;
-    req.body.user_id = 1;
     const sql = "INSERT INTO comments SET ?";
     const result = await postDocument(sql, req.body);
     if (result.insertId > 0) {

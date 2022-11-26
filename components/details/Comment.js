@@ -21,10 +21,10 @@ const Comment = ({ newsId, setUpdate, comments }) => {
         },
         method: "POST",
         body: JSON.stringify({
-          userId: store?.user.uid,
+          user_id: store?.user.id,
           news_id: newsId,
           comment: textArea.current?.value,
-          user_name: store?.user.displayName,
+          user_name: store?.user.name,
         }),
       });
       const result = await res.json();

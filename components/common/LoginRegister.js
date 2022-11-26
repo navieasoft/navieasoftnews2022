@@ -179,9 +179,7 @@ const LoginRegister = () => {
           Forgot password?
         </p>
         {/* showing error */}
-        <p className='text-red-400'>
-          {error.replace("Firebase: Error (auth/", "").replace(")", "")}
-        </p>
+        <p className='text-red-400'>{error}</p>
 
         <button disabled={loading} className='custom-btn' type='submit'>
           {login ? "Login" : "Register"}

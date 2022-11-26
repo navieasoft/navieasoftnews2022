@@ -66,7 +66,7 @@ const AddNews = () => {
 
   async function onSubmit(data) {
     setLoading(true);
-    data.editor_name = user.displayName;
+    data.editor_name = user.name;
     const d = new Date();
     const date = `${d.getDate()} ${d.toLocaleString("en-us", {
       month: "long",
