@@ -23,7 +23,7 @@ export async function postSiteInfo(req, res) {
     if (error) throw error || "Error occour when file uploading";
     //user virify;
     if (!req.body.userId) throw { message: "user unathenticated!" };
-    const { varify } = await userVarification(req.body.userId);
+    const varify = await userVarification(req.body.userId);
     if (!varify) throw { message: "user unathenticated!" };
     delete req.body.userId; //till;
 

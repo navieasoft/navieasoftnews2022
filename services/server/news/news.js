@@ -12,7 +12,7 @@ export async function postNews(req, res) {
 
     //user varify;
     if (!req.body.user_id) throw { message: "user unathenticated!" };
-    const { varify } = await userVarification(req.body.user_id);
+    const varify = await userVarification(req.body.user_id);
     if (!varify) throw { message: "user unathenticated!" };
 
     req.body.image = req.files.image[0].filename;
@@ -51,7 +51,7 @@ export async function getNews(req, res) {
       }
     } else {
       //sent all news
-      const sql = `SELECT * FROM news ORDER BY created_at DESC LIMIT ${page}, ${limit}`;
+      const sql = `SELECT news.*, c.name as category_name FROM news INNER JOIN category as c ON c.id = news.category_id ORDER BY created_at DESC LIMIT ${page}, ${limit}`;
       result = await queryDocument(sql);
     }
     res.send(result);
@@ -68,7 +68,7 @@ export async function updateNews(req, res) {
     if (error) throw { message: error || "Error occured when file uploading" };
     //user varify;
     if (!req.body.user_id) throw { message: "user unathenticated!" };
-    const { varify } = await userVarification(req.body.user_id);
+    const varify = await userVarification(req.body.user_id);
     if (!varify) throw { message: "user unathenticated!" };
 
     if (req.files.image) {
@@ -100,7 +100,7 @@ export async function deleteNews(req, res) {
     if (error) throw { message: error || "Internal server error" };
     //user varify;
     if (!req.body.user_id) throw { message: "user unathenticated!" };
-    const { varify } = await userVarification(req.body.user_id);
+    const varify = await userVarification(req.body.user_id);
     if (!varify) throw { message: "user unathenticated!" };
 
     //delete data from db;

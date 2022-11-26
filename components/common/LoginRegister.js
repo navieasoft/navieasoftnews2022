@@ -64,7 +64,7 @@ const LoginRegister = () => {
       if (res.ok) {
         store.setUser(result.user);
         store.setShowLoginRegister(false);
-        sessionStorage.setItem("token", result.token);
+        localStorage.setItem("token", result.token);
         router.push(store?.redirect);
       } else throw result;
     } catch (error) {

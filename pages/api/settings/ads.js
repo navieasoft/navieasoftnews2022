@@ -58,7 +58,7 @@ async function postAds(req, res) {
     if (error) throw { message: "error occured when image uploading" };
     //user virify;
     if (!req.body.userId) throw { message: "user unathenticated!" };
-    const { varify } = await userVarification(req.body.userId);
+    const varify = await userVarification(req.body.userId);
     if (!varify) throw { message: "user unathenticated!" };
     delete req.body.userId; //till;
 

@@ -22,7 +22,7 @@ export async function getCategoryMenus(req, res) {
 export async function postCategoryMenus(req, res) {
   try {
     if (!req.body.userId) throw { message: "user unathenticated!" };
-    const { varify } = await userVarification(req.body.userId);
+    const varify = await userVarification(req.body.userId);
     if (!varify) throw { message: "user unathenticated!" };
 
     // const isExist = await categoryMenus.findOne({ name: req.body.name });
@@ -36,7 +36,6 @@ export async function postCategoryMenus(req, res) {
 
     const query = "INSERT INTO category SET ?";
     const result = await postDocument(query, req.body);
-    console.log(result);
     if (result.insertId > 0) {
       res.send({
         message: "Menu added successfully",
@@ -52,7 +51,7 @@ export async function postCategoryMenus(req, res) {
 export async function updateCategoryMenus(req, res) {
   try {
     if (!req.body.userId) throw { message: "user unathenticated!" };
-    const { varify } = await userVarification(req.body.userId);
+    const varify = await userVarification(req.body.userId);
     if (!varify) throw { message: "user unathenticated!" };
     delete req.body.userId;
 
@@ -73,7 +72,7 @@ export async function updateCategoryMenus(req, res) {
 export async function deleteCategoryMenu(req, res) {
   try {
     if (!req.body.userId) throw { message: "user unathenticated!" };
-    const { varify } = await userVarification(req.body.userId);
+    const varify = await userVarification(req.body.userId);
     if (!varify) throw { message: "user unathenticated!" };
     delete req.body.userId;
 

@@ -133,7 +133,7 @@ const SideBar = () => {
       subs: [
         {
           icon: faPhone,
-          txt: "01853860483",
+          txt: "+8801636312933",
           url: "#",
         },
       ],

@@ -7,7 +7,7 @@ export async function handleAddCategory(name, store) {
         "content-type": "application/json",
       },
       method: "POST",
-      body: JSON.stringify({ name, userId: store?.user?.uid }),
+      body: JSON.stringify({ name, userId: store?.user?.id }),
     });
     store?.setAlert({ msg: result.message, type: "success" });
   } catch (error) {
@@ -22,7 +22,7 @@ export async function handleEditCategory(name, store, id) {
         "content-type": "application/json",
       },
       method: "PUT",
-      body: JSON.stringify({ name, id, userId: store?.user?.uid }),
+      body: JSON.stringify({ name, id, userId: store?.user?.id }),
     });
     store?.setAlert({ msg: result.message, type: "success" });
   } catch (error) {
@@ -40,7 +40,7 @@ export async function handleDeleteCategory(id, store, setUpdate) {
           "content-type": "application/json",
         },
         method: "DELETE",
-        body: JSON.stringify({ id, userId: store?.user?.uid }),
+        body: JSON.stringify({ id, userId: store?.user?.id }),
       });
       store?.setAlert({ msg: result.message, type: "success" });
       setUpdate((prev) => !prev);
@@ -57,7 +57,7 @@ export async function handleAddSub(name, store, category_id) {
         "content-type": "application/json",
       },
       method: "POST",
-      body: JSON.stringify({ name, category_id, userId: store?.user?.uid }),
+      body: JSON.stringify({ name, category_id, userId: store?.user?.id }),
     });
     store?.setAlert({ msg: result.message, type: "success" });
   } catch (error) {
@@ -74,7 +74,7 @@ export async function handleDeleteSub(id, store, setUpdate) {
           "content-type": "application/json",
         },
         method: "DELETE",
-        body: JSON.stringify({ id, userId: store?.user?.uid }),
+        body: JSON.stringify({ id, userId: store?.user?.id }),
       });
       store?.setAlert({ msg: result.message, type: "success" });
       setUpdate((prev) => !prev);

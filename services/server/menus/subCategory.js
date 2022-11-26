@@ -5,7 +5,7 @@ import { userVarification } from "../user/user";
 export async function postSubCategoryMenus(req, res) {
   try {
     if (!req.body.userId) throw { message: "user unathenticated!" };
-    const { varify } = await userVarification(req.body.userId);
+    const varify = await userVarification(req.body.userId);
     if (!varify) throw { message: "user unathenticated!" };
     delete req.body.userId;
 
@@ -32,7 +32,7 @@ export async function postSubCategoryMenus(req, res) {
 export async function deleteSubCategoryMenu(req, res) {
   try {
     if (!req.body.userId) throw { message: "user unathenticated!" };
-    const { varify } = await userVarification(req.body.userId);
+    const varify = await userVarification(req.body.userId);
     if (!varify) throw { message: "user unathenticated!" };
     delete req.body.userId;
 

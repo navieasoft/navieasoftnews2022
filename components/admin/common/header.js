@@ -27,16 +27,16 @@ const Header = () => {
       <div className='flex gap-3'>
         {store?.user && (
           <>
-            {store?.user?.photoURL && (
+            {store?.user?.profile && (
               <Image
                 height={32}
                 width={32}
                 className='rounded-full h-8 w-8 object-cover'
-                src={store?.user?.photoURL}
+                src={"/" + store?.user?.profile}
                 alt=''
               />
             )}
-            <p>{store?.user?.displayName}</p>
+            <p>{store?.user?.name}</p>
           </>
         )}
       </div>

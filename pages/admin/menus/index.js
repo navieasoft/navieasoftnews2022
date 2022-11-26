@@ -82,7 +82,7 @@ const MainMenus = () => {
                   {/* left side */}
                   {/* icons */}
                   <div className='flex gap-3 items-center text-gray-500'>
-                    {item?.subs.length ? (
+                    {item?.subs?.length ? (
                       <button>
                         <FontAwesomeIcon icon={faAngleDown} />
                       </button>
@@ -132,7 +132,7 @@ const MainMenus = () => {
                 </div>
 
                 {/* sub menus */}
-                {item.subs.length ? (
+                {item.subs?.length ? (
                   <div
                     className={`accordion ${
                       showCollaps === index ? "show" : ""

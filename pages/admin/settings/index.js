@@ -34,7 +34,7 @@ const Siteinfo = () => {
     e.preventDefault();
     setLoading(true);
     const formData = new FormData();
-    formData.append("userId", store?.user.uid);
+    formData.append("userId", store?.user.id);
     if (info.name) formData.append("name", info.name);
     if (info.logo) {
       formData.append("logo", info.logo);

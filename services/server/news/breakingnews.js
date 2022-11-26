@@ -4,7 +4,7 @@ import { queryDocument } from "../common";
 
 export async function getBreakingNews(req, res) {
   try {
-    const result = await queryDocument("SELECT value FROM breaking_news");
+    const result = await queryDocument("SELECT * FROM breaking_news");
     res.send(result);
   } catch (err) {
     errorHandler(res, { msg: err.message, status: err.status });
@@ -14,7 +14,7 @@ export async function getBreakingNews(req, res) {
 export async function postBreakingNews(req, res) {
   try {
     if (!req.body.userId) throw { message: "user unathenticated!" };
-    const { varify } = await userVarification(req.body.userId);
+    const varify = await userVarification(req.body.userId);
     if (!varify) throw { message: "user unathenticated!" };
     delete req.body.userId;
 
@@ -41,13 +41,12 @@ export async function postBreakingNews(req, res) {
 export async function deleteBreakingNews(req, res) {
   try {
     if (!req.body.userId) throw { message: "user unathenticated!" };
-    const { varify } = await userVarification(req.body.userId);
+    const varify = await userVarification(req.body.userId);
     if (!varify) throw { message: "user unathenticated!" };
-    delete req.body.userId;
 
+    console.log(req.body);
     const sql = `DELETE FROM breaking_news WHERE id = '${req.body.id}'`;
     const result = await queryDocument(sql);
-    console.log(result);
     if (result.affectedRows > 0) {
       res.send({
         message: "Breaking news deleted successfully",

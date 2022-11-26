@@ -48,7 +48,7 @@ const Allnews = () => {
     if (confirm) {
       setLoading(true);
       const formData = new FormData();
-      formData.append("user_id", user?.uid);
+      formData.append("user_id", user?.id);
       formData.append("image", image);
       try {
         const res = await fetch(`/api/news?id=${id}`, {

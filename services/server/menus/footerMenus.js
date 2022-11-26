@@ -21,7 +21,7 @@ export async function getFooterMenus(req, res) {
 export async function postFooterMenus(req, res) {
   try {
     if (!req.body.userId) throw { message: "user unathenticated!" };
-    const { varify } = await userVarification(req.body.userId);
+    const varify = await userVarification(req.body.userId);
     if (!varify) throw { message: "user unathenticated!" };
     delete req.body.userId;
 
@@ -49,7 +49,7 @@ export async function postFooterMenus(req, res) {
 export async function deleteFooterMenus(req, res) {
   try {
     if (!req.body.userId) throw { message: "user unathenticated!" };
-    const { varify } = await userVarification(req.body.userId);
+    const varify = await userVarification(req.body.userId);
     if (!varify) throw { message: "user unathenticated!" };
     delete req.body.userId;
 

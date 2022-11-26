@@ -21,7 +21,6 @@ import "../styles/user.css";
 function Layout({ Component, pageProps }) {
   const router = useRouter();
   const noFooter = ["/loading"];
-  const adminRoute = ["/admin", "/user"];
   const store = useStore();
 
   return (
@@ -29,7 +28,7 @@ function Layout({ Component, pageProps }) {
       <Head>
         <title>{store?.siteInfo?.name}</title>
       </Head>
-      {adminRoute.includes(router.pathname) ? (
+      {router.pathname.startsWith("/admin") ? (
         <AdminRoute>
           <Component {...pageProps} />
         </AdminRoute>

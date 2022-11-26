@@ -37,7 +37,7 @@ const SocialLogin = ({ setError }) => {
       const result = await res.json();
       if (res.ok) {
         store.setUser(result.user);
-        sessionStorage.setItem("token", result.token);
+        localStorage.setItem("token", result.token);
         router.push(store?.redirect || "/");
       } else throw result;
     } catch (error) {

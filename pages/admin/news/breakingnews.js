@@ -24,7 +24,7 @@ const Breakingnews = () => {
         method: "POST",
         body: JSON.stringify({
           value: input.current?.value,
-          userId: store?.user?.uid,
+          userId: store?.user?.id,
         }),
       });
 
@@ -45,7 +45,7 @@ const Breakingnews = () => {
           "content-type": "application/json",
         },
         method: "DELETE",
-        body: JSON.stringify({ id, userId: store?.user?.uid }),
+        body: JSON.stringify({ id, userId: store?.user?.id }),
       });
       store?.setAlert({ msg: result.message, type: "success" });
       setUpdate((prev) => !prev);

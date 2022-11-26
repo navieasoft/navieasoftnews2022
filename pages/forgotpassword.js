@@ -44,7 +44,7 @@ const Forgotpassword = () => {
       const result = await res.json();
       if (res.ok) {
         alert(result.message);
-        sessionStorage.setItem("token", result.token);
+        localStorage.setItem("token", result.token);
         router.push("/");
       } else throw result;
     } catch (error) {

@@ -110,7 +110,7 @@ function AdComponent({ item, title, setUpdate }) {
     setLoading(true);
     try {
       const formData = new FormData();
-      formData.append("userId", store?.user.uid);
+      formData.append("userId", store?.user.id);
       if (link.current.value) formData.append("link", link.current.value);
       if (img.current.files.length) {
         formData.append("image", img.current.files[0]);

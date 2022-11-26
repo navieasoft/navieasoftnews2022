@@ -21,7 +21,7 @@ const FooterModal = ({ close, collumn, setUpdate, title }) => {
         body: JSON.stringify({
           collumn,
           name: input.current?.value,
-          userId: store?.user?.uid,
+          userId: store?.user?.id,
         }),
       });
 

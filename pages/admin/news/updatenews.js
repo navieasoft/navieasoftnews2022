@@ -75,19 +75,9 @@ const AddNews = () => {
     if (news.body !== body.current?.value) {
       data.body = body.current?.value.replaceAll('"', "'");
     }
-    if (data.category_id) {
-      data.category_name = categoryMenu.find(
-        (item) => item.id == data.category_id
-      ).name;
-    }
-    if (data.sub_category_id) {
-      data.sub_category_name = subs.find(
-        (item) => item.id == data.sub_category_id
-      ).name;
-    }
     data.updated_at = date;
     data.image = data.image[0];
-    data.user_id = user?.uid;
+    data.user_id = user?.id;
     const formData = new FormData();
     Object.entries(data).map(([key, value]) => {
       if (value) {

@@ -40,7 +40,7 @@ const FooterMenu = () => {
           "content-type": "application/json",
         },
         method: "DELETE",
-        body: JSON.stringify({ collumn, name, userId: store?.user?.uid }),
+        body: JSON.stringify({ collumn, name, userId: store?.user?.id }),
       });
       store?.setAlert({ msg: result.message, type: "success" });
       setUpdate((prev) => !prev);

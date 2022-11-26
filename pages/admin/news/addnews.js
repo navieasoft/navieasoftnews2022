@@ -23,16 +23,11 @@ const AddNews = () => {
   async function onSubmit(data) {
     setLoading(true);
     if (!user) return;
-    data.category_name = categoryMenu.find(
-      (item) => item.id == data.category_id
-    ).name;
-    data.sub_category_name = subs.find(
-      (item) => item.id == data.sub_category_id
-    ).name;
+
     data.image = data.image[0];
     data.body = body.current?.value.replaceAll('"', "'");
-    data.user_id = user?.uid;
-    data.editor_name = user.displayName;
+    data.user_id = user?.id;
+    data.editor_name = user.name;
     const d = new Date();
     const date = `${d.getDate()} ${d.toLocaleString("en-us", {
       month: "long",
@@ -96,8 +91,8 @@ const AddNews = () => {
             <div className='space-y-2'>
               <label htmlFor='Sub Category'>Sub Category:</label>
               <select
-                {...register("sub_category_id", { required: subs.length })}
-                required={subs.length}
+                {...register("sub_category_id", { required: subs?.length })}
+                required={subs?.length}
               >
                 <option value=''>select</option>
                 {subs?.map((sub, i) => (
