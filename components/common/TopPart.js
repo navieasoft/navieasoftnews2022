@@ -104,7 +104,7 @@ const TopPart = ({ page }) => {
                 height={40}
                 width={40}
                 className='rounded-full h-10 w-10 object-cover'
-                src={store?.user.profile}
+                src={"/" + store?.user.profile}
                 alt='user image'
               />
             ) : (
