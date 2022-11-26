@@ -8,7 +8,7 @@ import {
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-export function getUser(req, res) {
+export async function getUser(req, res) {
   try {
     //send email for forget password;
     if (req.query.forgotPassword) {
@@ -29,12 +29,15 @@ export function getUser(req, res) {
         });
       }
       const varify = jwt.verify(req.query.token, process.env.JWT_SECRET);
-      delete varify.iat;
-      delete varify.exp;
-      const token = jwt.sign(varify, process.env.JWT_SECRET, {
-        expiresIn: `${varify.user_role !== "user" ? "3d" : "5h"}`,
-      });
-      res.send({ user: varify, token });
+      if (varify) {
+        const sql = `SELECT * FROM user WHERE id = '${varify.id}' AND email = '${varify.email}'`;
+        const user = await queryDocument(sql);
+        delete user[0].password;
+        const token = jwt.sign({ ...user[0] }, process.env.JWT_SECRET, {
+          expiresIn: `${varify.user_role !== "user" ? "3d" : "5h"}`,
+        });
+        res.send({ user: user[0], token });
+      } else throw { message: "Unauthenticated", status: 401 };
     }
   } catch (error) {
     res.status(500).send({ message: error.message });
@@ -94,10 +97,11 @@ export async function signUpUser(req, res) {
 
       const hashed = await bcrypt.hash(req.body.password, 10);
       const query = `UPDATE user SET password='${hashed}' WHERE id=${req.body.id}`;
-      const user = queryDocument(query);
+      const user = await queryDocument(query);
+      console.log(user);
       if (user.changedRows > 0) {
         const sql = `SELECT * FROM user WHERE id = '${req.body.id}'`;
-        const result = queryDocument(sql);
+        const result = await queryDocument(sql);
         const token = jwt.sign({ ...result[0] }, process.env.JWT_SECRET, {
           expiresIn: `${result[0].user_role !== "user" ? "3d" : "5h"}`,
         });
@@ -105,13 +109,12 @@ export async function signUpUser(req, res) {
           message: "Your password updated successfully",
           token,
         });
-      }
+      } else res.status(500).send({ message: "There was an error" });
     }
     //send email for varify eamil;
     else {
       const sql = `SELECT * FROM user WHERE email = '${req.body.email}'`;
       const result = await queryDocument(sql);
-      console.log(result);
       if (result.length) {
         return res.status(409).send({ message: "User already exist" });
       } else {

@@ -1,16 +1,10 @@
-import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { faClose, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import useStore from "../context/useStore";
-import {
-  facebookLogin,
-  googleLogin,
-  handleLogin,
-  handleRegister,
-  passwordResetEmail,
-} from "../../services/client/loginRegister";
 import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
+const SocialLogin = dynamic(() => import("../SocialLogin"), { ssr: false });
 
 const LoginRegister = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -19,6 +13,7 @@ const LoginRegister = () => {
   const [error, setError] = useState("");
   const store = useStore();
   const router = useRouter();
+  const emailRef = useRef(null);
   const [payload, setPayload] = useState(() => {
     return {
       name: "",
@@ -87,7 +82,7 @@ const LoginRegister = () => {
       if (res.ok) {
         store.setAlert({
           msg: result.message,
-          type: "info",
+          type: "success",
         });
       } else throw result;
     } catch (error) {
@@ -142,6 +137,7 @@ const LoginRegister = () => {
           required
           name='email'
           type='email'
+          ref={emailRef}
           onChange={(e) => handleChange(e)}
           placeholder='Enter your email'
         />
@@ -175,46 +171,24 @@ const LoginRegister = () => {
           />
         )}
 
+        {/* showing forget password */}
+        <p
+          onClick={ForgotPassword}
+          className='cursor-pointer text-purple-500 text-left w-full'
+        >
+          Forgot password?
+        </p>
         {/* showing error */}
         <p className='text-red-400'>
           {error.replace("Firebase: Error (auth/", "").replace(")", "")}
         </p>
-
-        {/* showing forget password */}
-        {error.includes("wrong-password") && (
-          <p
-            onClick={ForgotPassword}
-            className='cursor-pointer text-purple-500 text-left w-full'
-          >
-            Forgot password?
-          </p>
-        )}
 
         <button disabled={loading} className='custom-btn' type='submit'>
           {login ? "Login" : "Register"}
         </button>
 
         <p>----------Or---------</p>
-
-        <div className='flex flex-wrap justify-center gap-5'>
-          <button
-            onClick={() => googleLogin(setError, store)}
-            type='button'
-            className='custom-btn space-x-2'
-          >
-            <FontAwesomeIcon icon={faGoogle} />
-            <span>Google</span>
-          </button>
-          <button
-            onClick={() => facebookLogin(setError, store)}
-            type='button'
-            className='custom-btn space-x-2'
-          >
-            <FontAwesomeIcon icon={faFacebook} />
-            <span>Facebook</span>
-          </button>
-        </div>
-
+        <SocialLogin setError={setError} />
         <p>
           {login ? "New here?" : "Already have account"}{" "}
           <span

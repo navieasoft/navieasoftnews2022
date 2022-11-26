@@ -5,6 +5,12 @@ import {
   updateUser,
 } from "../../../services/server/user/user";
 
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
 export default async function handler(req, res) {
   switch (req.method) {
     case "GET":

@@ -10,20 +10,12 @@ const AdminRoute = ({ children }) => {
   useEffect(() => {
     if (!store?.user && !store?.userLoading) {
       router.push("/");
-    } else if (store?.userDesignation === "user" && !store?.userLoading) {
+    } else if (store?.user?.user_role === "user" && !store?.userLoading) {
       router.push("/");
     }
   }, [router, store]);
 
-  return (
-    <>
-      {store?.userDesignation && store?.userDesignation !== "user" ? (
-        children
-      ) : (
-        <Spinner />
-      )}
-    </>
-  );
+  return <>{store?.user?.user_role === "admin" ? children : <Spinner />}</>;
 };
 
 export default AdminRoute;

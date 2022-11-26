@@ -1,5 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-import { passwordResetEmail } from "../../services/client/loginRegister";
 import { faClose, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Breakingnews from "../../components/common/BreakingNews";
@@ -7,10 +6,8 @@ import MiddlePart from "../../components/common/MiddlePart";
 import React, { useEffect, useRef, useState } from "react";
 import useStore from "../../components/context/useStore";
 import TopMenus from "../../components/common/TopMenus";
-import { postImage } from "../../services/client/user";
 import TopPart from "../../components/common/TopPart";
-import { updateProfile } from "firebase/auth";
-import Image from "next/image";
+import { axios } from "../../services/client/common";
 
 const User = () => {
   const [showMenus, setShowMenus] = useState(false);
@@ -49,47 +46,54 @@ const User = () => {
     };
   }, []);
 
-  async function updateUser(name, img) {
+  async function updateUser() {
+    setLoading(true);
     try {
-      await updateProfileImg(store?.user, {
-        displayName: name,
-        photoURL: img,
+      const formData = new FormData();
+      formData.append("name", name.current.value);
+      formData.append("id", store.user.id);
+      formData.append("profile", profile.current.files[0]);
+      if (profile.current.files[0]) {
+        formData.append("exist", store.user.profile);
+      }
+
+      await axios("/api/user?profile=true", {
+        method: "PUT",
+        body: formData,
       });
       store?.setAlert({
         msg: "Updated successfully",
         type: "success",
       });
+      setShowModal(false);
+      store.setUpdate((prev) => !prev);
     } catch (error) {
       store?.setAlert({
         msg: "unable to updated",
         type: "error",
       });
     }
-  }
-
-  async function changeUserName(e) {
-    e.preventDefault();
-    setLoading(true);
-    await updateUser(name.current?.value, null);
-    setShowModal(false);
     setLoading(false);
   }
 
-  async function updateProfileImg(file) {
-    store.setLoading(true);
+  async function ForgotPassword() {
+    setLoading(true);
     try {
-      const { error, image } = await postImage(file, store.user.photoURL);
-      if (image) {
-        await updateProfile(store?.user, {
-          photoURL: `/${image}`,
+      const res = await fetch(`/api/login?forgotPassword=${store.user.email}`);
+      const result = await res.json();
+      if (res.ok) {
+        store.setAlert({
+          msg: result.message,
+          type: "success",
         });
-        store.setAlert({ msg: "update successfull", type: "success" });
-      } else throw error;
+      } else throw result;
     } catch (error) {
-      store.setAlert({ msg: error.message, type: "error" });
+      store.setAlert({
+        msg: error.message,
+        type: "error",
+      });
     }
-
-    store.setLoading(false);
+    setLoading(false);
   }
 
   return (
@@ -106,16 +110,16 @@ const User = () => {
       <Breakingnews />
 
       <section className='user-page-container'>
-        <Image
-          width={128}
-          height={128}
-          className='rounded-full h-32 w-32 object-cover'
-          src={store?.user?.photoURL || "/no-image.jpg"}
-          alt='profile'
-        />
+        {store?.user?.profile && (
+          <img
+            className='rounded-full h-32 w-32 object-cover'
+            src={"/" + store?.user?.profile}
+            alt='profile'
+          />
+        )}
         <div className='space-y-3'>
           <div>
-            <b>Name:</b> <span>{store?.user?.displayName}</span>
+            <b>Name:</b> <span>{store?.user?.name}</span>
           </div>
           <p>
             <b>Email:</b> {store?.user?.email}
@@ -130,6 +134,7 @@ const User = () => {
           </button>
           <div className={`edit-menus ${showMenus ? "block" : "hidden"}`}>
             <button
+              disabled={loading}
               onClick={() => {
                 setShowMenus(false);
                 setShowModal(true);
@@ -137,11 +142,14 @@ const User = () => {
             >
               Name
             </button>
-            <button onClick={() => profile.current?.click()}>Profile</button>
+            <button disabled={loading} onClick={() => profile.current?.click()}>
+              Profile
+            </button>
             <button
+              disabled={loading}
               onClick={() => {
                 setShowMenus(false);
-                passwordResetEmail(store?.user.email, store);
+                ForgotPassword();
               }}
             >
               Password
@@ -150,7 +158,10 @@ const User = () => {
         </div>
 
         <form
-          onSubmit={(e) => changeUserName(e)}
+          onSubmit={(e) => {
+            e.preventDefault();
+            updateUser();
+          }}
           className={`user-modal ${showModal ? "flex" : "hidden"}`}
         >
           <p>
@@ -170,12 +181,7 @@ const User = () => {
         </form>
       </section>
 
-      <input
-        onChange={(e) => updateProfileImg(e.target.files[0])}
-        ref={profile}
-        hidden
-        type='file'
-      />
+      <input onChange={updateUser} ref={profile} hidden type='file' />
     </div>
   );
 };

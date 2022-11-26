@@ -12,8 +12,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import useStore from "../context/useStore";
-import { signOut } from "firebase/auth";
-import { auth } from "../../services/client/firebase";
 import Link from "next/link";
 
 const TopPart = ({ page }) => {
@@ -28,17 +26,9 @@ const TopPart = ({ page }) => {
     { name: "Bangladesh", link: "/category?q=bangladesh" },
   ];
 
-  async function logOut() {
-    try {
-      await signOut(auth);
-      store?.setUser(null);
-      store?.setAlert({ msg: "Sing Out successful", type: "success" });
-    } catch (error) {
-      store?.setAlert({
-        msg: "Somthing went wrong!, Try again",
-        type: "error",
-      });
-    }
+  function singOut() {
+    store.setUser(null);
+    sessionStorage.removeItem("token");
   }
 
   useEffect(() => {
@@ -137,7 +127,7 @@ const TopPart = ({ page }) => {
                   <span>Settings</span>
                 </button>
               </Link>
-              <button onClick={logOut}>
+              <button onClick={singOut}>
                 <FontAwesomeIcon icon={faRightFromBracket} />
                 <span>Logout</span>
               </button>

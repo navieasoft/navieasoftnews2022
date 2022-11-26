@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../../services/client/firebase";
 
 const Store = () => {
   const [showLoginRegister, setShowLoginRegister] = useState(false);
-  const [userDesignation, setUserDesignation] = useState("user");
   const [alert, setAlert] = useState({ msg: "", type: "" });
   const [showSideMenu, setShowSideMenu] = useState(false);
   const [categoryMenu, setCategoryMenu] = useState(null);
@@ -17,41 +14,67 @@ const Store = () => {
   const [error, setError] = useState(false);
   const [user, setUser] = useState(null);
   const [redirect, setRedirect] = useState("/");
+  const [token, setToken] = useState(null);
 
+  //manage user;
   useEffect(() => {
-    let unsub;
-    (async function () {
-      unsub = await manageUser();
-      const { error, ipAdress } = await getIpAddress();
-      if (!error) {
-        await updateVisitor(ipAdress);
+    // transfers sessionStorage from one tab to another
+    const manageUserSession = function (event) {
+      if (!event) {
+        event = window.event;
+      } // ie suq
+      if (!event.newValue) return; // do nothing if no value to work with
+      if (event.key == "getSessionStorage") {
+        // another tab asked for the sessionStorage -> send it
+        localStorage.setItem("sessionStorage", JSON.stringify(sessionStorage));
+        // the other tab should now have it, so we're done with it.
+        localStorage.removeItem("sessionStorage"); // <- could do short timeout as well.
+      } else if (event.key == "sessionStorage" && !sessionStorage.length) {
+        // another tab sent data <- get it
+        const data = JSON.parse(event.newValue);
+        for (const key in data) {
+          sessionStorage.setItem(key, data[key]);
+        }
+        if (data.token) setToken(data.token);
       }
-    })();
+    };
+    // listen for changes to localStorage
+    if (window.addEventListener) {
+      window.addEventListener("storage", manageUserSession, false);
+    } else {
+      window.attachEvent("onstorage", manageUserSession);
+    }
+
+    // Ask other tabs for session storage (this is ONLY to trigger event)
+    if (!sessionStorage.length) {
+      localStorage.setItem("getSessionStorage", "token");
+      localStorage.removeItem("getSessionStorage", "token");
+    }
     return () => {
-      unsub();
+      window.removeEventListener("storage", manageUserSession);
     };
   }, []);
 
-  async function manageUser() {
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      if (user && user.emailVerified) {
-        setUser(user);
-        try {
-          const res = await fetch(`/api/user?uid=${user.uid}`);
+  useEffect(() => {
+    (async () => {
+      try {
+        const token = sessionStorage.getItem("token");
+        if (token) {
+          const res = await fetch(`/api/login?token=${token}`);
+          const result = await res.json();
           if (res.ok) {
-            const { designation } = await res.json();
-            setUserDesignation(designation || "user");
-          }
-        } catch (error) {
-          setUserDesignation("user");
+            setUser(result.user);
+            sessionStorage.setItem("token", result.token);
+          } else throw result;
         }
-      } else {
+      } catch (error) {
         setUser(null);
+        sessionStorage.removeItem("token");
       }
       setUserLoading(false);
-    });
-    return unsub;
-  }
+    })();
+  }, [token, update]); //till;
+
   async function getIpAddress() {
     try {
       const res = await fetch(
@@ -82,6 +105,14 @@ const Store = () => {
       console.log(error.message);
     }
   }
+  useEffect(() => {
+    (async () => {
+      const { error, ipAdress } = await getIpAddress();
+      if (!error) {
+        await updateVisitor(ipAdress);
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -138,7 +169,6 @@ const Store = () => {
     siteInfo,
     setUpdate,
     categoryMenu,
-    userDesignation,
     loading,
     setLoading,
     ipAdress,
