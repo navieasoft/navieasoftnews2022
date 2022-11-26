@@ -55,7 +55,7 @@ const mySql = mysql.createPool({
   user: "root",
   password: "",
   database: "newsportal",
-  connectionLimit: 10,
+  connectionLimit: 190,
 });
 
 export const queryDocument = (query) => {

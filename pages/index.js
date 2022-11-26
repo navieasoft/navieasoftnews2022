@@ -117,64 +117,82 @@ const Home = () => {
         </section>
         <section className='hidden md:block col-span-2 lg:col-span-1'>
           <HotNews data={data?.hotNews[3] || null} />
-          <SmallAdd
-            picture={`/ads/${ads?.small[0].image || ""}`}
-            link={ads?.small[0].link}
-          />
+          {ads && (
+            <SmallAdd
+              picture={`/ads/${ads?.small[0].image || ""}`}
+              link={ads?.small[0].link}
+            />
+          )}
           <TopTenNews data={data?.latestNews?.slice(0, 10) || null} />
-          <SmallAdd
-            picture={`/ads/${ads?.small[1].image || ""}`}
-            link={ads?.small[1].link}
-          />
+          {ads && (
+            <SmallAdd
+              picture={`/ads/${ads?.small[1].image || ""}`}
+              link={ads?.small[1].link}
+            />
+          )}
           <OthersNews
             data={data?.latestNews?.slice(10, data?.latestNews?.length || null)}
           />
-          <SmallAdd
-            picture={`/ads/${ads?.small[2].image || ""}`}
-            link={ads?.small[2].link}
-          />
+          {ads && (
+            <SmallAdd
+              picture={`/ads/${ads?.small[2].image || ""}`}
+              link={ads?.small[2].link}
+            />
+          )}
         </section>
       </section>
 
-      <LergeAdd
-        picture={`/ads/${ads?.long[0].image || ""}`}
-        link={ads?.long[0].link}
-      />
+      {ads && (
+        <LergeAdd
+          picture={`/ads/${ads?.long[0].image || ""}`}
+          link={ads?.long[0].link}
+        />
+      )}
       <Divider />
       <OtherNews data={otherNews?.otherNews || null} />
-      <LergeAdd
-        picture={`/ads/${ads?.long[1].image || ""}`}
-        link={ads?.long[1].link}
-      />
+      {ads && (
+        <LergeAdd
+          picture={`/ads/${ads?.long[1].image || ""}`}
+          link={ads?.long[1].link}
+        />
+      )}
       <Divider />
       <AtHome data={otherNews?.homeNews || null} />
       <Divider />
       <Features data={otherNews?.featuresNews || null} />
-      <LergeAdd
-        picture={`/ads/${ads?.long[2].image || ""}`}
-        link={ads?.long[2].link}
-      />
+      {ads && (
+        <LergeAdd
+          picture={`/ads/${ads?.long[2].image || ""}`}
+          link={ads?.long[2].link}
+        />
+      )}
       <Divider />
       <ScienceTechnology />
       <Divider />
       <MostPopular />
-      <LergeAdd
-        picture={`/ads/${ads?.long[3].image || ""}`}
-        link={ads?.long[3].link}
-      />
+      {ads && (
+        <LergeAdd
+          picture={`/ads/${ads?.long[3].image || ""}`}
+          link={ads?.long[3].link}
+        />
+      )}
       <Divider />
       <News />
-      <LergeAdd
-        picture={`/ads/${ads?.long[4].image || ""}`}
-        link={ads?.long[4].link}
-      />
+      {ads && (
+        <LergeAdd
+          picture={`/ads/${ads?.long[4].image || ""}`}
+          link={ads?.long[4].link}
+        />
+      )}
       <Divider />
       <Opinion />
       <Arts />
-      <LergeAdd
-        picture={`/ads/${ads?.long[5].image || ""}`}
-        link={ads?.long[5].link}
-      />
+      {ads && (
+        <LergeAdd
+          picture={`/ads/${ads?.long[5].image || ""}`}
+          link={ads?.long[5].link}
+        />
+      )}
       <Divider />
       <Living />
     </div>
