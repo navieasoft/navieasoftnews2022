@@ -98,7 +98,6 @@ export async function signUpUser(req, res) {
       const hashed = await bcrypt.hash(req.body.password, 10);
       const query = `UPDATE user SET password='${hashed}' WHERE id=${req.body.id}`;
       const user = await queryDocument(query);
-      console.log(user);
       if (user.changedRows > 0) {
         const sql = `SELECT * FROM user WHERE id = '${req.body.id}'`;
         const result = await queryDocument(sql);
