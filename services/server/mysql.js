@@ -1,11 +1,14 @@
-import mysql from "mysql2";
+import mysql from "mysql2/promise";
 
-export const pool = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  database: "newsportal",
-  password: "",
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-});
+export async function mySql() {
+  const db = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    database: "newsportal",
+    password: "",
+    connectionLimit: 10,
+    waitForConnections: true,
+  });
+
+  return db;
+}
