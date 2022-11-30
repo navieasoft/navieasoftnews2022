@@ -39,7 +39,7 @@ const GaneralPattern = ({ title, isCategory }) => {
             <h3>{item.headline}</h3>
             <Markup
               className='text-justify'
-              content={`${item.body.slice(0, 200)}...`}
+              content={`${item.body?.slice(0, 200)}...`}
             />
           </a>
         </Link>

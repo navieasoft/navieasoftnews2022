@@ -1,23 +1,19 @@
-import React, { useEffect, useState } from "react";
-import LergeAdd from "../components/common/advertizer/LergeAdd";
-import SmallAdd from "../components/common/advertizer/SmallAd";
-import Divider from "../components/common/divider/Divider";
-import Arts from "../components/home/Arts";
-import AtHome from "../components/home/AtHome";
-import BusinessHighlight from "../components/home/BusinessHighlight";
-import CountryHighlight from "../components/home/CountryHighlight";
 import DailyReportOfCountry from "../components/home/DailyReportOfCountry";
-import Features from "../components/home/Features";
-import Living from "../components/home/Living";
-import MostPopular from "../components/home/MostPopular";
-import News from "../components/home/News";
-import Opinion from "../components/home/Opinion";
-import OtherNews from "../components/home/OtherNews";
-import PoliticsHighligh from "../components/home/PoliticsHighligh";
-import ScienceTechnology from "../components/home/ScienceTechnology";
-import HotNews from "../components/home/sideSection/HotNews";
+const MostPopular = dynamic(() => import("../components/home/MostPopular"));
+const OtherNews = dynamic(() => import("../components/home/OtherNews"));
+const Features = dynamic(() => import("../components/home/Features"));
 import OthersNews from "../components/home/sideSection/OthersNews";
 import TopTenNews from "../components/home/sideSection/TopTenNews";
+const Opinion = dynamic(() => import("../components/home/Opinion"));
+import LergeAdd from "../components/common/advertizer/LergeAdd";
+import SmallAdd from "../components/common/advertizer/SmallAd";
+const Arts = dynamic(() => import("../components/home/Arts"));
+const AtHome = dynamic(() => import("../components/home/AtHome"));
+const Living = dynamic(() => import("../components/home/Living"));
+const News = dynamic(() => import("../components/home/News"));
+import HotNews from "../components/home/sideSection/HotNews";
+import Divider from "../components/common/divider/Divider";
+import React, { useEffect, useState } from "react";
 import TopNews from "../components/home/TopNews";
 import TopMenus from "../components/common/TopMenus";
 import TopPart from "../components/common/TopPart";
@@ -25,6 +21,19 @@ import Breakingnews from "../components/common/BreakingNews";
 import MiddlePart from "../components/common/MiddlePart";
 import TopHighlight from "../components/home/TopHighlight";
 import useStore from "../components/context/useStore";
+import dynamic from "next/dynamic";
+const BusinessHighlight = dynamic(() =>
+  import("../components/home/BusinessHighlight")
+);
+const CountryHighlight = dynamic(() =>
+  import("../components/home/CountryHighlight")
+);
+const PoliticsHighligh = dynamic(() =>
+  import("../components/home/PoliticsHighligh")
+);
+const ScienceTechnology = dynamic(() =>
+  import("../components/home/ScienceTechnology")
+);
 
 const Home = () => {
   const [otherNews, setOtherNews] = useState(null);

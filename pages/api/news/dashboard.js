@@ -15,6 +15,10 @@ export default async function handler(req, res) {
       updateNewsViews(req, res);
       break;
 
+    case "DELETE":
+      deleteComment(req, res);
+      break;
+
     default:
       res.status(404).send({ message: "not found" });
       break;
@@ -197,7 +201,9 @@ async function updateNewsViews(req, res) {
         "INSERT INTO news_viewers SET ",
         req.body
       );
-      if (result.insertId > 0) {
+      const sql = `UPDATE news SET views = views + 1 WHERE id = '${req.body.news_id}'`;
+      const news = await queryDocument(sql);
+      if (result.insertId > 0 || news.affectedRows > 0) {
         res.send({ message: "Added" });
       } else {
         res.send({ message: "Unable to add" });
@@ -230,6 +236,18 @@ async function postCommentOnNews(req, res) {
     if (result.insertId > 0) {
       res.send({ message: "Thank you for staying us." });
     } else throw { message: "unable to post comment, please try again" };
+  } catch (error) {
+    errorHandler(res, { msg: error?.message, status: error?.status });
+  }
+}
+
+async function deleteComment(req, res) {
+  try {
+    const sql = `DELETE FROM comments WHERE id = ${req.body.id} AND user_id = '${req.body.user_id}'`;
+    const result = await queryDocument(sql);
+    if (result.affectedRows > 0) {
+      res.send({ message: "Deleted successfully" });
+    } else throw { message: "unable to delete" };
   } catch (error) {
     errorHandler(res, { msg: error?.message, status: error?.status });
   }
