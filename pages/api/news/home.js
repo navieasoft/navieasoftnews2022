@@ -117,7 +117,7 @@ async function getMostReadedNews(req, res) {
   try {
     const limit = parseInt(req.query.limit) || 12;
     const page = parseInt(req.query.page || 0) * limit;
-    const sql = `SELECT id, headline, image, views FROM news ORDER BY views DESC LIMIT ${page}, ${limit}`;
+    const sql = `SELECT id, headline, image, views, body FROM news ORDER BY views DESC LIMIT ${page}, ${limit}`;
     const result = await queryDocument(sql);
     res.send(result);
   } catch (error) {

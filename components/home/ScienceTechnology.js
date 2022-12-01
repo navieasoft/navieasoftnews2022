@@ -9,7 +9,7 @@ const ScienceTechnology = () => {
   useEffect(() => {
     (async function () {
       try {
-        const res = await fetch("/api/news/home?category=Science&limit=5");
+        const res = await fetch("/api/news/home?category=Sciences&limit=5");
         const result = await res.json();
         if (res.ok) {
           setNews(result);
@@ -20,7 +20,7 @@ const ScienceTechnology = () => {
     })();
   }, []);
 
-  if (!news) return null;
+  if (!news?.length) return null;
   return (
     <div className='mx-5 lg:mx-10 my-3'>
       <p>Science & Technology</p>
